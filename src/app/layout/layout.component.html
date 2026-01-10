@@ -1,0 +1,31 @@
+<mat-sidenav-container  class="sidenav-container">
+    <!--  Sidebar  -->
+    <mat-sidenav  #drawer  class="sidenav"  mode="side"  [opened]="isSidebarOpen">
+        <mat-toolbar  color="primary">Move  +</mat-toolbar>
+        <mat-nav-list>
+            <mat-list-item (click)="navigateTo('/dashboard')"><mat-icon>dashboard</mat-icon>  Dashboard</mat-list-item>
+            <mat-list-item (click)="navigateTo('/patients')"><mat-icon>people</mat-icon>  Patients</mat-list-item>
+            <mat-list-item (click)="navigateTo('/seances')"><mat-icon>event</mat-icon>  Séances</mat-list-item>
+            <mat-list-item (click)="navigateTo('/payments')"><mat-icon>payment</mat-icon>  Paiements</mat-list-item>
+            <mat-list-item (click)="navigateTo('/sales-stock')"><mat-icon>shopping_cart</mat-icon>  Ventes  &  Stock</mat-list-item>
+            <mat-list-item (click)="navigateTo('/expenses')"><mat-icon>account_balance</mat-icon>  Charges</mat-list-item>
+            <mat-list-item (click)="navigateTo('/users')"><mat-icon>admin_panel_settings</mat-icon>  Utilisateurs</mat-list-item>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <!--  Main  Content  -->
+    <mat-sidenav-content>
+        <mat-toolbar  color="primary">
+            <button  mat-icon-button  (click)="toggleSidebar()">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <span>Move  +  Clinic</span>
+            <span  class="spacer"></span>
+            <button  mat-button  routerLink="/login">Déconnexion</button>
+        </mat-toolbar>
+
+        <div  class="content">
+            <ng-container *ngComponentOutlet="currentComponent"></ng-container>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

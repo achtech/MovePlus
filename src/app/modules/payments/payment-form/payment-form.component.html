@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>{{  data  ?  'Modifier Paiement'  :  'Ajouter  Paiement' }}</h2>
+<mat-dialog-content>
+   <form  [formGroup]="form">
+       <mat-form-field  appearance="fill">
+          <mat-label>Patient  ID</mat-label>
+          <input  matInput formControlName="patientId">
+       </mat-form-field>
+
+       <mat-form-field appearance="fill">
+           <mat-label>Séance ID</mat-label>
+           <input matInput  formControlName="seanceId">
+       </mat-form-field>
+      <mat-form-field  appearance="fill">
+          <mat-label>Montant</mat-label>
+           <input matInput  type="number"  formControlName="amount">
+       </mat-form-field>
+
+       <mat-form-field  appearance="fill">
+          <mat-label>Date</mat-label>
+          <input  matInput  [matDatepicker]="picker"  formControlName="date">
+          <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle>
+           <mat-datepicker #picker></mat-datepicker>
+       </mat-form-field>
+
+       <mat-form-field appearance="fill">
+           <mat-label>Méthode</mat-label>
+          <mat-select  formControlName="method">
+             <mat-option  *ngFor="let  m  of methods"  [value]="m">{{  m  }}</mat-option>
+          </mat-select>
+       </mat-form-field>
+
+       <mat-form-field  appearance="fill">
+          <mat-label>Statut</mat-label>
+          <mat-select  formControlName="status">
+              <mat-option  *ngFor="let s  of  statuses"  [value]="s">{{ s  }}</mat-option>
+          </mat-select>
+       </mat-form-field>
+   </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button  (click)="cancel()">Annuler</button>
+   <button  mat-raised-button  color="primary"  (click)="save()">Enregistrer</button>
+</mat-dialog-actions>

@@ -1,0 +1,21 @@
+.sidenav-container  {
+    height: 100%;
+}
+
+.sidenav  {
+   width:  220px;
+}
+
+.dashboard-content  {
+   padding:  20px;
+}
+
+mat-card {
+    text-align:  center;
+   background:  #f5f7fa;
+}
+
+mat-card  h2  {
+   font-size:  2rem;
+   color:  #1976d2;  //  blue  primary
+}

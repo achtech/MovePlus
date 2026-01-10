@@ -1,0 +1,14 @@
+<h1>Dashboard</h1>
+<div class="dashboard">
+    <mat-grid-list cols="4" rowHeight="100px">
+        <mat-grid-tile *ngFor="let stat of stats">
+            <mat-card>
+                <mat-card-content>
+                    <mat-icon>{{ stat.icon }}</mat-icon>
+                    <h3>{{ stat.title }}</h3>
+                    <p>{{ stat.value }}</p>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

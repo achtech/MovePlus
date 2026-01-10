@@ -1,0 +1,35 @@
+<div  class="stock-list">
+    <h2>Inventaire</h2>
+
+    <table mat-table  [dataSource]="stock"  class="mat-elevation-z8">
+        <ng-container  matColumnDef="productName">
+            <th  mat-header-cell  *matHeaderCellDef>Produit</th>
+           <td  mat-cell  *matCellDef="let  s">{{  s.productName  }}</td>
+        </ng-container>
+
+        <ng-container  matColumnDef="quantity">
+           <th  mat-header-cell  *matHeaderCellDef>Quantité</th>
+            <td  mat-cell  *matCellDef="let  s"  [ngClass]="{'low-stock':  isLowStock(s)}">
+               {{  s.quantity  }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="unitPrice">
+            <th  mat-header-cell  *matHeaderCellDef>Prix  Unitaire</th>
+            <td  mat-cell  *matCellDef="let  s">{{  s.unitPrice  | currency:'EUR'  }}</td>
+        </ng-container>
+
+        <ng-container  matColumnDef="minStockAlert">
+            <th  mat-header-cell  *matHeaderCellDef>Alerte Stock  Min</th>
+            <td  mat-cell  *matCellDef="let  s">{{  s.minStockAlert  }}</td>
+        </ng-container>
+
+       <ng-container  matColumnDef="lastUpdated">
+            <th  mat-header-cell  *matHeaderCellDef>Dernière  Mise  à  Jour</th>
+            <td  mat-cell *matCellDef="let  s">{{  s.lastUpdated  |  date:'short'  }}</td>
+        </ng-container>
+
+        <tr  mat-header-row  *matHeaderRowDef="displayedColumns"></tr>
+       <tr  mat-row  *matRowDef="let  row;  columns:  displayedColumns;"></tr>
+    </table>
+</div>
