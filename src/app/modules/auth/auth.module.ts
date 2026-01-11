@@ -11,18 +11,17 @@ import  {  MatButtonModule }  from  '@angular/material/button';
 import {  MatCardModule  }  from '@angular/material/card';
 
 @NgModule({
-   declarations:  [],
    imports:  [
       CommonModule,
-       AuthRoutingModule,
-       FormsModule,
-       ReactiveFormsModule,
+      AuthRoutingModule,
+      FormsModule,
+      ReactiveFormsModule,
       MatFormFieldModule,
-       MatInputModule,
-       MatButtonModule,
-       MatCardModule,
-       LoginComponent,
-       RegisterComponent
+      MatInputModule,
+      MatButtonModule,
+      MatCardModule,
+      LoginComponent,
+      RegisterComponent
    ]
 })
 export  class  AuthModule  {}

@@ -21,7 +21,7 @@
             </button>
             <span>{{ pageTitle }}</span>
             <span  class="spacer"></span>
-            <button  mat-button  routerLink="/login">Déconnexion</button>
+            <button mat-button (click)="logout()">Déconnexion</button>
         </mat-toolbar>
 
         <div  class="content">

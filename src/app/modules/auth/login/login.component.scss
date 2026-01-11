@@ -1,10 +1,33 @@
-mat-card  {
-   max-width:  400px;
-   margin:  50px  auto;
-   padding:  20px;
+
+.login-card {
+   max-width: 400px;
+   margin: 60px auto;
+   padding: 32px 28px 28px 28px;
+   border-radius: 16px;
+   box-shadow: 0 4px 24px rgba(0,0,0,0.10);
 }
 
-.error  {
-   color:  red;
-   margin-top:  10px;
+.login-title {
+   text-align: center;
+   margin-bottom: 2rem;
+   font-weight: 600;
+   color: #333;
+}
+
+mat-form-field {
+   width: 100%;
+   margin-bottom: 1.5rem;
+}
+
+button[type="submit"] {
+   width: 100%;
+   margin-top: 1rem;
+   font-size: 1rem;
+}
+
+.error {
+   color: #d32f2f;
+   margin-top: 1rem;
+   text-align: center;
+   font-size: 0.95rem;
 }

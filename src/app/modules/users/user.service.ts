@@ -13,10 +13,11 @@ export interface  User  {
 @Injectable({  providedIn:  'root' })
 export  class  UserService {
     private users: User[] = [
-        { id: 1, username: 'admin', email: 'admin@example.com', role: 'ADMIN', enabled: true },
-        { id: 2, username: 'kine1', email: 'kine1@example.com', role: 'KINE', enabled: true },
-        { id: 3, username: 'assistant', email: 'assistant@example.com', role: 'ASSISTANT', enabled: true },
-        { id: 4, username: 'trainer', email: 'trainer@example.com', role: 'TRAINER', enabled: false }
+        { id: 1, username: 'admin', email: 'admin@example.com', password: 'admin', role: 'ADMIN', enabled: true },
+        { id: 2, username: 'kine1', email: 'kine1@example.com', password: 'kine1', role: 'KINE', enabled: true },
+        { id: 3, username: 'assistant', email: 'assistant@example.com', password: 'assistant', role: 'ASSISTANT', enabled: true },
+        { id: 4, username: 'trainer', email: 'trainer@example.com', password: 'trainer', role: 'TRAINER', enabled: false },
+        { id: 5, username: 'Khalidovic', email: 'khalidovic@example.com', password: 'Move+2026', role: 'ADMIN', enabled: true }
     ];
 
    constructor()  {}
@@ -43,5 +44,16 @@ export  class  UserService {
    deleteUser(id:  number):  Observable<void>  {
       this.users = this.users.filter(u => u.id !== id);
       return  of(void 0);
+   }
+
+   resetPassword(id: number, newPassword?: string): Observable<void> {
+       // In a real application, this would call an API to reset the password
+       // For now, we'll just simulate the operation
+       const user = this.users.find(u => u.id === id);
+       if (user) {
+           // Use provided new password or fall back to a default
+           user.password = newPassword ?? 'reset123';
+       }
+       return of(void 0);
    }
 }

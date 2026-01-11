@@ -29,8 +29,7 @@ import { CommonModule } from '@angular/common';
            quantity:  [data?.quantity ||  '',  Validators.required],
            unitPrice:  [data?.unitPrice  || '',  Validators.required],
            saleDate:  [data?.saleDate  ||  '', Validators.required],
-            patientId: [data?.patientId  ||  ''],
-           soldBy:  [data?.soldBy  || '',  Validators.required]
+           notes: [data?.notes || '']
         });
     }
  

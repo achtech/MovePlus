@@ -39,4 +39,13 @@ export  class  StockService  {
        }
        return of(null as any);
    }
+
+   deleteStock(id: number): Observable<boolean> {
+       const index = this.stock.findIndex(s => s.id === id);
+       if (index !== -1) {
+           this.stock.splice(index, 1);
+           return of(true);
+       }
+       return of(false);
+   }
 }

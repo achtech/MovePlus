@@ -30,20 +30,35 @@ export  class  UserFormComponent  {
           username:  [data?.username ||  '',  Validators.required],
           email:  [data?.email  || '',  [Validators.required,  Validators.email]],
           password:  [data?.password  || '',  data  ?  [] :  [Validators.required]],
+          confirmPassword:  ['',  data  ?  [] :  [Validators.required]],
           role:  [data?.role  ||  '', Validators.required],
            enabled: [data?.enabled  ??  true,  Validators.required]
-      });
+      }, { validators: data ? null : UserFormComponent.passwordMatchValidator });
     }
 
     save(): void  {
        if  (this.form.valid) {
            const user  =  this.form.value;
+           // Remove confirmPassword before saving
+           delete user.confirmPassword;
           if  (this.data?.id)  {
              this.userService.updateUser(this.data.id,  user).subscribe(()  =>  this.dialogRef.close(true));
           }  else {
               this.userService.addUser(user).subscribe(()  =>  this.dialogRef.close(true));
           }
        }
+   }
+
+   static passwordMatchValidator(form: FormGroup) {
+       const password = form.get('password');
+       const confirmPassword = form.get('confirmPassword');
+       
+       if (password && confirmPassword && password.value !== confirmPassword.value) {
+           confirmPassword.setErrors({ passwordMismatch: true });
+           return { passwordMismatch: true };
+       }
+       
+       return null;
    }
 
    cancel():  void {

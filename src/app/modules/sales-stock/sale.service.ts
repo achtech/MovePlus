@@ -10,6 +10,7 @@ export  interface  Sale  {
     saleDate:  string;
     patientId?:  number;
     soldBy:  number;
+    notes?:  string;
 }
  
  @Injectable({  providedIn: 'root'  })
