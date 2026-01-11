@@ -1,47 +1,107 @@
-<div  class="seance-list">
-   <button  mat-raised-button  color="primary"  routerLink="/seances/agenda">Voir Agenda</button>
+<div class="table-container">
+   <div class="table-controls-panel">
+       <div class="button-group">
+           <p-button label="Planifier Séance" icon="pi pi-plus" (click)="addSeance()" />
+           <p-button
+               [label]="showAgenda ? 'Voir Liste' : 'Voir Agenda'"
+               [icon]="showAgenda ? 'pi pi-list' : 'pi pi-calendar'"
+               (click)="toggleAgenda()" />
+       </div>
+       <p-iconfield iconPosition="left" class="search-input" *ngIf="!showAgenda">
+           <p-inputicon>
+               <i class="pi pi-search"></i>
+           </p-inputicon>
+           <input pInputText type="text" (input)="dt1?.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+       </p-iconfield>
+   </div>
 
-   <table  mat-table  [dataSource]="seances"  class="mat-elevation-z8">
-      <ng-container  matColumnDef="patientId">
-          <th  mat-header-cell  *matHeaderCellDef>Patient</th>
-          <td  mat-cell  *matCellDef="let s">{{  s.patientId  }}</td>
-       </ng-container>
+   <div class="table-list-panel" *ngIf="!showAgenda">
+       <p-table #dt1 [value]="seances" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['patientId', 'therapistId', 'dateTime', 'duration', 'type', 'status', 'patientName', 'therapistName']" showGridlines>
+          <ng-template #caption>
+              <div class="flex">
+                  <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+              </div>
+          </ng-template>
+          <ng-template #header>
+              <tr>
+                  <th style="min-width:10rem">
+                      <div class="flex items-center justify-between">
+                          Patient
+                          <p-columnFilter type="text" field="patientId" display="menu" />
+                      </div>
+                  </th>
+                  <th style="min-width:10rem">
+                      <div class="flex items-center justify-between">
+                          Thérapeute
+                          <p-columnFilter type="text" field="therapistId" display="menu" />
+                      </div>
+                  </th>
+                  <th style="min-width:15rem">
+                      <div class="flex items-center justify-between">
+                          Date
+                          <p-columnFilter type="date" field="dateTime" display="menu" />
+                      </div>
+                  </th>
+                  <th style="min-width:10rem">
+                      <div class="flex items-center justify-between">
+                          Durée (min)
+                          <p-columnFilter type="numeric" field="duration" display="menu" />
+                      </div>
+                  </th>
+                  <th style="min-width:10rem">
+                      <div class="flex items-center justify-between">
+                          Type
+                          <p-columnFilter type="text" field="type" display="menu" />
+                      </div>
+                  </th>
+                  <th style="min-width:10rem">
+                      <div class="flex items-center justify-between">
+                          Statut
+                          <p-columnFilter type="text" field="status" display="menu" />
+                      </div>
+                  </th>
+                  <th style="min-width:10rem">
+                      Actions
+                  </th>
+              </tr>
+          </ng-template>
+          <ng-template #body let-s>
+              <tr>
+                  <td>
+                      {{ getPatientName(s.patientId) }}
+                  </td>
+                  <td>
+                      {{ getTherapistName(s.therapistId) }}
+                  </td>
+                  <td>
+                      {{ s.dateTime | date:'short' }}
+                  </td>
+                  <td>
+                      {{ s.duration }}
+                  </td>
+                  <td>
+                      {{ s.type }}
+                  </td>
+                  <td>
+                      <span [ngClass]="{'status-completed': s.status === 'COMPLETED', 'status-scheduled': s.status === 'SCHEDULED', 'status-cancelled': s.status === 'CANCELLED'}">
+                          {{ s.status }}
+                      </span>
+                  </td>
+                  <td>
+                      <p-button icon="pi pi-pencil" [outlined]="true" severity="info" (click)="editSeance(s)" pTooltip="Modifier Séance" />
+                      <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deleteSeance(s.id!)" pTooltip="Supprimer Séance" />
+                  </td>
+              </tr>
+          </ng-template>
+          <ng-template #emptymessage>
+              <tr>
+                  <td colspan="7">No seances found.</td>
+              </tr>
+          </ng-template>
+       </p-table>
+   </div>
 
-       <ng-container  matColumnDef="therapistId">
-          <th  mat-header-cell  *matHeaderCellDef>Thérapeute</th>
-          <td  mat-cell *matCellDef="let  s">{{  s.therapistId  }}</td>
-      </ng-container>
-
-       <ng-container  matColumnDef="dateTime">
-          <th  mat-header-cell *matHeaderCellDef>Date</th>
-           <td mat-cell  *matCellDef="let  s">{{  s.dateTime |  date:'short'  }}</td>
-       </ng-container>
-
-       <ng-container  matColumnDef="duration">
-          <th  mat-header-cell  *matHeaderCellDef>Durée (min)</th>
-           <td mat-cell  *matCellDef="let  s">{{  s.duration }}</td>
-       </ng-container>
-
-       <ng-container matColumnDef="type">
-           <th mat-header-cell  *matHeaderCellDef>Type</th>
-          <td  mat-cell  *matCellDef="let  s">{{ s.type  }}</td>
-       </ng-container>
-
-      <ng-container  matColumnDef="status">
-          <th  mat-header-cell  *matHeaderCellDef>Statut</th>
-          <td  mat-cell  *matCellDef="let s">{{  s.status  }}</td>
-       </ng-container>
-
-       <ng-container  matColumnDef="actions">
-          <th  mat-header-cell  *matHeaderCellDef>Actions</th>
-          <td  mat-cell *matCellDef="let  s">
-              <button  mat-icon-button color="warn"  (click)="deleteSeance(s.id!)">
-                 <mat-icon>delete</mat-icon>
-              </button>
-          </td>
-       </ng-container>
-
-       <tr mat-header-row  *matHeaderRowDef="displayedColumns"></tr>
-       <tr  mat-row *matRowDef="let  row;  columns:  displayedColumns;"></tr>
-   </table>
+   <div class="agenda-panel" *ngIf="showAgenda">
+       <full-calendar [options]="calendarOptions"></full-calendar>
+   </div>
 </div>

@@ -3,7 +3,12 @@ import  {  MatDialog  } from  '@angular/material/dialog';
  import  { PatientService,  Patient  }  from '../patient.service';
  import  {  PatientFormComponent }  from  '../patient-form/patient-form.component';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
  
@@ -12,11 +17,11 @@ import { MatIconModule } from '@angular/material/icon';
      templateUrl: './patient-list.component.html',
      styleUrls: ['./patient-list.component.scss'],
      standalone: true,
-     imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule]
+     imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, MatButtonModule, MatIconModule]
  }) 
  export  class PatientListComponent  implements  OnInit  {
-    displayedColumns:  string[] =  ['firstName',  'lastName',  'phone', 'email',  'actions'];
     patients:  Patient[]  =  [];
+    loading: boolean = true;
 
      constructor(private patientService:  PatientService,  private  dialog: MatDialog)  {}
  
@@ -25,7 +30,10 @@ import { MatIconModule } from '@angular/material/icon';
      }
 
      loadPatients(): void  {
-        this.patientService.getPatients().subscribe(data  => this.patients  =  data);
+        this.patientService.getPatients().subscribe(data  => {
+            this.patients  =  data;
+            this.loading = false;
+        });
     }
  
     addPatient():  void  {
@@ -44,5 +52,9 @@ import { MatIconModule } from '@angular/material/icon';
  
     deletePatient(id:  number):  void  {
        this.patientService.deletePatient(id).subscribe(()  =>  this.loadPatients());
+    }
+
+    clear(table: any): void {
+        table.clear();
     }
  }

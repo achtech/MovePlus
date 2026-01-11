@@ -1,35 +1,82 @@
-<div  class="stock-list">
-    <h2>Inventaire</h2>
+<div class="table-container">
+   <div class="table-controls-panel">
+       <div class="button-group">
+           <p-button label="Ajouter Stock" icon="pi pi-plus" (click)="addStock()" />
+           <p-button label="Ajouter Vente" icon="pi pi-shopping-cart" routerLink="/sales-stock" />
+       </div>
+       <p-iconfield iconPosition="left" class="search-input">
+           <p-inputicon>
+               <i class="pi pi-search"></i>
+           </p-inputicon>
+           <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+       </p-iconfield>
+   </div>
 
-    <table mat-table  [dataSource]="stock"  class="mat-elevation-z8">
-        <ng-container  matColumnDef="productName">
-            <th  mat-header-cell  *matHeaderCellDef>Produit</th>
-           <td  mat-cell  *matCellDef="let  s">{{  s.productName  }}</td>
-        </ng-container>
-
-        <ng-container  matColumnDef="quantity">
-           <th  mat-header-cell  *matHeaderCellDef>Quantité</th>
-            <td  mat-cell  *matCellDef="let  s"  [ngClass]="{'low-stock':  isLowStock(s)}">
-               {{  s.quantity  }}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="unitPrice">
-            <th  mat-header-cell  *matHeaderCellDef>Prix  Unitaire</th>
-            <td  mat-cell  *matCellDef="let  s">{{  s.unitPrice  | currency:'EUR'  }}</td>
-        </ng-container>
-
-        <ng-container  matColumnDef="minStockAlert">
-            <th  mat-header-cell  *matHeaderCellDef>Alerte Stock  Min</th>
-            <td  mat-cell  *matCellDef="let  s">{{  s.minStockAlert  }}</td>
-        </ng-container>
-
-       <ng-container  matColumnDef="lastUpdated">
-            <th  mat-header-cell  *matHeaderCellDef>Dernière  Mise  à  Jour</th>
-            <td  mat-cell *matCellDef="let  s">{{  s.lastUpdated  |  date:'short'  }}</td>
-        </ng-container>
-
-        <tr  mat-header-row  *matHeaderRowDef="displayedColumns"></tr>
-       <tr  mat-row  *matRowDef="let  row;  columns:  displayedColumns;"></tr>
-    </table>
+   <div class="table-list-panel">
+       <p-table #dt1 [value]="stock" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['productName', 'quantity', 'unitPrice', 'minStockAlert', 'lastUpdated']" showGridlines>
+           <ng-template #caption>
+               <div class="flex">
+                   <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+               </div>
+           </ng-template>
+           <ng-template #header>
+               <tr>
+                   <th style="min-width:15rem">
+                       <div class="flex items-center justify-between">
+                           Produit
+                           <p-columnFilter type="text" field="productName" display="menu" />
+                       </div>
+                   </th>
+                   <th style="min-width:10rem">
+                       <div class="flex items-center justify-between">
+                           Quantité
+                           <p-columnFilter type="numeric" field="quantity" display="menu" />
+                       </div>
+                   </th>
+                   <th style="min-width:10rem">
+                       <div class="flex items-center justify-between">
+                           Prix Unitaire
+                           <p-columnFilter type="numeric" field="unitPrice" display="menu" currency="EUR" />
+                       </div>
+                   </th>
+                   <th style="min-width:10rem">
+                       <div class="flex items-center justify-between">
+                           Alerte Stock Min
+                           <p-columnFilter type="numeric" field="minStockAlert" display="menu" />
+                       </div>
+                   </th>
+                   <th style="min-width:15rem">
+                       <div class="flex items-center justify-between">
+                           Dernière Mise à Jour
+                           <p-columnFilter type="date" field="lastUpdated" display="menu" />
+                       </div>
+                   </th>
+               </tr>
+           </ng-template>
+           <ng-template #body let-s>
+               <tr>
+                   <td>
+                       {{ s.productName }}
+                   </td>
+                   <td [ngClass]="{'low-stock': isLowStock(s)}">
+                       {{ s.quantity }}
+                   </td>
+                   <td>
+                       {{ s.unitPrice | currency:'EUR' }}
+                   </td>
+                   <td>
+                       {{ s.minStockAlert }}
+                   </td>
+                   <td>
+                       {{ s.lastUpdated | date:'short' }}
+                   </td>
+               </tr>
+           </ng-template>
+           <ng-template #emptymessage>
+               <tr>
+                   <td colspan="5">No stock items found.</td>
+               </tr>
+           </ng-template>
+       </p-table>
+   </div>
 </div>

@@ -27,7 +27,6 @@ import  {  FormsModule,  ReactiveFormsModule }  from  '@angular/forms';
        MatIconModule,
         MatDialogModule,
         MatSelectModule,
-        UserListComponent,
         UserFormComponent
     ]
  })

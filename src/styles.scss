@@ -54,6 +54,55 @@ mat-toolbar {
     flex: 1  1  auto;
 }
 
+/* PrimeNG Table Panels */
+.table-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.table-controls-panel {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-controls-panel .button-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.table-controls-panel .clear-button {
+    margin-right: auto;
+}
+
+.table-controls-panel .search-input {
+    margin-left: auto;
+    min-width: 300px;
+}
+
+.table-list-panel {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.table-list-panel p-table {
+    border: none;
+}
+
+.table-list-panel .p-datatable-wrapper {
+    border-radius: 8px;
+}
+
 /*  Responsive  tweaks */
 @media  (max-width:  768px) {
     .sidenav {
@@ -61,5 +110,20 @@ mat-toolbar {
    }
    .content  {
        padding:  10px;
+   }
+
+   .table-controls-panel {
+       flex-direction: column;
+       gap: 12px;
+       align-items: stretch;
+   }
+
+   .table-controls-panel .search-input {
+       margin-left: 0;
+       min-width: auto;
+   }
+
+   .table-container {
+       gap: 24px;
    }
 }

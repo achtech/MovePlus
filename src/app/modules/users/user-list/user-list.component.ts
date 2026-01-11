@@ -3,20 +3,25 @@ import  {  MatDialog }  from  '@angular/material/dialog';
 import {  UserService,  User  } from  '../user.service';
 import  { UserFormComponent  }  from  '../user-form/user-form.component';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
    selector:  'app-user-list',
    templateUrl:  './user-list.component.html',
-   styleUrls:  ['./user-list.component.scss'],
+   styleUrls: ['./user-list.component.scss'],
    standalone: true,
-   imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule]
+   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, MatButtonModule, MatIconModule]
 })
 export class  UserListComponent  implements  OnInit {
-    displayedColumns: string[]  =  ['username',  'email', 'role',  'enabled',  'actions'];
    users:  User[]  = [];
+   loading: boolean = true;
 
    constructor(private  userService:  UserService,  private dialog:  MatDialog)  {}
 
@@ -25,7 +30,10 @@ export class  UserListComponent  implements  OnInit {
    }
 
    loadUsers():  void  {
-       this.userService.getUsers().subscribe(data =>  this.users  =  data);
+       this.userService.getUsers().subscribe(data => {
+           this.users  =  data;
+           this.loading = false;
+       });
    }
 
    addUser():  void {
@@ -44,5 +52,9 @@ export class  UserListComponent  implements  OnInit {
 
    deleteUser(id:  number):  void {
        this.userService.deleteUser(id).subscribe(()  =>  this.loadUsers());
+   }
+
+   clear(table: any): void {
+       table.clear();
    }
 }

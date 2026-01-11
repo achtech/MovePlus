@@ -1,41 +1,77 @@
-<div  class="expense-list">
-   <button  mat-raised-button color="primary"  (click)="addExpense()">Ajouter  Charge</button>
+<div class="table-container">
+   <div class="table-controls-panel">
+       <p-button label="Ajouter Charge" icon="pi pi-plus" (click)="addExpense()" class="clear-button" />
+       <p-iconfield iconPosition="left" class="search-input">
+           <p-inputicon>
+               <i class="pi pi-search"></i>
+           </p-inputicon>
+           <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+       </p-iconfield>
+   </div>
 
-   <table  mat-table [dataSource]="expenses"  class="mat-elevation-z8">
-       <ng-container  matColumnDef="description">
-          <th  mat-header-cell *matHeaderCellDef>Description</th>
-           <td mat-cell  *matCellDef="let  e">{{  e.description }}</td>
-       </ng-container>
-
-       <ng-container matColumnDef="amount">
-           <th mat-header-cell  *matHeaderCellDef>Montant</th>
-          <td  mat-cell  *matCellDef="let  e">{{ e.amount  |  currency:'EUR'  }}</td>
-      </ng-container>
-
-       <ng-container  matColumnDef="category">
-          <th  mat-header-cell *matHeaderCellDef>Catégorie</th>
-           <td mat-cell  *matCellDef="let  e">{{  e.category }}</td>
-       </ng-container>
-
-       <ng-container matColumnDef="date">
-           <th mat-header-cell  *matHeaderCellDef>Date</th>
-          <td  mat-cell  *matCellDef="let  e">{{ e.date  |  date:'shortDate'  }}</td>
-      </ng-container>
-
-       <ng-container  matColumnDef="actions">
-          <th  mat-header-cell *matHeaderCellDef>Actions</th>
-           <td mat-cell  *matCellDef="let  e">
-              <button mat-icon-button  color="accent"  (click)="editExpense(e)">
-                 <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button  color="warn"  (click)="deleteExpense(e.id!)">
-                 <mat-icon>delete</mat-icon>
-              </button>
-          </td>
-       </ng-container>
-
-      <tr  mat-header-row  *matHeaderRowDef="displayedColumns"></tr>
-       <tr mat-row  *matRowDef="let  row;  columns: displayedColumns;"></tr>
-    </table>
-
+   <div class="table-list-panel">
+       <p-table #dt1 [value]="expenses" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['description', 'amount', 'category', 'date']" showGridlines>
+           <ng-template #caption>
+               <div class="flex">
+                   <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+               </div>
+           </ng-template>
+           <ng-template #header>
+               <tr>
+                   <th style="min-width:15rem">
+                       <div class="flex items-center justify-between">
+                           Description
+                           <p-columnFilter type="text" field="description" display="menu" />
+                       </div>
+                   </th>
+                   <th style="min-width:10rem">
+                       <div class="flex items-center justify-between">
+                           Montant
+                           <p-columnFilter type="numeric" field="amount" display="menu" currency="EUR" />
+                       </div>
+                   </th>
+                   <th style="min-width:10rem">
+                       <div class="flex items-center justify-between">
+                           Catégorie
+                           <p-columnFilter type="text" field="category" display="menu" />
+                       </div>
+                   </th>
+                   <th style="min-width:10rem">
+                       <div class="flex items-center justify-between">
+                           Date
+                           <p-columnFilter type="date" field="date" display="menu" />
+                       </div>
+                   </th>
+                   <th style="min-width:10rem">
+                       Actions
+                   </th>
+               </tr>
+           </ng-template>
+           <ng-template #body let-e>
+               <tr>
+                   <td>
+                       {{ e.description }}
+                   </td>
+                   <td>
+                       {{ e.amount | currency:'EUR' }}
+                   </td>
+                   <td>
+                       {{ e.category }}
+                   </td>
+                   <td>
+                       {{ e.date | date:'shortDate' }}
+                   </td>
+                   <td>
+                       <p-button icon="pi pi-pencil" [outlined]="true" (click)="editExpense(e)" />
+                       <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deleteExpense(e.id!)" />
+                   </td>
+               </tr>
+           </ng-template>
+           <ng-template #emptymessage>
+               <tr>
+                   <td colspan="5">No expenses found.</td>
+               </tr>
+           </ng-template>
+       </p-table>
+   </div>
 </div>

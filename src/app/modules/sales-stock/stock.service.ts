@@ -24,6 +24,13 @@ export  class  StockService  {
        return of(this.stock);
     }
 
+    addStock(stock: Stock): Observable<Stock> {
+       const newId = Math.max(...this.stock.map(s => s.id || 0)) + 1;
+       const newStock = { ...stock, id: newId, lastUpdated: new Date().toISOString().split('T')[0] };
+       this.stock.push(newStock);
+       return of(newStock);
+   }
+
     updateStock(id: number,  stock:  Stock):  Observable<Stock> {
        const index = this.stock.findIndex(s => s.id === id);
        if (index !== -1) {

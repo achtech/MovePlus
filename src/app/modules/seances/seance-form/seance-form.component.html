@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>{{  data  ?  'Modifier  Séance'  :  'Planifier  Séance'  }}</h2>
+<mat-dialog-content>
+    <form  [formGroup]="form">
+        <mat-form-field  appearance="fill">
+           <mat-label>Patient</mat-label>
+            <mat-select formControlName="patientId">
+                <mat-option *ngFor="let patient of patients" [value]="patient.id">
+                    {{ patient.firstName }} {{ patient.lastName }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+       <mat-form-field  appearance="fill">
+            <mat-label>Thérapeute</mat-label>
+            <mat-select formControlName="therapistId">
+                <mat-option *ngFor="let therapist of therapists" [value]="therapist.id">
+                    {{ therapist.username }} ({{ therapist.role }})
+                </mat-option>
+            </mat-select>
+       </mat-form-field>
+
+        <mat-form-field  appearance="fill">
+            <mat-label>Date et Heure</mat-label>
+            <input matInput  type="datetime-local"  formControlName="dateTime">
+        </mat-form-field>
+
+        <mat-form-field  appearance="fill">
+            <mat-label>Durée (minutes)</mat-label>
+            <input  matInput  type="number"  formControlName="duration">
+        </mat-form-field>
+
+        <mat-form-field  appearance="fill">
+            <mat-label>Type de Séance</mat-label>
+            <mat-select formControlName="type">
+                <mat-option value="Massage">Massage</mat-option>
+                <mat-option value="Physio">Physiothérapie</mat-option>
+                <mat-option value="Consultation">Consultation</mat-option>
+                <mat-option value="Ostéopathie">Ostéopathie</mat-option>
+                <mat-option value="Acupuncture">Acupuncture</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field  appearance="fill">
+            <mat-label>Statut</mat-label>
+            <mat-select formControlName="status">
+                <mat-option value="SCHEDULED">Planifiée</mat-option>
+                <mat-option value="COMPLETED">Terminée</mat-option>
+                <mat-option value="CANCELLED">Annulée</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field  appearance="fill">
+           <mat-label>Notes</mat-label>
+            <textarea  matInput  formControlName="notes" rows="3"></textarea>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions  align="end">
+    <button  mat-button  (click)="cancel()">Annuler</button>
+    <button mat-raised-button  color="primary"  (click)="save()">Enregistrer</button>
+</mat-dialog-actions>

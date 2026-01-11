@@ -3,7 +3,12 @@ import {  MatDialog  }  from '@angular/material/dialog';
 import  {  SaleService, Sale  }  from  '../sale.service';
 import  {  SaleFormComponent  } from  '../sale-form/sale-form.component';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -12,11 +17,11 @@ import { MatIconModule } from '@angular/material/icon';
    templateUrl:  './sale-list.component.html',
    styleUrls:  ['./sale-list.component.scss'],
    standalone: true,
-   imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule]
+   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, MatButtonModule, MatIconModule]
 })
 export  class  SaleListComponent implements  OnInit  {
-   displayedColumns:  string[]  = ['productName',  'quantity',  'unitPrice',  'total', 'saleDate',  'actions'];
    sales:  Sale[]  =  [];
+   loading: boolean = true;
 
     constructor(private saleService:  SaleService,  private  dialog: MatDialog)  {}
 
@@ -27,6 +32,7 @@ export  class  SaleListComponent implements  OnInit  {
     loadSales(): void  {
        this.saleService.getSales().subscribe(data  => {
            this.sales =  data.map(s  =>  ({ ...s,  total:  s.quantity  * s.unitPrice  }));
+           this.loading = false;
        });
    }
 
@@ -46,5 +52,9 @@ export  class  SaleListComponent implements  OnInit  {
 
    deleteSale(id:  number):  void  {
       this.saleService.deleteSale(id).subscribe(()  =>  this.loadSales());
+   }
+
+   clear(table: any): void {
+       table.clear();
    }
 }

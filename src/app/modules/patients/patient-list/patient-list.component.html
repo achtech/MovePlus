@@ -1,41 +1,77 @@
-<h1>Patients</h1>
-<div class="patient-list">
-    <button mat-raised-button  color="primary"  (click)="addPatient()">Ajouter  Patient</button>
+<div class="table-container">
+    <div class="table-controls-panel">
+        <p-button label="Ajouter Patient" icon="pi pi-plus" (click)="addPatient()" class="clear-button" />
+        <p-iconfield iconPosition="left" class="search-input">
+            <p-inputicon>
+                <i class="pi pi-search"></i>
+            </p-inputicon>
+            <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+        </p-iconfield>
+    </div>
 
-    <table mat-table  [dataSource]="patients"  class="mat-elevation-z8">
-       <ng-container matColumnDef="firstName">
-           <th mat-header-cell  *matHeaderCellDef>Prénom</th>
-          <td  mat-cell  *matCellDef="let  patient">{{ patient.firstName  }}</td>
-       </ng-container>
-
-      <ng-container  matColumnDef="lastName">
-          <th  mat-header-cell  *matHeaderCellDef>Nom</th>
-          <td  mat-cell  *matCellDef="let patient">{{  patient.lastName  }}</td>
-       </ng-container>
-
-       <ng-container  matColumnDef="phone">
-          <th  mat-header-cell  *matHeaderCellDef>Téléphone</th>
-          <td  mat-cell *matCellDef="let  patient">{{  patient.phone  }}</td>
-      </ng-container>
-
-       <ng-container  matColumnDef="email">
-          <th  mat-header-cell *matHeaderCellDef>Email</th>
-           <td mat-cell  *matCellDef="let  patient">{{  patient.email }}</td>
-       </ng-container>
-
-       <ng-container matColumnDef="actions">
-           <th mat-header-cell  *matHeaderCellDef>Actions</th>
-          <td  mat-cell  *matCellDef="let  patient">
-             <button  mat-icon-button  color="accent"  (click)="editPatient(patient)">
-                 <mat-icon>edit</mat-icon>
-              </button>
-             <button  mat-icon-button  color="warn"  (click)="deletePatient(patient.id!)">
-                 <mat-icon>delete</mat-icon>
-              </button>
-          </td>
-       </ng-container>
-
-       <tr  mat-header-row  *matHeaderRowDef="displayedColumns"></tr>
-      <tr  mat-row  *matRowDef="let  row; columns:  displayedColumns;"></tr>
-   </table>
+    <div class="table-list-panel">
+        <p-table #dt1 [value]="patients" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['firstName', 'lastName', 'phone', 'email']" showGridlines>
+            <ng-template #caption>
+                <div class="flex">
+                    <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+                </div>
+            </ng-template>
+            <ng-template #header>
+                <tr>
+                    <th style="min-width:15rem">
+                        <div class="flex items-center justify-between">
+                            Prénom
+                            <p-columnFilter type="text" field="firstName" display="menu" />
+                        </div>
+                    </th>
+                    <th style="min-width:15rem">
+                        <div class="flex items-center justify-between">
+                            Nom
+                            <p-columnFilter type="text" field="lastName" display="menu" />
+                        </div>
+                    </th>
+                    <th style="min-width:15rem">
+                        <div class="flex items-center justify-between">
+                            Téléphone
+                            <p-columnFilter type="text" field="phone" display="menu" />
+                        </div>
+                    </th>
+                    <th style="min-width:15rem">
+                        <div class="flex items-center justify-between">
+                            Email
+                            <p-columnFilter type="text" field="email" display="menu" />
+                        </div>
+                    </th>
+                    <th style="min-width:10rem">
+                        Actions
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-patient>
+                <tr>
+                    <td>
+                        {{ patient.firstName }}
+                    </td>
+                    <td>
+                        {{ patient.lastName }}
+                    </td>
+                    <td>
+                        {{ patient.phone }}
+                    </td>
+                    <td>
+                        {{ patient.email }}
+                    </td>
+                    <td>
+                        <p-button icon="pi pi-pencil" [outlined]="true" (click)="editPatient(patient)" />
+                        <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deletePatient(patient.id!)" />
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template #emptymessage>
+                <tr>
+                    <td colspan="5">No patients found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
 </div>
