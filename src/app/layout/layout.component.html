@@ -1,6 +1,6 @@
-<mat-sidenav-container  class="sidenav-container">
+    <mat-sidenav-container  class="sidenav-container">
     <!--  Sidebar  -->
-    <mat-sidenav  #drawer  class="sidenav"  mode="side"  [opened]="isSidebarOpen">
+    <mat-sidenav  #drawer  class="sidenav"  [mode]="isMobile ? 'over' : 'side'"  [opened]="!isMobile"  [opened]="isSidebarOpen">
         <mat-toolbar  color="primary">Move  +</mat-toolbar>
         <mat-nav-list>
             <mat-list-item (click)="navigateTo('/dashboard')"><mat-icon>dashboard</mat-icon>  Dashboard</mat-list-item>
@@ -16,10 +16,10 @@
     <!--  Main  Content  -->
     <mat-sidenav-content>
         <mat-toolbar  color="primary">
-            <button  mat-icon-button  (click)="toggleSidebar()">
+            <button  mat-icon-button  (click)="drawer.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
-            <span>Move  +  Clinic</span>
+            <span>{{ pageTitle }}</span>
             <span  class="spacer"></span>
             <button  mat-button  routerLink="/login">Déconnexion</button>
         </mat-toolbar>
