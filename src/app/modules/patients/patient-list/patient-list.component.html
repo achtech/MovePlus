@@ -62,6 +62,7 @@
                         {{ patient.email }}
                     </td>
                     <td>
+                        <p-button icon="pi pi-eye" [outlined]="true" (click)="showPatientDetails(patient)" pTooltip="Détails patient" />
                         <p-button icon="pi pi-pencil" [outlined]="true" (click)="editPatient(patient)" />
                         <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deletePatient(patient.id!)" />
                     </td>

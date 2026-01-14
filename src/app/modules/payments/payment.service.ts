@@ -44,4 +44,9 @@ export  class  PaymentService {
       this.payments = this.payments.filter(p => p.id !== id);
       return  of(void 0);
    }
+
+   getPaymentsByPatientId(patientId: number): Observable<Payment[]> {
+      return of(this.payments.filter(p => p.patientId === patientId));
+   }
+
 }

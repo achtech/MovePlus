@@ -83,7 +83,7 @@ mat-toolbar {
 
 .table-controls-panel .search-input {
     margin-left: auto;
-    min-width: 300px;
+    min-width: 300px;   
 }
 
 .table-list-panel {
@@ -101,6 +101,14 @@ mat-toolbar {
 
 .table-list-panel .p-datatable-wrapper {
     border-radius: 8px;
+}
+
+.middle-dialog  .mat-dialog-container  {
+   padding:  0;
+   border-radius:  12px;
+   overflow:  hidden;
+   display:  flex;
+   flex-direction:  column;
 }
 
 /*  Responsive  tweaks */

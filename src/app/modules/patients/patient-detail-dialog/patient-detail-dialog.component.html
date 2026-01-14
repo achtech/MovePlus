@@ -1,0 +1,101 @@
+<h2 mat-dialog-title> Détails du patient — {{ data.patient.lastName }} {{ data.patient.firstName }}</h2>
+
+<mat-dialog-content>
+
+    <div class="grid-container">
+
+       <!--  PANEL  SEANCES  -->
+       <div  class="panel">
+           <h3  class="panel-title"><mat-icon>event_note</mat-icon>Séances de  {{  data.patient.lastName  }}  {{  data.patient.firstName }}</h3>
+
+           <p-table  
+              #dt1
+               [value]="seances"
+              [paginator]="true"
+               [rows]="5"
+              [loading]="loadingSeances"
+               [rowsPerPageOptions]="[5,10,20]"
+              [globalFilterFields]="['date','type','status']"
+               sortMode="multiple">
+
+              <ng-template  pTemplate="caption">
+                  <div  class="table-header">
+                      <input  pInputText  type="text" placeholder="Rechercher..."  
+                                   (input)="dt1.filterGlobal($event.target.value,  'contains')"  />
+                  </div>
+              </ng-template>
+
+               <ng-template pTemplate="header">
+                   <tr>
+                     <th  pSortableColumn="date">Date  <p-sortIcon  field="date"></p-sortIcon></th>
+                      <th  pSortableColumn="type">Type <p-sortIcon  field="type"></p-sortIcon></th>
+                      <th  pSortableColumn="status">Statut  <p-sortIcon  field="status"></p-sortIcon></th>
+                  </tr>
+              </ng-template>
+
+               <ng-template pTemplate="body"  let-seance>
+                  <tr>
+                      <td>{{  seance.date  |  date:'shortDate'  }}</td>
+                     <td>{{  seance.type  }}</td>
+                      <td>{{  seance.status  }}</td>
+                  </tr>
+              </ng-template>
+
+               <ng-template pTemplate="emptymessage">
+                   <tr><td colspan="3">Aucune  séance  trouvée.</td></tr>
+               </ng-template>
+
+           </p-table>
+       </div>
+
+       <!--  PANEL  PAYMENTS  -->
+       <div  class="panel">
+           <h3  class="panel-title"><mat-icon>payments</mat-icon>Paiements de  {{  data.patient.lastName  }}  {{  data.patient.firstName }}</h3>
+
+           <p-table  
+              #dt2
+               [value]="payments"
+              [paginator]="true"
+               [rows]="5"
+              [loading]="loadingPayments"
+               [rowsPerPageOptions]="[5,10,20]"
+              [globalFilterFields]="['date','amount','method']"
+               sortMode="multiple">
+
+              <ng-template  pTemplate="caption">
+                  <div  class="table-header">
+                      <input  pInputText  type="text" placeholder="Rechercher..."  
+                                   (input)="dt2.filterGlobal($event.target.value,  'contains')"  />
+                  </div>
+              </ng-template>
+
+               <ng-template pTemplate="header">
+                   <tr>
+                     <th  pSortableColumn="date">Date  <p-sortIcon  field="date"></p-sortIcon></th>
+                      <th  pSortableColumn="amount">Montant <p-sortIcon  field="amount"></p-sortIcon></th>
+                      <th  pSortableColumn="method">Mode  <p-sortIcon  field="method"></p-sortIcon></th>
+                  </tr>
+              </ng-template>
+
+               <ng-template pTemplate="body"  let-payment>
+                  <tr>
+                      <td>{{  payment.date  |  date:'shortDate'  }}</td>
+                     <td>{{  payment.amount  |  currency:'EUR'  }}</td>
+                      <td>{{ payment.method  }}</td>
+                  </tr>
+               </ng-template>
+
+              <ng-template  pTemplate="emptymessage">
+                  <tr><td  colspan="3">Aucun  paiement  trouvé.</td></tr>
+              </ng-template>
+
+           </p-table>
+       </div>
+
+   </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions  align="end">
+   <button  mat-button  (click)="close()">Fermer</button>
+</mat-dialog-actions>

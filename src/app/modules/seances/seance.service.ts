@@ -45,4 +45,8 @@ export  class  SeanceService {
       this.seances = this.seances.filter(s => s.id !== id);
       return  of(void 0);
    }
+
+   getSeancesByPatientId(patientId: number): Observable<Seance[]> {
+      return of(this.seances.filter(s => s.patientId === patientId));
+   }
 }

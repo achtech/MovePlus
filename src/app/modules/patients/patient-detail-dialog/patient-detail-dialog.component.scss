@@ -1,0 +1,78 @@
+/*  Main dialog  content  */
+mat-dialog-content {
+    height: calc(100%  -  60px);  /* subtract  title  +  actions */
+    overflow: auto;
+    padding: 20px;
+    min-width: 500px;
+    background: #f5f7fa;  /*  soft  dashboard background  */
+}
+
+/*  Two-column  layout  */
+.grid-container  {
+   height:  100%;
+   display:  grid;
+   grid-template-columns:  1fr  1fr;
+   gap:  24px;  /* more  breathing  room  */
+}
+
+/*  PrimeNG table  */
+p-table  {
+   flex:  1;
+   margin-top:  1rem;
+}
+
+/*  Card-style panels  */
+.panel  {
+   background:  #ffffff;
+   padding:  18px;
+   border-radius:  10px;
+   box-shadow:  0 2px  6px  rgba(0,0,0,0.08);
+   display:  flex;
+   flex-direction:  column;
+}
+
+/*  Section  titles */
+.panel-title  {
+   font-size:  1.25rem;
+   font-weight:  600;
+   color:  #1a237e;  /* theme  primary  */
+   margin-bottom:  14px;
+   padding-bottom:  8px;
+   border-bottom:  2px  solid rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Optional  icon  styling  if you  add  mat-icon  */
+.panel-title  mat-icon  {
+   font-size:  20px;
+   color:  #3949ab;
+}
+
+/*  Filter  input container  */
+.table-header  {
+   display:  flex;
+   justify-content:  flex-end;
+   margin-bottom:  10px;
+}
+
+.table-header  input {
+    width: 180px;
+    padding: 6px  10px;
+   border-radius:  6px;
+   border:  1px  solid  #ccc;
+   transition:  border-color 0.2s  ease;
+}
+
+.table-header  input:focus  {
+   border-color:  #1a237e;
+   outline:  none;
+}
+
+/*  Responsive  behavior */
+@media  (max-width:  900px) {
+    .grid-container {
+       grid-template-columns:  1fr;
+   }
+}
