@@ -1,78 +1,109 @@
-/*  Main dialog  content  */
-mat-dialog-content {
-    height: calc(100%  -  60px);  /* subtract  title  +  actions */
-    overflow: auto;
-    padding: 20px;
-    min-width: 500px;
-    background: #f5f7fa;  /*  soft  dashboard background  */
+.dashboard {
+    padding:  20px;
+   transition:  background  0.3s ease,  color  0.3s  ease;
 }
 
-/*  Two-column  layout  */
-.grid-container  {
-   height:  100%;
+/*  GRID  FOR  TOP CARDS  */
+.stats-grid  {
+   display:  grid;
+   grid-template-columns:  repeat(auto-fit,  minmax(220px,  1fr));
+   gap:  20px;
+   margin-bottom:  30px;
+}
+
+/* CARD  STYLE  */
+.stat-card  {
+   background:  white;
+   padding:  20px;
+   border-radius:  12px;
+    box-shadow: 0  2px  6px  rgba(0,0,0,0.1);
+   text-align:  center;
+   transition:  transform  0.2s  ease,  background 0.3s  ease;
+}
+
+.stat-card:hover {
+    transform:  translateY(-4px);
+}
+
+.stat-title  {
+   font-size:  0.95rem;
+   color:  #555;
+    margin-bottom: 8px;
+}
+
+.stat-value  {
+   font-size:  2rem;
+   font-weight:  700;
+   color:  #1a237e;
+}
+
+/* CHARTS  GRID  */
+.charts-grid  {
    display:  grid;
    grid-template-columns:  1fr  1fr;
-   gap:  24px;  /* more  breathing  room  */
+   gap:  25px;
 }
 
-/*  PrimeNG table  */
-p-table  {
-   flex:  1;
-   margin-top:  1rem;
+/*  Chart  wrapper  to  control height  */
+.chart-wrapper  {
+   position:  relative;
+   height:  700px;
 }
 
-/*  Card-style panels  */
-.panel  {
-   background:  #ffffff;
-   padding:  18px;
-   border-radius:  10px;
-   box-shadow:  0 2px  6px  rgba(0,0,0,0.08);
-   display:  flex;
-   flex-direction:  column;
-}
-
-/*  Section  titles */
-.panel-title  {
-   font-size:  1.25rem;
-   font-weight:  600;
-   color:  #1a237e;  /* theme  primary  */
-   margin-bottom:  14px;
-   padding-bottom:  8px;
-   border-bottom:  2px  solid rgba(0,0,0,0.1);
+/* Controls  above  the  chart  */
+.chart-controls  {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    gap:  12px;
+   align-items:  center;
+   padding:  12px  0;
+   flex-wrap:  wrap;
 }
 
-/* Optional  icon  styling  if you  add  mat-icon  */
-.panel-title  mat-icon  {
-   font-size:  20px;
-   color:  #3949ab;
+.toggle  {
+    display: inline-flex;
+    align-items:  center;
+   gap:  8px;
+   font-size:  0.95rem;
+   color:  #444;
 }
 
-/*  Filter  input container  */
-.table-header  {
-   display:  flex;
-   justify-content:  flex-end;
-   margin-bottom:  10px;
+.toggle input[type="checkbox"]  {
+    width: 16px;
+    height:  16px;
 }
 
-.table-header  input {
-    width: 180px;
-    padding: 6px  10px;
-   border-radius:  6px;
-   border:  1px  solid  #ccc;
-   transition:  border-color 0.2s  ease;
+/*  DARK  MODE */
+:host-context(.dark-mode)  .dashboard  {
+   background:  #121212;
+   color:  #e0e0e0;
 }
 
-.table-header  input:focus  {
-   border-color:  #1a237e;
-   outline:  none;
+:host-context(.dark-mode) .stat-card  {
+    background: #1e1e1e;
+    color:  #fff;
+   box-shadow:  0  2px 6px  rgba(255,255,255,0.04);
 }
 
-/*  Responsive  behavior */
-@media  (max-width:  900px) {
-    .grid-container {
+:host-context(.dark-mode) .stat-title  {
+    color: #bbb;
+}
+
+:host-context(.dark-mode)  .stat-value {
+    color:  #90caf9;
+}
+
+:host-context(.dark-mode)  p-card  {
+   background:  #1e1e1e  !important;
+   color:  #fff  !important;
+}
+
+:host-context(.dark-mode)  canvas  {
+   filter:  brightness(0.95);
+}
+
+/*  RESPONSIVE  */
+@media (max-width:  900px)  {
+   .charts-grid  {
        grid-template-columns:  1fr;
    }
 }

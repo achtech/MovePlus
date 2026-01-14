@@ -1,57 +1,63 @@
 <div  class="dashboard">
 
-   <!--  TOP  STATS  -->
-   <div  class="stats-grid">
+   <!--  TOP  STATS -->
+    <div  class="stats-grid">
 
        <div  class="stat-card">
-          <div  class="stat-title">Nombre  de  patients</div>
-          <div  class="stat-value">{{  totalPatients  }}</div>
+           <div  class="stat-title">Nombre de  patients</div>
+           <div  class="stat-value">{{ totalPatients  }}</div>
        </div>
 
        <div  class="stat-card">
-           <div  class="stat-title">Séances aujourd’hui</div>
-           <div  class="stat-value">{{  seancesToday }}</div>
+          <div  class="stat-title">Séances  aujourd’hui</div>
+           <div class="stat-value">{{  seancesToday  }}</div>
        </div>
 
        <div  class="stat-card">
-           <div class="stat-title">Séances  cette  semaine</div>
-           <div class="stat-value">{{  seancesWeek  }}</div>
+          <div  class="stat-title">Séances  cette  semaine</div>
+          <div  class="stat-value">{{  seancesWeek  }}</div>
        </div>
 
        <div  class="stat-card">
-          <div  class="stat-title">Séances  ce  mois</div>
-          <div  class="stat-value">{{  seancesMonth  }}</div>
+           <div  class="stat-title">Séances ce  mois</div>
+           <div  class="stat-value">{{ seancesMonth  }}</div>
        </div>
 
        <div  class="stat-card">
-           <div  class="stat-title">Paiements aujourd’hui  (€)</div>
-           <div  class="stat-value">{{ paymentsToday  }}</div>
+          <div  class="stat-title">Paiements  aujourd’hui  (€)</div>
+          <div  class="stat-value">{{  paymentsToday  }}</div>
+       </div>
+
+       <div class="stat-card">
+           <div  class="stat-title">Paiements  cette semaine  (€)</div>
+           <div  class="stat-value">{{ paymentsWeek  }}</div>
        </div>
 
        <div  class="stat-card">
-          <div  class="stat-title">Paiements  cette  semaine  (€)</div>
-          <div  class="stat-value">{{  paymentsWeek  }}</div>
+          <div  class="stat-title">Paiements  ce  mois  (€)</div>
+          <div  class="stat-value">{{  paymentsMonth  }}</div>
        </div>
 
-       <div  class="stat-card">
-           <div  class="stat-title">Paiements ce  mois  (€)</div>
-           <div class="stat-value">{{  paymentsMonth  }}</div>
-       </div>
-
-   </div>
+    </div>
 
    <!--  CHARTS  -->
    <div  class="charts-grid">
 
-       <!--  BAR  CHART -->
-       <p-card  header="Séances  par  mois">
-          <p-chart  type="bar"  [data]="barSeancesData"  [options]="barSeancesOptions"></p-chart>
-       </p-card>
+       <!-- BAR  CHART  (Séances  par  mois) -->
+       <!--  BAR  CHART  -->
+<p-card  header="Séances  par  mois">
+   <div  class="chart-wrapper">
+      <p-chart  type="bar"  [data]="barSeancesData"  [options]="barSeancesOptions"></p-chart>
+   </div>
+</p-card>
 
-       <!-- DONUT  CHART  -->
-       <p-card  header="Répartition  des paiements">
-           <p-chart  type="doughnut"  [data]="donutPaymentsData" [options]="donutPaymentsOptions"></p-chart>
-       </p-card>
+<!--  LINE  CHART -->
+<p-card  header="Évolution  des paiements  &  charges">
+   <div  class="chart-wrapper">
+       <p-chart type="line"  [data]="lineStylesData"  [options]="lineStylesOptions"></p-chart>
+   </div>
+</p-card>
+
 
     </div>
 

@@ -37,6 +37,7 @@
     color:  #1a237e;
  }
 
+
  /*  CHARTS  GRID  */
 .charts-grid  {
      display: grid;
@@ -44,6 +45,20 @@
      gap:  25px;
 }
  
+ .chart-wrapper  {
+    position:  relative;
+    height:  550px;
+ }
+
+ /*  forcer  le canvas  à  remplir  le wrapper  */
+ .chart-wrapper  p-chart,
+.chart-wrapper  canvas  {
+    height:  100%  !important;
+    max-height:  100% !important;
+ }
+
+
+
  p-card  {
     width:  100%;
  }
