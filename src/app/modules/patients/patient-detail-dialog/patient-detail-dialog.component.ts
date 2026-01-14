@@ -4,6 +4,7 @@ import  {  Patient  }  from '../patient.service';
 import  {  SeanceService  } from  '../../seances/seance.service';
 import  {  PaymentService }  from  '../../payments/payment.service';
 import  { CommonModule  }  from  '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 import  {  TableModule  }  from 'primeng/table';
 import  {  FormsModule  } from  '@angular/forms';
@@ -17,7 +18,8 @@ import  {  FormsModule  } from  '@angular/forms';
        CommonModule,
        FormsModule,
        MatDialogModule,
-       TableModule
+       TableModule,
+       MatIconModule
    ]
 })
 export  class PatientDetailDialogComponent  {

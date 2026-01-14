@@ -1,13 +1,58 @@
-<div class="dashboard">
-    <mat-grid-list cols="4" rowHeight="100px">
-        <mat-grid-tile *ngFor="let stat of stats">
-            <mat-card>
-                <mat-card-content>
-                    <mat-icon>{{ stat.icon }}</mat-icon>
-                    <h3>{{ stat.title }}</h3>
-                    <p>{{ stat.value }}</p>
-                </mat-card-content>
-            </mat-card>
-        </mat-grid-tile>
-    </mat-grid-list>
+<div  class="dashboard">
+
+   <!--  TOP  STATS  -->
+   <div  class="stats-grid">
+
+       <div  class="stat-card">
+          <div  class="stat-title">Nombre  de  patients</div>
+          <div  class="stat-value">{{  totalPatients  }}</div>
+       </div>
+
+       <div  class="stat-card">
+           <div  class="stat-title">Séances aujourd’hui</div>
+           <div  class="stat-value">{{  seancesToday }}</div>
+       </div>
+
+       <div  class="stat-card">
+           <div class="stat-title">Séances  cette  semaine</div>
+           <div class="stat-value">{{  seancesWeek  }}</div>
+       </div>
+
+       <div  class="stat-card">
+          <div  class="stat-title">Séances  ce  mois</div>
+          <div  class="stat-value">{{  seancesMonth  }}</div>
+       </div>
+
+       <div  class="stat-card">
+           <div  class="stat-title">Paiements aujourd’hui  (€)</div>
+           <div  class="stat-value">{{ paymentsToday  }}</div>
+       </div>
+
+       <div  class="stat-card">
+          <div  class="stat-title">Paiements  cette  semaine  (€)</div>
+          <div  class="stat-value">{{  paymentsWeek  }}</div>
+       </div>
+
+       <div  class="stat-card">
+           <div  class="stat-title">Paiements ce  mois  (€)</div>
+           <div class="stat-value">{{  paymentsMonth  }}</div>
+       </div>
+
+   </div>
+
+   <!--  CHARTS  -->
+   <div  class="charts-grid">
+
+       <!--  BAR  CHART -->
+       <p-card  header="Séances  par  mois">
+          <p-chart  type="bar"  [data]="barSeancesData"  [options]="barSeancesOptions"></p-chart>
+       </p-card>
+
+       <!-- DONUT  CHART  -->
+       <p-card  header="Répartition  des paiements">
+           <p-chart  type="doughnut"  [data]="donutPaymentsData" [options]="donutPaymentsOptions"></p-chart>
+       </p-card>
+
+    </div>
+
 </div>
