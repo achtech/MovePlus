@@ -1,37 +1,53 @@
-import  {  Component  } from  '@angular/core';
-import  { FormBuilder,  FormGroup,  Validators  } from  '@angular/forms';
-import  { Router  }  from  '@angular/router';
-import  {  AuthService  } from  '../../../core/services/auth.service';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService, RegisterRequest } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
-   selector:  'app-register',
-   templateUrl:  './register.component.html',
-   styleUrls: ['./register.component.scss'],
-   standalone: true,
-   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule]
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule]
 })
-export  class  RegisterComponent {
-    form: FormGroup;
+export class RegisterComponent {
+  form: FormGroup;
+  errorMessage = '';
+  loading = false;
+  showPassword = false;
 
-   constructor(private  fb:  FormBuilder,  private authService:  AuthService,  private  router: Router)  {
-       this.form  = this.fb.group({
-           username: ['',  Validators.required],
-          email:  ['',  [Validators.required,  Validators.email]],
-          password:  ['', Validators.required]
-       });
-   }
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.form = this.fb.group({
+      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+  }
 
-   register():  void  {
-       if (this.form.valid)  {
-          this.authService.register(this.form.value).subscribe(()  =>  {
-              this.router.navigate(['/login']);
-          });
-       }
-   }
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  register(): void {
+    if (this.form.valid) {
+      this.loading = true;
+      this.errorMessage = '';
+      const userData: RegisterRequest = this.form.value;
+      this.authService.register(userData).subscribe({
+        next: () => {
+          this.loading = false;
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage = err.error?.message || "Erreur lors de l'inscription";
+        }
+      });
+    }
+  }
 }

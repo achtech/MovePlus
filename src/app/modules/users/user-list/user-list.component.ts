@@ -10,17 +10,17 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { TooltipModule } from 'primeng/tooltip';
+import { CardComponent } from '../../../theme/shared/components/card/card.component';
 
 @Component({
     selector:  'app-user-list',
     templateUrl:  './user-list.component.html',
     styleUrls: ['./user-list.component.scss'],
     standalone: true,
-    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, MatButtonModule, MatIconModule, ConfirmDialogModule],
+    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, ConfirmDialogModule, TooltipModule, CardComponent],
     providers: [ConfirmationService]
 })
 export class  UserListComponent  implements  OnInit {

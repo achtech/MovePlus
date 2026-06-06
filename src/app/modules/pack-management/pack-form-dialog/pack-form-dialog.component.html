@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>{{ data ? 'Modifier Promotion' : 'Ajouter Promotion' }}</h2>
+<mat-dialog-content>
+    <form [formGroup]="form">
+        <mat-form-field appearance="fill">
+            <mat-label>Label/Nom</mat-label>
+            <input matInput formControlName="nom" placeholder="Ex: Pack Silver">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Nombre de Séances</mat-label>
+            <input matInput type="number" formControlName="nombreDeSeance" min="1">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Coût (Maison)</mat-label>
+            <input matInput type="number" formControlName="prixMaison" step="0.01" min="0">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Coût (Cabinet)</mat-label>
+            <input matInput type="number" formControlName="prixCabinet" step="0.01" min="0">
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">Annuler</button>
+    <button mat-raised-button color="primary" (click)="save()">Enregistrer</button>
+</mat-dialog-actions>

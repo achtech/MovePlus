@@ -1,64 +1,145 @@
-<div  class="dashboard">
-
-   <!--  TOP  STATS -->
-    <div  class="stats-grid">
-
-       <div  class="stat-card">
-           <div  class="stat-title">Nombre de  patients</div>
-           <div  class="stat-value">{{ totalPatients  }}</div>
-       </div>
-
-       <div  class="stat-card">
-          <div  class="stat-title">Séances  aujourd’hui</div>
-           <div class="stat-value">{{  seancesToday  }}</div>
-       </div>
-
-       <div  class="stat-card">
-          <div  class="stat-title">Séances  cette  semaine</div>
-          <div  class="stat-value">{{  seancesWeek  }}</div>
-       </div>
-
-       <div  class="stat-card">
-           <div  class="stat-title">Séances ce  mois</div>
-           <div  class="stat-value">{{ seancesMonth  }}</div>
-       </div>
-
-       <div  class="stat-card">
-          <div  class="stat-title">Paiements  aujourd’hui  (€)</div>
-          <div  class="stat-value">{{  paymentsToday  }}</div>
-       </div>
-
-       <div class="stat-card">
-           <div  class="stat-title">Paiements  cette semaine  (€)</div>
-           <div  class="stat-value">{{ paymentsWeek  }}</div>
-       </div>
-
-       <div  class="stat-card">
-          <div  class="stat-title">Paiements  ce  mois  (€)</div>
-          <div  class="stat-value">{{  paymentsMonth  }}</div>
-       </div>
-
+<div class="dashboard-page">
+  <!-- Stats -->
+  <div class="row">
+    <div class="col-xl-3 col-md-6">
+      <app-card cardTitle="Patients" [options]="false" cardClass="stat-widget stat-widget-primary">
+        <h3 class="d-flex align-items-center mb-0">
+          <i class="feather icon-users stat-icon"></i>
+          {{ totalPatients }}
+        </h3>
+      </app-card>
     </div>
-
-   <!--  CHARTS  -->
-   <div  class="charts-grid">
-
-       <!-- BAR  CHART  (Séances  par  mois) -->
-       <!--  BAR  CHART  -->
-<p-card  header="Séances  par  mois">
-   <div  class="chart-wrapper">
-      <p-chart  type="bar"  [data]="barSeancesData"  [options]="barSeancesOptions"></p-chart>
-   </div>
-</p-card>
-
-<!--  LINE  CHART -->
-<p-card  header="Évolution  des paiements  &  charges">
-   <div  class="chart-wrapper">
-       <p-chart type="line"  [data]="lineStylesData"  [options]="lineStylesOptions"></p-chart>
-   </div>
-</p-card>
-
-
+    <div class="col-xl-3 col-md-6">
+      <app-card cardTitle="Séances aujourd'hui" [options]="false" cardClass="stat-widget stat-widget-info">
+        <h3 class="d-flex align-items-center mb-0">
+          <i class="feather icon-calendar stat-icon"></i>
+          {{ seancesToday }}
+        </h3>
+      </app-card>
     </div>
+    <div class="col-xl-3 col-md-6">
+      <app-card cardTitle="Séances cette semaine" [options]="false" cardClass="stat-widget stat-widget-success">
+        <h3 class="d-flex align-items-center mb-0">
+          <i class="feather icon-clock stat-icon"></i>
+          {{ seancesWeek }}
+        </h3>
+      </app-card>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <app-card cardTitle="Séances ce mois" [options]="false" cardClass="stat-widget stat-widget-warning">
+        <h3 class="d-flex align-items-center mb-0">
+          <i class="feather icon-activity stat-icon"></i>
+          {{ seancesMonth }}
+        </h3>
+      </app-card>
+    </div>
+  </div>
 
+  <div class="row">
+    <div class="col-xl-4 col-md-6">
+      <app-card cardTitle="Paiements aujourd'hui (€)" [options]="false" cardClass="stat-widget stat-widget-primary">
+        <h3 class="d-flex align-items-center mb-0">
+          <i class="feather icon-credit-card stat-icon"></i>
+          {{ paymentsToday | number:'1.0-2' }}
+        </h3>
+      </app-card>
+    </div>
+    <div class="col-xl-4 col-md-6">
+      <app-card cardTitle="Paiements cette semaine (€)" [options]="false" cardClass="stat-widget stat-widget-info">
+        <h3 class="d-flex align-items-center mb-0">
+          <i class="feather icon-trending-up stat-icon"></i>
+          {{ paymentsWeek | number:'1.0-2' }}
+        </h3>
+      </app-card>
+    </div>
+    <div class="col-xl-4 col-md-6">
+      <app-card cardTitle="Paiements ce mois (€)" [options]="false" cardClass="stat-widget stat-widget-success">
+        <h3 class="d-flex align-items-center mb-0">
+          <i class="feather icon-dollar-sign stat-icon"></i>
+          {{ paymentsMonth | number:'1.0-2' }}
+        </h3>
+      </app-card>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="row">
+    <div class="col-xl-6 col-md-12">
+      <app-card cardTitle="Séances par mois" [options]="false">
+        <div class="chart-wrapper">
+          <p-chart type="bar" [data]="barSeancesData" [options]="barSeancesOptions"></p-chart>
+        </div>
+      </app-card>
+    </div>
+    <div class="col-xl-6 col-md-12">
+      <app-card cardTitle="Évolution des paiements & charges" [options]="false">
+        <div class="chart-controls">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="showValidated" [(ngModel)]="showValidated" (change)="onToggleChange()" />
+            <label class="form-check-label" for="showValidated">Paiements validés</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="showPending" [(ngModel)]="showPending" (change)="onToggleChange()" />
+            <label class="form-check-label" for="showPending">Paiements en attente</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="showExpenses" [(ngModel)]="showExpenses" (change)="onToggleChange()" />
+            <label class="form-check-label" for="showExpenses">Charges du cabinet</label>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <p-chart type="line" [data]="lineStylesData" [options]="lineStylesOptions"></p-chart>
+        </div>
+      </app-card>
+    </div>
+  </div>
+
+  <!-- Séances lists -->
+  <div class="row">
+    <div class="col-xl-4 col-md-6">
+      <app-card cardTitle="Séances d'hier" [options]="false">
+        <ul class="seance-day-list">
+          @for (s of seancesYesterday; track s) {
+            <li>
+              <strong class="name">{{ s.patientName }}</strong>
+              <span class="meta">{{ s.time }} • {{ s.type }}</span>
+            </li>
+          }
+          @if (seancesYesterday.length === 0) {
+            <li class="empty-state">Aucune séance hier.</li>
+          }
+        </ul>
+      </app-card>
+    </div>
+    <div class="col-xl-4 col-md-6">
+      <app-card cardTitle="Séances aujourd'hui" [options]="false">
+        <ul class="seance-day-list">
+          @for (s of seancesTodayList; track s) {
+            <li>
+              <strong class="name">{{ s.patientName }}</strong>
+              <span class="meta">{{ s.time }} • {{ s.type }}</span>
+            </li>
+          }
+          @if (seancesTodayList.length === 0) {
+            <li class="empty-state">Aucune séance aujourd'hui.</li>
+          }
+        </ul>
+      </app-card>
+    </div>
+    <div class="col-xl-4 col-md-6">
+      <app-card cardTitle="Séances de demain" [options]="false">
+        <ul class="seance-day-list">
+          @for (s of seancesTomorrow; track s) {
+            <li>
+              <strong class="name">{{ s.patientName }}</strong>
+              <span class="meta">{{ s.time }} • {{ s.type }}</span>
+            </li>
+          }
+          @if (seancesTomorrow.length === 0) {
+            <li class="empty-state">Aucune séance demain.</li>
+          }
+        </ul>
+      </app-card>
+    </div>
+  </div>
 </div>

@@ -9,15 +9,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { CardComponent } from '../../../theme/shared/components/card/card.component';
 
 @Component({
    selector:  'app-payment-list',
    templateUrl:  './payment-list.component.html',
    styleUrls:  ['./payment-list.component.scss'],
    standalone: true,
-   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, MatButtonModule, MatIconModule]
+   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent]
 })
 export class  PaymentListComponent  implements  OnInit {
    payments:  Payment[] =  [];

@@ -1,0 +1,56 @@
+<div class="table-page">
+  <app-card cardTitle="Packs / Promotions" [options]="false">
+    <div class="table-toolbar">
+      <p-button label="Ajouter une Promotion" icon="pi pi-plus" (click)="addPack()" />
+    </div>
+
+    <p-table #dt1 [value]="packs" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['nom', 'nombreDeSeance', 'prixMaison', 'prixCabinet']" showGridlines>
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="min-width:15rem">
+            <div class="flex items-center justify-between">
+              Nom
+              <p-columnFilter type="text" field="nom" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:15rem">
+            <div class="flex items-center justify-between">
+              Nombre de Séances
+              <p-columnFilter type="text" field="nombreDeSeance" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:15rem">
+            <div class="flex items-center justify-between">
+              Prix Maison
+              <p-columnFilter type="text" field="prixMaison" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:15rem">
+            <div class="flex items-center justify-between">
+              Prix Cabinet
+              <p-columnFilter type="text" field="prixCabinet" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:10rem">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-pack>
+        <tr>
+          <td>{{ pack.nom }}</td>
+          <td>{{ pack.nombreDeSeance }}</td>
+          <td>{{ pack.prixMaison }}</td>
+          <td>{{ pack.prixCabinet }}</td>
+          <td>
+            <p-button icon="pi pi-pencil" [outlined]="true" (click)="editPack(pack)" />
+            <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deletePack(pack.id!)" />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5">Aucun pack trouvé.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </app-card>
+</div>

@@ -1,0 +1,203 @@
+/** Move+ feature page styles (Datta Able + PrimeNG) */
+
+.page-content {
+  padding: 0;
+}
+
+.table-page {
+  .table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid $theme-border;
+  }
+
+  .table-toolbar .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .table-toolbar .search-input {
+    min-width: 280px;
+    flex: 1;
+    max-width: 360px;
+    margin-left: auto;
+  }
+
+  .page-summary {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $menu-caption-color;
+  }
+
+  .agenda-panel {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Stat widgets (dashboard) */
+.stat-widget {
+  .card-block {
+    padding: 1.25rem;
+  }
+
+  h6 {
+    color: $secondary-color;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-weight: 300;
+    color: $menu-caption-color;
+  }
+
+  .stat-icon {
+    font-size: 1.75rem;
+    margin-right: 0.75rem;
+    color: $primary-color;
+  }
+}
+
+.stat-widget-primary .stat-icon {
+  color: $primary-color;
+}
+
+.stat-widget-success .stat-icon {
+  color: $success-color;
+}
+
+.stat-widget-warning .stat-icon {
+  color: $warning-color;
+}
+
+.stat-widget-info .stat-icon {
+  color: $info-color;
+}
+
+/* Dashboard charts & lists */
+.dashboard-page {
+  .chart-wrapper {
+    position: relative;
+    height: 360px;
+  }
+
+  .chart-wrapper p-chart,
+  .chart-wrapper canvas {
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+
+  .chart-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    flex-wrap: wrap;
+  }
+
+  .chart-controls .form-check {
+    margin: 0;
+  }
+
+  .seance-day-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .seance-day-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid $theme-border;
+  }
+
+  .seance-day-list li:last-child {
+    border-bottom: none;
+  }
+
+  .seance-day-list .name {
+    font-weight: 600;
+    color: $menu-caption-color;
+  }
+
+  .seance-day-list .meta {
+    color: $secondary-color;
+    font-size: 0.9rem;
+  }
+
+  .empty-state {
+    color: $secondary-color;
+    font-style: italic;
+    padding: 0.5rem 0;
+  }
+}
+
+/* PrimeNG overrides to match Datta Able */
+.p-datatable {
+  .p-datatable-thead > tr > th {
+    background: $light-color;
+    color: $menu-caption-color;
+    font-weight: 600;
+    border-color: $theme-border;
+  }
+
+  .p-datatable-tbody > tr > td {
+    border-color: $theme-border;
+  }
+
+  .p-datatable-tbody > tr:hover {
+    background: rgba($primary-color, 0.04);
+  }
+}
+
+.p-paginator {
+  border-color: $theme-border;
+}
+
+.p-button.p-button-outlined {
+  border-color: $primary-color;
+  color: $primary-color;
+}
+
+.status-completed {
+  color: $success-color;
+  font-weight: 600;
+}
+
+.status-scheduled {
+  color: $primary-color;
+  font-weight: 600;
+}
+
+.status-cancelled {
+  color: $danger-color;
+  font-weight: 600;
+}
+
+.low-stock {
+  color: $danger-color;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .table-page .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .table-page .table-toolbar .search-input {
+    margin-left: 0;
+    max-width: none;
+  }
+}

@@ -1,33 +1,23 @@
-
-.login-card {
-   max-width: 400px;
-   margin: 60px auto;
-   padding: 32px 28px 28px 28px;
-   border-radius: 16px;
-   box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+.auth-logo {
+  width: 180px;
+  max-width: 100%;
+  height: auto;
 }
 
-.login-title {
-   text-align: center;
-   margin-bottom: 2rem;
-   font-weight: 600;
-   color: #333;
+.password-field {
+  position: relative;
 }
 
-mat-form-field {
-   width: 100%;
-   margin-bottom: 1.5rem;
+#togglePassword {
+  cursor: pointer;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
 }
 
-button[type="submit"] {
-   width: 100%;
-   margin-top: 1rem;
-   font-size: 1rem;
-}
-
-.error {
-   color: #d32f2f;
-   margin-top: 1rem;
-   text-align: center;
-   font-size: 0.95rem;
+.invalid-feedback.d-block {
+  text-align: left;
+  width: 100%;
 }

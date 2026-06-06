@@ -1,5 +1,17 @@
-mat-card  {
-   max-width:  400px;
-   margin:  50px  auto;
-   padding:  20px;
+.password-field {
+  position: relative;
+}
+
+#togglePassword {
+  cursor: pointer;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+}
+
+.invalid-feedback.d-block {
+  text-align: left;
+  width: 100%;
 }

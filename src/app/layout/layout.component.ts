@@ -87,6 +87,11 @@ export  class LayoutComponent  implements  OnInit,  AfterViewInit, OnDestroy  {
               const {  DashboardComponent  }  = await  import('../modules/dashboard/dashboard.component');
               this.currentComponent  = DashboardComponent;
               break;
+          case  'packs':
+              setTimeout(() => this.pageTitle = 'Pack');
+              const  { PackManagement  }  =  await import('../modules/pack-management/pack-management');
+              this.currentComponent  =  PackManagement;
+             break;
           case  'patients':
               setTimeout(() => this.pageTitle = 'Patients');
               const  { PatientListComponent  }  =  await import('../modules/patients/patient-list/patient-list.component');

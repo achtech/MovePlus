@@ -2,6 +2,7 @@
 import  {  FormBuilder,  FormGroup, Validators  }  from  '@angular/forms';
 import  {  MatDialogRef,  MAT_DIALOG_DATA, MatDialogModule }  from  '@angular/material/dialog';
  import {  ExpenseService,  Expense  } from  '../expense.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -25,25 +26,40 @@ import { CommonModule } from '@angular/common';
     constructor(
         private  fb:  FormBuilder,
        private  expenseService:  ExpenseService,
+        private authService: AuthService,
         private dialogRef:  MatDialogRef<ExpenseFormComponent>,
         @Inject(MAT_DIALOG_DATA)  public data:  Expense
     )  {
         this.form  = this.fb.group({
             description: [data?.description  ||  '',  Validators.required],
            amount:  [data?.amount ||  '',  Validators.required],
-           category:  [data?.category  || '',  Validators.required],
-           date:  [data?.date  ||  '', Validators.required],
-            paidBy: [data?.paidBy  ||  '',  Validators.required]
+           category:  [data?.category  || '',  Validators.required]
        });
      }
 
      save(): void  {
         if  (this.form.valid) {
-            const expense  =  this.form.value;
+            const expense  =  {
+               ...this.form.value,
+               expenseDate: new Date().toISOString().split('T')[0],
+               paidBy: this.authService.getCurrentUserId() || 1
+            };
            if  (this.data?.id)  {
-              this.expenseService.updateExpense(this.data.id,  expense).subscribe(()  =>  this.dialogRef.close(true));
+              this.expenseService.updateExpense(this.data.id, expense).subscribe({
+                  next: () => this.dialogRef.close(true),
+                  error: (err) => {
+                      console.error('Error updating expense:', err);
+                      alert('Erreur lors de la mise à jour de la charge');
+                  }
+              });
            }  else {
-               this.expenseService.addExpense(expense).subscribe(()  =>  this.dialogRef.close(true));
+               this.expenseService.addExpense(expense).subscribe({
+                   next: () => this.dialogRef.close(true),
+                   error: (err) => {
+                       console.error('Error adding expense:', err);
+                       alert('Erreur lors de l\'ajout de la charge');
+                   }
+               });
            }
         }
     }

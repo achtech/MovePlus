@@ -1,6 +1,21 @@
 /*  Import  Angular  Material theming  utilities  */
 @use '@angular/material'  as  mat;
 
+/* You can add global styles to this file, and also import other style files */
+
+@import 'scss/variables';
+@import 'scss/fonts/fontawesome/scss/fontawesome';
+@import 'scss/fonts/feather/iconfont';
+@import 'scss/general';
+@import 'scss/generic';
+@import 'scss/mixins/function';
+@import 'scss/menu/pc-footer.scss';
+@import 'scss/menu/menu-lite';
+@import 'scss/theme-elements/theme-elements';
+@import 'scss/plugins/plugins';
+@import 'scss/custom';
+@import 'scss/move-plus-pages';
+
 /* Apply  the  theme  to all  Material  components  */
 html {
   @include mat.theme((
@@ -19,88 +34,8 @@ html {
 html, body  {
    height:  100%;
    margin:  0;
-   font-family:  Roboto,  "Helvetica  Neue", sans-serif;
-    background-color: #f9f9f9;
-}
-
-/* Layout  styles  */
-.sidenav-container {
-    height: 100vh;
-}
-
-.sidenav {
-    width: 220px;
-    background: black;
-}
-
-.sidenav mat-toolbar {
-    background: black !important;
-    color: white !important;
-}
-
-mat-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    color: white;
-}
-
-.content {
-    padding: 20px;
-}
-
-/* Utility  classes  */
-.spacer {
-    flex: 1  1  auto;
-}
-
-/* PrimeNG Table Panels */
-.table-container {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-}
-
-.table-controls-panel {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.table-controls-panel .button-group {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.table-controls-panel .clear-button {
-    margin-right: auto;
-}
-
-.table-controls-panel .search-input {
-    margin-left: auto;
-    min-width: 300px;   
-}
-
-.table-list-panel {
-    background: white;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-
-.table-list-panel p-table {
-    border: none;
-}
-
-.table-list-panel .p-datatable-wrapper {
-    border-radius: 8px;
+   font-family:  'Open Sans', sans-serif;
+   background-color: #f4f7fa;
 }
 
 .middle-dialog  .mat-dialog-container  {
@@ -109,29 +44,4 @@ mat-toolbar {
    overflow:  hidden;
    display:  flex;
    flex-direction:  column;
-}
-
-/*  Responsive  tweaks */
-@media  (max-width:  768px) {
-    .sidenav {
-       width:  200px;
-   }
-   .content  {
-       padding:  10px;
-   }
-
-   .table-controls-panel {
-       flex-direction: column;
-       gap: 12px;
-       align-items: stretch;
-   }
-
-   .table-controls-panel .search-input {
-       margin-left: 0;
-       min-width: auto;
-   }
-
-   .table-container {
-       gap: 24px;
-   }
 }

@@ -1,46 +1,38 @@
 import  {  Injectable  } from  '@angular/core';
-import {  Observable, of  } from  'rxjs';
+import { HttpClient } from  '@angular/common/http';
+import {  Observable  } from  'rxjs';
 
 export interface  Expense  {
    id?:  number;
    description:  string;
    amount:  number;
    category:  string;
-   date:  string;
+   expenseDate:  string;
    paidBy:  number;
+   paidByName?: string;
+   createdAt?: string;
+   updatedAt?: string;
 }
 
 @Injectable({  providedIn:  'root' })
 export  class  ExpenseService {
-    private expenses: Expense[] = [
-        { id: 1, description: 'Office Rent', amount: 1000, category: 'RENT', date: '2026-01-01', paidBy: 1 },
-        { id: 2, description: 'Massage Supplies', amount: 200, category: 'SUPPLIES', date: '2026-01-05', paidBy: 2 },
-        { id: 3, description: 'Assistant Salary', amount: 1500, category: 'SALARY', date: '2026-01-10', paidBy: 1 }
-    ];
+   private apiUrl = 'http://localhost:8080/api/expenses';
 
-   constructor()  {}
+   constructor(private http: HttpClient)  {}
 
    getExpenses():  Observable<Expense[]>  {
-      return  of(this.expenses);
+      return this.http.get<Expense[]>(this.apiUrl);
    }
 
    addExpense(expense:  Expense):  Observable<Expense>  {
-      expense.id = this.expenses.length + 1;
-      this.expenses.push(expense);
-      return  of(expense);
+      return this.http.post<Expense>(this.apiUrl, expense);
    }
 
    updateExpense(id:  number,  expense: Expense):  Observable<Expense>  {
-       const index = this.expenses.findIndex(e => e.id === id);
-       if (index !== -1) {
-           this.expenses[index] = { ...expense, id };
-           return of(this.expenses[index]);
-       }
-       return of(null as any);
+      return this.http.put<Expense>(`${this.apiUrl}/${id}`, expense);
    }
 
    deleteExpense(id:  number):  Observable<void>  {
-      this.expenses = this.expenses.filter(e => e.id !== id);
-      return  of(void 0);
+      return this.http.delete<void>(`${this.apiUrl}/${id}`);
    }
 }

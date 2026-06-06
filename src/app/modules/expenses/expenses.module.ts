@@ -1,5 +1,6 @@
 import {  NgModule  }  from '@angular/core';
 import  {  CommonModule }  from  '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import {  ExpensesRoutingModule  }  from './expenses-routing.module';
 import  {  ExpenseListComponent }  from  './expense-list/expense-list.component';
 import {  ExpenseFormComponent  }  from './expense-form/expense-form.component';
@@ -19,6 +20,7 @@ import  {  MatNativeDateModule }  from  '@angular/material/core';
    declarations:  [],
     imports: [
        CommonModule,
+       HttpClientModule,
        ExpensesRoutingModule,
        FormsModule,
       ReactiveFormsModule,

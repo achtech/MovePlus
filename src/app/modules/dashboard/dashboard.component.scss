@@ -1,100 +1,10 @@
- .dashboard  {
-    padding:  20px;
-     transition: background  0.3s  ease,  color  0.3s ease;
- }
- 
- /*  GRID FOR  TOP  CARDS  */
- .stats-grid {
-     display:  grid;
-    grid-template-columns:  repeat(auto-fit,  minmax(220px, 1fr));
-     gap:  20px;
-    margin-bottom:  30px;
- }
+/* Dashboard-specific overrides — main styles in _move-plus-pages.scss */
 
- /*  CARD  STYLE  */
-.stat-card  {
-     background: white;
-     padding:  20px;
-    border-radius:  12px;
-    box-shadow:  0  2px  6px rgba(0,0,0,0.1);
-     text-align:  center;
-    transition:  transform  0.2s ease,  background  0.3s  ease;
- }
-
- .stat-card:hover  {
-    transform:  translateY(-4px);
- }
- 
- .stat-title {
-     font-size:  0.95rem;
-    color:  #555;
-    margin-bottom:  8px;
- }
- 
-.stat-value  {
-     font-size: 2rem;
-     font-weight:  700;
-    color:  #1a237e;
- }
-
-
- /*  CHARTS  GRID  */
-.charts-grid  {
-     display: grid;
-     grid-template-columns:  1fr 1fr;
-     gap:  25px;
+.dashboard-page .row {
+  margin-bottom: 0.5rem;
 }
- 
- .chart-wrapper  {
-    position:  relative;
-    height:  550px;
- }
 
- /*  forcer  le canvas  à  remplir  le wrapper  */
- .chart-wrapper  p-chart,
-.chart-wrapper  canvas  {
-    height:  100%  !important;
-    max-height:  100% !important;
- }
-
-
-
- p-card  {
-    width:  100%;
- }
- 
-/*  DARK  MODE  */
- :host-context(.dark-mode) .dashboard  {
-     background: #121212;
-     color:  #e0e0e0;
+.dashboard-page app-card {
+  display: block;
+  margin-bottom: 1.5rem;
 }
- 
- :host-context(.dark-mode)  .stat-card  {
-    background:  #1e1e1e;
-    color:  #fff;
-    box-shadow:  0  2px  6px  rgba(255,255,255,0.1);
-}
- 
- :host-context(.dark-mode)  .stat-title  {
-    color:  #bbb;
- }
-
- :host-context(.dark-mode)  .stat-value  {
-    color:  #90caf9;
- }
- 
-:host-context(.dark-mode)  p-card  {
-    background:  #1e1e1e  !important;
-    color:  #fff  !important;
- }
- 
-:host-context(.dark-mode)  canvas  {
-    filter:  brightness(0.9);
- }
- 
- /* RESPONSIVE  */
- @media  (max-width:  900px) {
-     .charts-grid  {
-        grid-template-columns: 1fr;
-     }
- }

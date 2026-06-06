@@ -1,19 +1,70 @@
-<mat-card class="login-card">
-    <h2 class="login-title">Connexion</h2>
-    <form [formGroup]="form" (ngSubmit)="login()">
-        <mat-form-field appearance="fill">
-            <mat-label>Nom d'utilisateur</mat-label>
-            <input matInput formControlName="username" autocomplete="username" required>
-            <mat-error *ngIf="form.get('username')?.invalid && form.get('username')?.touched">Nom d'utilisateur requis</mat-error>
-        </mat-form-field>
+<div class="auth-wrapper">
+  <div class="auth-content">
+    <div class="auth-bg">
+      <span class="r"></span>
+      <span class="r s"></span>
+      <span class="r s"></span>
+      <span class="r"></span>
+    </div>
+    <div class="card">
+      <div class="card-body text-center">
+        <form [formGroup]="form" (ngSubmit)="login()">
+          <div class="mb-4">
+            <img src="move-plus-logo.svg" alt="Move +" class="auth-logo" />
+          </div>
+          <h3 class="mb-4">Connexion</h3>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Mot de passe</mat-label>
-            <input matInput type="password" formControlName="password" autocomplete="current-password" required>
-            <mat-error *ngIf="form.get('password')?.invalid && form.get('password')?.touched">Mot de passe requis</mat-error>
-        </mat-form-field>
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="username"
+              autocomplete="username"
+              placeholder="Nom d'utilisateur"
+              [class.is-invalid]="form.get('username')?.invalid && form.get('username')?.touched"
+            />
+            @if (form.get('username')?.invalid && form.get('username')?.touched) {
+              <div class="invalid-feedback d-block">Nom d'utilisateur requis</div>
+            }
+          </div>
 
-        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Se connecter</button>
-        <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
-    </form>
-</mat-card>
+          <div class="input-group mb-4 password-field">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control"
+              formControlName="password"
+              autocomplete="current-password"
+              placeholder="Mot de passe"
+              [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+            />
+            <i
+              [ngClass]="showPassword ? 'feather icon-eye' : 'feather icon-eye-off'"
+              id="togglePassword"
+              (click)="togglePasswordVisibility()"
+            ></i>
+            @if (form.get('password')?.invalid && form.get('password')?.touched) {
+              <div class="invalid-feedback d-block">Mot de passe requis</div>
+            }
+          </div>
+
+          @if (errorMessage) {
+            <div class="alert alert-danger mb-3" role="alert">{{ errorMessage }}</div>
+          }
+
+          <button type="submit" class="btn btn-primary mb-4" [disabled]="form.invalid || loading">
+            @if (loading) {
+              Connexion...
+            } @else {
+              Se connecter
+            }
+          </button>
+        </form>
+
+        <p class="mb-0 text-muted">
+          Pas de compte ?
+          <a [routerLink]="['/login/register']">S'inscrire</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

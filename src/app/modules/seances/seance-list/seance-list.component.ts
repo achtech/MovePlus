@@ -12,8 +12,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { CardComponent } from '../../../theme/shared/components/card/card.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -26,7 +25,7 @@ import { Table } from 'primeng/table';
    templateUrl:  './seance-list.component.html',
    styleUrls:  ['./seance-list.component.scss'],
    standalone: true,
-   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, TooltipModule, MatButtonModule, MatIconModule, FullCalendarModule]
+   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, TooltipModule, CardComponent, FullCalendarModule]
 })
 export class  SeanceListComponent  implements  OnInit {
     seances: Seance[]  =  [];
