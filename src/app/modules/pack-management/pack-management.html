@@ -1,7 +1,7 @@
 <div class="table-page">
-  <app-card cardTitle="Packs / Promotions" [options]="false">
+  <app-card cardTitle="pages.packs.title" [options]="false">
     <div class="table-toolbar">
-      <p-button label="Ajouter une Promotion" icon="pi pi-plus" (click)="addPack()" />
+      <p-button [label]="'pages.packs.add' | translate" icon="pi pi-plus" (click)="addPack()" />
     </div>
 
     <p-table #dt1 [value]="packs" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['nom', 'nombreDeSeance', 'prixMaison', 'prixCabinet']" showGridlines>
@@ -9,29 +9,29 @@
         <tr>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
-              Nom
+              {{ 'pages.packs.name' | translate }}
               <p-columnFilter type="text" field="nom" display="menu" />
             </div>
           </th>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
-              Nombre de Séances
+              {{ 'pages.packs.sessionCount' | translate }}
               <p-columnFilter type="text" field="nombreDeSeance" display="menu" />
             </div>
           </th>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
-              Prix Maison
+              {{ 'pages.packs.homePrice' | translate }}
               <p-columnFilter type="text" field="prixMaison" display="menu" />
             </div>
           </th>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
-              Prix Cabinet
+              {{ 'pages.packs.officePrice' | translate }}
               <p-columnFilter type="text" field="prixCabinet" display="menu" />
             </div>
           </th>
-          <th style="min-width:10rem">Actions</th>
+          <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-pack>
@@ -48,7 +48,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5">Aucun pack trouvé.</td>
+          <td colspan="5">{{ 'pages.packs.empty' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

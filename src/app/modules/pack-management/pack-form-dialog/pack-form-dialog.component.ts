@@ -3,9 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { PackService, Pack } from '../pack.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -13,7 +10,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './pack-form-dialog.component.html',
   styleUrls: ['./pack-form-dialog.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule]
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
 })
 export class PackFormDialogComponent {
   form: FormGroup;

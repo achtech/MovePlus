@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SaleService, Sale } from '../sale.service';
 import { SaleFormComponent } from '../sale-form/sale-form.component';
@@ -12,16 +12,19 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
+import { TranslateModule } from '@ngx-translate/core';
 import { Table } from 'primeng/table';
+import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
 
 @Component({
    selector:  'app-sale-list',
    templateUrl:  './sale-list.component.html',
    styleUrls:  ['./sale-list.component.scss'],
    standalone: true,
-   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent]
+   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule]
 })
-export  class  SaleListComponent implements  OnInit  {
+export  class  SaleListComponent {
    sales:  Sale[]  =  [];
    stock:  Stock[]  =  [];
    loading: boolean = true;
@@ -30,11 +33,11 @@ export  class  SaleListComponent implements  OnInit  {
    @ViewChild('dt1') dt1: Table | undefined;
    @ViewChild('dt2') dt2: Table | undefined;
 
-    constructor(private saleService:  SaleService, private stockService: StockService, private  dialog: MatDialog)  {}
-
-   ngOnInit():  void  {
-      this.loadSales();
-      this.loadStock();
+    constructor(private saleService:  SaleService, private stockService: StockService, private  dialog: MatDialog)  {
+      runAfterBrowserHydration(() => {
+        this.loadSales();
+        this.loadStock();
+      });
     }
 
     loadSales(): void  {
@@ -45,14 +48,14 @@ export  class  SaleListComponent implements  OnInit  {
    }
 
    addSale():  void  {
-      const  dialogRef  =  this.dialog.open(SaleFormComponent, {  width:  '400px'  });
+      const  dialogRef  =  this.dialog.open(SaleFormComponent, FORM_DIALOG_OPTIONS);
       dialogRef.afterClosed().subscribe(result  =>  {
           if  (result)  this.loadSales();
       });
     }
 
     editSale(sale: Sale):  void  {
-       const dialogRef  =  this.dialog.open(SaleFormComponent,  { width:  '400px',  data:  sale });
+       const dialogRef  =  this.dialog.open(SaleFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  sale });
        dialogRef.afterClosed().subscribe(result  =>  {
           if  (result) this.loadSales();
        });
@@ -69,14 +72,14 @@ export  class  SaleListComponent implements  OnInit  {
    }
 
    addStock():  void  {
-      const  dialogRef  =  this.dialog.open(StockFormComponent, {  width:  '400px'  });
+      const  dialogRef  =  this.dialog.open(StockFormComponent, FORM_DIALOG_OPTIONS);
       dialogRef.afterClosed().subscribe(result  =>  {
           if  (result)  this.loadStock();
       });
    }
 
    editStock(stockItem: Stock):  void  {
-      const dialogRef  =  this.dialog.open(StockFormComponent,  { width:  '400px',  data:  stockItem });
+      const dialogRef  =  this.dialog.open(StockFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  stockItem });
       dialogRef.afterClosed().subscribe(result  =>  {
          if  (result) this.loadStock();
       });

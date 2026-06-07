@@ -1,41 +1,48 @@
 // angular import
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 // project import
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { NavigationComponent } from './navigation/navigation.component';
-import { ConfigurationComponent } from 'src/app/theme/layout/admin/configuration/configuration.component';
-import { BreadcrumbsComponent } from '../../shared/components/breadcrumbs/breadcrumbs.component';
 import { Footer } from './footer/footer';
+import { PlatformService } from 'src/app/core/services/platform.service';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { runAfterBrowserHydration } from 'src/app/core/utils/browser-init';
 
 @Component({
   selector: 'app-admin',
-  imports: [NavBarComponent, NavigationComponent, RouterModule, CommonModule, ConfigurationComponent, BreadcrumbsComponent, Footer],
+  imports: [NavBarComponent, NavigationComponent, RouterModule, CommonModule, Footer],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent {
-  // public props
+  private platform = inject(PlatformService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   navCollapsed = false;
   navCollapsedMob: boolean;
   windowWidth: number;
 
-  // constructor
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
-    this.windowWidth = isPlatformBrowser(this.platformId) ? window.innerWidth : 1024;
+  constructor() {
+    this.windowWidth = this.platform.getWindowWidth();
     this.navCollapsedMob = false;
+
+    runAfterBrowserHydration(() => {
+      if (!this.authService.isAuthenticated()) {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
-  // public method
   navMobClick() {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!this.platform.isBrowser) {
       return;
     }
 
-    const navbar = document.querySelector('app-navigation.pcoded-navbar');
+    const navbar = this.platform.querySelector('app-navigation.pcoded-navbar');
     if (!navbar) {
       return;
     }
@@ -50,7 +57,6 @@ export class AdminComponent {
     }
   }
 
-  // this is for eslint rule
   handleKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       this.closeMenu();
@@ -58,13 +64,6 @@ export class AdminComponent {
   }
 
   closeMenu() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    const navbar = document.querySelector('app-navigation.pcoded-navbar');
-    if (navbar?.classList.contains('mob-open')) {
-      navbar.classList.remove('mob-open');
-    }
+    this.platform.closeMobileNav();
   }
 }

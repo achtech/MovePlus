@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import  { HttpClient  }  from  '@angular/common/http';
 import  {  Observable  } from  'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface LoginRequest {
    username: string;
@@ -26,7 +27,7 @@ export interface AuthResponse {
 
 @Injectable({ providedIn:  'root'  })
 export class  AuthService  {
-   private  apiUrl  = 'http://localhost:8080/api/auth';
+   private  apiUrl  = `${environment.apiUrl}/auth`;
     private tokenKey  =  'auth_token';
     private isBrowser: boolean;
 

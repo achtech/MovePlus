@@ -1,4 +1,4 @@
-import  { Component,  OnInit  }  from '@angular/core';
+import  { Component  }  from '@angular/core';
 import  {  MatDialog }  from  '@angular/material/dialog';
 import {  PaymentService,  Payment  } from  '../payment.service';
 import  { PaymentFormComponent  }  from  '../payment-form/payment-form.component';
@@ -10,42 +10,62 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { PatientService, Patient } from '../../patients/patient.service';
 
 @Component({
    selector:  'app-payment-list',
    templateUrl:  './payment-list.component.html',
    styleUrls:  ['./payment-list.component.scss'],
    standalone: true,
-   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent]
+   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule]
 })
-export class  PaymentListComponent  implements  OnInit {
+export class  PaymentListComponent {
    payments:  Payment[] =  [];
+   patients: Patient[] = [];
    totalAmount:  number  =  0;
    loading: boolean = true;
 
-    constructor(private paymentService:  PaymentService,  private  dialog: MatDialog)  {}
+    constructor(
+      private paymentService: PaymentService,
+      private patientService: PatientService,
+      private dialog: MatDialog
+    ) {
+      runAfterBrowserHydration(() => {
+        this.patientService.getPatients().subscribe((patients) => {
+          this.patients = patients;
+          this.loadPayments();
+        });
+      });
+    }
 
-   ngOnInit():  void  {
-      this.loadPayments();
+    getPatientName(patientId: number): string {
+      const patient = this.patients.find((p) => p.id === patientId);
+      return patient ? `${patient.firstName} ${patient.lastName}` : `Patient ${patientId}`;
     }
 
     loadPayments(): void  {
        this.paymentService.getPayments().subscribe(data  => {
-           this.payments =  data;
+           this.payments = data.map((p) => ({
+             ...p,
+             patientName: this.getPatientName(p.patientId)
+           }));
           this.totalAmount  =  data.reduce((sum,  p) =>  sum  +  p.amount, 0);
           this.loading = false;
        });
    }
 
    addPayment():  void  {
-       const dialogRef  =  this.dialog.open(PaymentFormComponent,  { width:  '400px'  });
+       const dialogRef  =  this.dialog.open(PaymentFormComponent, FORM_DIALOG_OPTIONS);
        dialogRef.afterClosed().subscribe(result =>  {
           if  (result)  this.loadPayments();
        });
    }
 
    editPayment(payment:  Payment): void  {
-       const  dialogRef =  this.dialog.open(PaymentFormComponent,  {  width: '400px',  data:  payment  });
+       const  dialogRef =  this.dialog.open(PaymentFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  payment  });
       dialogRef.afterClosed().subscribe(result  =>  {
           if  (result)  this.loadPayments();
       });

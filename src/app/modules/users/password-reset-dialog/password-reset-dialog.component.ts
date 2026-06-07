@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,7 +9,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './password-reset-dialog.component.html',
   styleUrls: ['./password-reset-dialog.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule]
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
 })
 export class PasswordResetDialogComponent {
   passwordForm: FormGroup;

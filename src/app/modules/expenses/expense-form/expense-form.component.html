@@ -1,26 +1,29 @@
-<h2  mat-dialog-title>{{  data  ? 'Modifier  Charge'  :  'Ajouter Charge'  }}</h2>
+<h2 mat-dialog-title>{{ data ? 'Modifier Charge' : 'Ajouter Charge' }}</h2>
 <mat-dialog-content>
-   <form  [formGroup]="form">
-       <mat-form-field appearance="fill">
-           <mat-label>Description</mat-label>
-          <input  matInput formControlName="description">
-       </mat-form-field>
-
-       <mat-form-field appearance="fill">
-           <mat-label>Montant</mat-label>
-          <input  matInput type="number"  formControlName="amount">
-       </mat-form-field>
-
-      <mat-form-field  appearance="fill">
-          <mat-label>Catégorie</mat-label>
-           <mat-select formControlName="category">
-              <mat-option  *ngFor="let  c of  categories"  [value]="c">{{  c }}</mat-option>
-           </mat-select>
-      </mat-form-field>
-    </form>
+  <form [formGroup]="form" class="datta-form-grid">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="description">Description</label>
+        <input id="description" type="text" class="form-control" formControlName="description">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="amount">Montant</label>
+        <input id="amount" type="number" class="form-control" formControlName="amount">
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="category">Catégorie</label>
+        <select id="category" class="form-control" formControlName="category">
+          <option value="">Sélectionner...</option>
+          <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+    </div>
+  </form>
 </mat-dialog-content>
 
-<mat-dialog-actions  align="end">
-   <button  mat-button (click)="cancel()">Annuler</button>
-    <button mat-raised-button  color="primary"  (click)="save()">Enregistrer</button>
+<mat-dialog-actions align="end" class="datta-dialog-actions">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+  <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
 </mat-dialog-actions>

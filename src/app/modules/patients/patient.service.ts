@@ -1,48 +1,49 @@
-import {  Injectable  }  from '@angular/core';
-import {  Observable, of  }  from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
-export  interface Patient  {
-   id?:  number;
-   firstName:  string;
-   lastName:  string;
-   birthDate:  string;
-   phone:  string;
-   email:  string;
-   address:  string;
-   medicalNotes:  string;
+export interface Patient {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  phone: string;
+  email: string;
+  address: string;
+  medicalNotes: string;
 }
 
-@Injectable({  providedIn:  'root'  })
-export  class  PatientService  {
-   private patients: Patient[] = [
-       { id: 1, firstName: 'John', lastName: 'Doe', birthDate: '1990-01-01', phone: '123456789', email: 'john@example.com', address: '123 Main St', medicalNotes: 'No allergies' },
-       { id: 2, firstName: 'Jane', lastName: 'Smith', birthDate: '1985-05-15', phone: '987654321', email: 'jane@example.com', address: '456 Oak Ave', medicalNotes: 'Back pain' },
-       { id: 3, firstName: 'Bob', lastName: 'Johnson', birthDate: '1978-12-10', phone: '555666777', email: 'bob@example.com', address: '789 Pine Rd', medicalNotes: 'Knee injury' }
-   ];
+@Injectable({ providedIn: 'root' })
+export class PatientService {
+  private apiUrl = `${environment.apiUrl}/patients`;
 
-   constructor() {}
+  constructor(private http: HttpClient) {}
 
-   getPatients():  Observable<Patient[]>  {
-       return of(this.patients);
-    }
+  getPatients(): Observable<Patient[]> {
+    return this.http.get<Patient[]>(this.apiUrl).pipe(catchError(this.handleError([])));
+  }
 
-    addPatient(patient: Patient):  Observable<Patient>  {
-       patient.id = this.patients.length + 1;
-       this.patients.push(patient);
-       return of(patient);
-   }
+  addPatient(patient: Patient): Observable<Patient> {
+    return this.http.post<Patient>(this.apiUrl, patient);
+  }
 
-   updatePatient(id:  number,  patient:  Patient): Observable<Patient>  {
-       const index = this.patients.findIndex(p => p.id === id);
-       if (index !== -1) {
-           this.patients[index] = { ...patient, id };
-           return of(this.patients[index]);
-       }
-       return of(null as any);
-    }
+  updatePatient(id: number, patient: Patient): Observable<Patient> {
+    return this.http.put<Patient>(`${this.apiUrl}/${id}`, patient);
+  }
 
-    deletePatient(id: number):  Observable<void>  {
-       this.patients = this.patients.filter(p => p.id !== id);
-       return of(void 0);
-    }
+  deletePatient(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  private handleError<T>(fallback: T) {
+    return (error: unknown): Observable<T> => {
+      console.error('PatientService error:', error);
+      return new Observable((subscriber) => {
+        subscriber.next(fallback);
+        subscriber.complete();
+      });
+    };
+  }
 }

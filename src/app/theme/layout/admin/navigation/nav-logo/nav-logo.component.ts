@@ -1,9 +1,10 @@
 // angular import
-import { Component, Input, output } from '@angular/core';
+import { Component, Input, inject, output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
+import { PlatformService } from 'src/app/core/services/platform.service';
 
 @Component({
   selector: 'app-nav-logo',
@@ -12,12 +13,16 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
   styleUrls: ['./nav-logo.component.scss']
 })
 export class NavLogoComponent {
-  // public props
-  @Input() navCollapsed: boolean;
-  NavCollapse = output();
-  windowWidth = window.innerWidth;
+  private platform = inject(PlatformService);
 
-  // public method
+  @Input() navCollapsed = false;
+  NavCollapse = output();
+  windowWidth: number;
+
+  constructor() {
+    this.windowWidth = this.platform.getWindowWidth();
+  }
+
   navCollapse() {
     if (this.windowWidth >= 992) {
       this.navCollapsed = !this.navCollapsed;

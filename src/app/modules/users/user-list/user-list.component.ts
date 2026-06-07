@@ -1,4 +1,4 @@
-import  { Component,  OnInit  }  from '@angular/core';
+import  { Component  }  from '@angular/core';
 import  {  MatDialog }  from  '@angular/material/dialog';
 import {  UserService,  User  } from  '../user.service';
 import  { UserFormComponent  }  from  '../user-form/user-form.component';
@@ -14,23 +14,24 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
 
 @Component({
     selector:  'app-user-list',
     templateUrl:  './user-list.component.html',
     styleUrls: ['./user-list.component.scss'],
     standalone: true,
-    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, ConfirmDialogModule, TooltipModule, CardComponent],
+    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, ConfirmDialogModule, TooltipModule, CardComponent, TranslateModule],
     providers: [ConfirmationService]
 })
-export class  UserListComponent  implements  OnInit {
+export class  UserListComponent {
    users:  User[]  = [];
    loading: boolean = true;
 
-   constructor(private  userService:  UserService,  private dialog:  MatDialog, private confirmationService: ConfirmationService)  {}
-
-   ngOnInit():  void {
-       this.loadUsers();
+   constructor(private  userService:  UserService,  private dialog:  MatDialog, private confirmationService: ConfirmationService)  {
+       runAfterBrowserHydration(() => this.loadUsers());
    }
 
    loadUsers():  void  {
@@ -41,14 +42,14 @@ export class  UserListComponent  implements  OnInit {
    }
 
    addUser():  void {
-       const  dialogRef  = this.dialog.open(UserFormComponent,  {  width:  '400px' });
+       const  dialogRef  = this.dialog.open(UserFormComponent,  FORM_DIALOG_OPTIONS);
        dialogRef.afterClosed().subscribe(result  =>  {
           if  (result) this.loadUsers();
        });
    }
 
    editUser(user:  User):  void  {
-      const  dialogRef  =  this.dialog.open(UserFormComponent, {  width:  '400px',  data: user  });
+      const  dialogRef  =  this.dialog.open(UserFormComponent, { ...FORM_DIALOG_OPTIONS, data: user  });
        dialogRef.afterClosed().subscribe(result  => {
            if (result)  this.loadUsers();
        });
@@ -60,7 +61,7 @@ export class  UserListComponent  implements  OnInit {
 
    resetPassword(user: User): void {
        const dialogRef = this.dialog.open(PasswordResetDialogComponent, {
-           width: '400px',
+           ...FORM_DIALOG_OPTIONS,
        });
 
        dialogRef.afterClosed().subscribe(newPassword => {

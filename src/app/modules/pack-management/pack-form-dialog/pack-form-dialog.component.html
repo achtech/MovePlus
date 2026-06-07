@@ -1,29 +1,30 @@
 <h2 mat-dialog-title>{{ data ? 'Modifier Promotion' : 'Ajouter Promotion' }}</h2>
 <mat-dialog-content>
-    <form [formGroup]="form">
-        <mat-form-field appearance="fill">
-            <mat-label>Label/Nom</mat-label>
-            <input matInput formControlName="nom" placeholder="Ex: Pack Silver">
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Nombre de Séances</mat-label>
-            <input matInput type="number" formControlName="nombreDeSeance" min="1">
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Coût (Maison)</mat-label>
-            <input matInput type="number" formControlName="prixMaison" step="0.01" min="0">
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Coût (Cabinet)</mat-label>
-            <input matInput type="number" formControlName="prixCabinet" step="0.01" min="0">
-        </mat-form-field>
-    </form>
+  <form [formGroup]="form" class="datta-form-grid">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="nom">Label/Nom</label>
+        <input id="nom" type="text" class="form-control" formControlName="nom" placeholder="Ex: Pack Silver">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="nombreDeSeance">Nombre de Séances</label>
+        <input id="nombreDeSeance" type="number" class="form-control" formControlName="nombreDeSeance" min="1">
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="prixMaison">Coût (Maison)</label>
+        <input id="prixMaison" type="number" class="form-control" formControlName="prixMaison" step="0.01" min="0">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="prixCabinet">Coût (Cabinet)</label>
+        <input id="prixCabinet" type="number" class="form-control" formControlName="prixCabinet" step="0.01" min="0">
+      </div>
+    </div>
+  </form>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-    <button mat-button (click)="cancel()">Annuler</button>
-    <button mat-raised-button color="primary" (click)="save()">Enregistrer</button>
+<mat-dialog-actions align="end" class="datta-dialog-actions">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+  <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
 </mat-dialog-actions>

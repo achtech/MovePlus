@@ -1,44 +1,44 @@
-<h2  mat-dialog-title>{{  data  ? 'Modifier  Patient'  :  'Ajouter Patient'  }}</h2>
+<h2 mat-dialog-title>{{ data ? 'Modifier Patient' : 'Ajouter Patient' }}</h2>
 <mat-dialog-content>
-   <form  [formGroup]="form">
-       <mat-form-field appearance="fill">
-           <mat-label>Prénom</mat-label>
-          <input  matInput formControlName="firstName">
-       </mat-form-field>
-
-       <mat-form-field appearance="fill">
-           <mat-label>Nom</mat-label>
-          <input  matInput formControlName="lastName">
-       </mat-form-field>
-
-       <mat-form-field appearance="fill">
-           <mat-label>Date de  naissance</mat-label>
-          <input  matInput  type="date"  formControlName="birthDate">
-      </mat-form-field>
-
-       <mat-form-field  appearance="fill">
-          <mat-label>Téléphone</mat-label>
-          <input  matInput  formControlName="phone">
-      </mat-form-field>
-
-       <mat-form-field  appearance="fill">
-          <mat-label>Email</mat-label>
-          <input  matInput  formControlName="email">
-      </mat-form-field>
-
-         <mat-form-field appearance="fill">
-           <mat-label>Adresse</mat-label>
-          <input  matInput formControlName="address">
-       </mat-form-field>
-
-       <mat-form-field appearance="fill">
-           <mat-label>Notes médicales</mat-label>
-           <textarea matInput  formControlName="medicalNotes"></textarea>
-       </mat-form-field>
-   </form>
+  <form [formGroup]="form" class="datta-form-grid">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="firstName">Prénom</label>
+        <input id="firstName" type="text" class="form-control" formControlName="firstName">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="lastName">Nom</label>
+        <input id="lastName" type="text" class="form-control" formControlName="lastName">
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="birthDate">Date de naissance</label>
+        <input id="birthDate" type="date" class="form-control" formControlName="birthDate">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="phone">Téléphone</label>
+        <input id="phone" type="text" class="form-control" formControlName="phone">
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="email">Email</label>
+        <input id="email" type="email" class="form-control" formControlName="email">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="address">Adresse</label>
+        <input id="address" type="text" class="form-control" formControlName="address">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="medicalNotes">Notes médicales</label>
+      <textarea id="medicalNotes" class="form-control" rows="3" formControlName="medicalNotes"></textarea>
+    </div>
+  </form>
 </mat-dialog-content>
 
-<mat-dialog-actions  align="end">
-   <button  mat-button  (click)="cancel()">Annuler</button>
-   <button  mat-raised-button  color="primary" (click)="save()">Enregistrer</button>
+<mat-dialog-actions align="end" class="datta-dialog-actions">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+  <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
 </mat-dialog-actions>

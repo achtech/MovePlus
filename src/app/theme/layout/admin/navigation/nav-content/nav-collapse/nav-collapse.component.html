@@ -6,7 +6,7 @@
       </span>
     }
     <span class="pcoded-mtext">
-      {{ item().title }}
+      {{ (item().translate || item().title) | translate }}
     </span>
   </a>
   <ul class="pcoded-submenu" [routerLinkActive]="['active']">

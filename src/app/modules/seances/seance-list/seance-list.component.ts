@@ -1,4 +1,4 @@
-import  { Component,  OnInit, ViewChild  }  from '@angular/core';
+import  { Component, ViewChild  }  from '@angular/core';
 import  {  MatDialog  }  from '@angular/material/dialog';
 import  {  SeanceService, Seance  }  from  '../seance.service';
 import  {  SeanceFormComponent  } from  '../seance-form/seance-form.component';
@@ -13,21 +13,24 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
+import { TranslateModule } from '@ngx-translate/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Table } from 'primeng/table';
+import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
 
 @Component({
    selector:  'app-seance-list',
    templateUrl:  './seance-list.component.html',
    styleUrls:  ['./seance-list.component.scss'],
    standalone: true,
-   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, TooltipModule, CardComponent, FullCalendarModule]
+   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, TooltipModule, CardComponent, FullCalendarModule, TranslateModule]
 })
-export class  SeanceListComponent  implements  OnInit {
+export class  SeanceListComponent {
     seances: Seance[]  =  [];
     loading: boolean = true;
     showAgenda: boolean = false;
@@ -51,12 +54,12 @@ export class  SeanceListComponent  implements  OnInit {
         eventDisplay: 'block'
     };
 
-   constructor(private  seanceService: SeanceService, private  dialog: MatDialog, private patientService: PatientService, private userService: UserService)  {}
-
-   ngOnInit():  void  {
-      this.loadPatients();
-      this.loadTherapists();
-      this.loadSeances();
+   constructor(private  seanceService: SeanceService, private  dialog: MatDialog, private patientService: PatientService, private userService: UserService)  {
+      runAfterBrowserHydration(() => {
+        this.loadPatients();
+        this.loadTherapists();
+        this.loadSeances();
+      });
     }
 
     loadPatients(): void {
@@ -129,7 +132,7 @@ export class  SeanceListComponent  implements  OnInit {
    }
 
    addSeance():  void  {
-      const  dialogRef  =  this.dialog.open(SeanceFormComponent, {  width:  '500px'  });
+      const  dialogRef  =  this.dialog.open(SeanceFormComponent, FORM_DIALOG_OPTIONS);
       dialogRef.afterClosed().subscribe(result  =>  {
           if  (result)  this.loadSeances();
       });
@@ -137,7 +140,7 @@ export class  SeanceListComponent  implements  OnInit {
 
    editSeance(seance: Seance):  void  {
       const  dialogRef  =  this.dialog.open(SeanceFormComponent, {
-         width:  '500px',
+         ...FORM_DIALOG_OPTIONS,
          data: seance
       });
       dialogRef.afterClosed().subscribe(result  =>  {

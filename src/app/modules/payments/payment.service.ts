@@ -1,52 +1,76 @@
-import  {  Injectable  } from  '@angular/core';
-import {  Observable, of  } from  'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
-export interface  Payment  {
-   id?:  number;
-   patientId:  number;
-   seanceId?:  number;
-   amount:  number;
-   date:  string;
-   method:  string;
-   status:  string;
+export interface Payment {
+  id?: number;
+  patientId: number;
+  seanceId?: number;
+  amount: number;
+  date: string;
+  paymentDate?: string;
+  method: string;
+  status: string;
 }
 
-@Injectable({  providedIn:  'root' })
-export  class  PaymentService {
-    private payments: Payment[] = [
-        { id: 1, patientId: 1, seanceId: 1, amount: 50, date: '2026-01-15', method: 'CASH', status: 'PAID' },
-        { id: 2, patientId: 2, amount: 75, date: '2026-01-16', method: 'CARD', status: 'PAID' },
-        { id: 3, patientId: 3, seanceId: 3, amount: 30, date: '2026-01-17', method: 'CASH', status: 'PENDING' }
-    ];
+type ApiPayment = Omit<Payment, 'date'> & { paymentDate?: string; date?: string };
 
-   constructor()  {}
+@Injectable({ providedIn: 'root' })
+export class PaymentService {
+  private apiUrl = `${environment.apiUrl}/payments`;
 
-   getPayments():  Observable<Payment[]>  {
-      return  of(this.payments);
-   }
+  constructor(private http: HttpClient) {}
 
-   addPayment(payment:  Payment):  Observable<Payment>  {
-      payment.id = this.payments.length + 1;
-      this.payments.push(payment);
-      return  of(payment);
-   }
+  getPayments(): Observable<Payment[]> {
+    return this.http.get<ApiPayment[]>(this.apiUrl).pipe(
+      map((items) => items.map((p) => this.fromApi(p))),
+      catchError(this.handleError([]))
+    );
+  }
 
-   updatePayment(id:  number,  payment: Payment):  Observable<Payment>  {
-       const index = this.payments.findIndex(p => p.id === id);
-       if (index !== -1) {
-           this.payments[index] = { ...payment, id };
-           return of(this.payments[index]);
-       }
-       return of(null as any);
-   }
+  addPayment(payment: Payment): Observable<Payment> {
+    return this.http.post<ApiPayment>(this.apiUrl, this.toApi(payment)).pipe(map((p) => this.fromApi(p)));
+  }
 
-   deletePayment(id:  number):  Observable<void>  {
-      this.payments = this.payments.filter(p => p.id !== id);
-      return  of(void 0);
-   }
+  updatePayment(id: number, payment: Payment): Observable<Payment> {
+    return this.http.put<ApiPayment>(`${this.apiUrl}/${id}`, this.toApi(payment)).pipe(map((p) => this.fromApi(p)));
+  }
 
-   getPaymentsByPatientId(patientId: number): Observable<Payment[]> {
-      return of(this.payments.filter(p => p.patientId === patientId));
-   }
+  deletePayment(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 
+  getPaymentsByPatientId(patientId: number): Observable<Payment[]> {
+    return this.http.get<ApiPayment[]>(`${this.apiUrl}/patient/${patientId}`).pipe(
+      map((items) => items.map((p) => this.fromApi(p))),
+      catchError(this.handleError([]))
+    );
+  }
+
+  private fromApi(payment: ApiPayment): Payment {
+    return {
+      ...payment,
+      date: payment.date || payment.paymentDate || ''
+    };
+  }
+
+  private toApi(payment: Payment): ApiPayment {
+    const { date, ...rest } = payment;
+    return {
+      ...rest,
+      paymentDate: date || payment.paymentDate || ''
+    };
+  }
+
+  private handleError<T>(fallback: T) {
+    return (error: unknown): Observable<T> => {
+      console.error('PaymentService error:', error);
+      return new Observable((subscriber) => {
+        subscriber.next(fallback);
+        subscriber.complete();
+      });
+    };
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { MatDialog  } from  '@angular/material/dialog';
 import { PackService,  Pack  }  from './pack.service';
 import { PackFormDialogComponent } from './pack-form-dialog/pack-form-dialog.component';
@@ -10,15 +10,18 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { CardComponent } from '../../theme/shared/components/card/card.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { FORM_DIALOG_OPTIONS } from '../../core/constants/dialog.config';
+import { runAfterBrowserHydration } from '../../core/utils/browser-init';
 
 @Component({
   selector: 'app-pack-management',
   templateUrl: './pack-management.html',
   styleUrl: './pack-management.scss',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent]
+  imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule]
 })
-export class PackManagement implements OnInit {
+export class PackManagement {
   packs: Pack[] = [];
   loading: boolean = true;
   
@@ -26,10 +29,8 @@ export class PackManagement implements OnInit {
     private packService: PackService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
-  ) {}
-
-  ngOnInit() {
-    this.loadPacks();
+  ) {
+    runAfterBrowserHydration(() => this.loadPacks());
   }
 
   loadPacks() {
@@ -49,7 +50,7 @@ export class PackManagement implements OnInit {
   }
 
   addPack(): void {
-    const dialogRef = this.dialog.open(PackFormDialogComponent, { width: '500px' });
+    const dialogRef = this.dialog.open(PackFormDialogComponent, FORM_DIALOG_OPTIONS);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadPacks();
@@ -58,7 +59,7 @@ export class PackManagement implements OnInit {
   }
 
   editPack(pack: Pack): void {
-    const dialogRef = this.dialog.open(PackFormDialogComponent, { width: '500px', data: pack });
+    const dialogRef = this.dialog.open(PackFormDialogComponent, { ...FORM_DIALOG_OPTIONS, data: pack });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadPacks();

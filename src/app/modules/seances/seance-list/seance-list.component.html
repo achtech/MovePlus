@@ -1,10 +1,10 @@
 <div class="table-page">
-  <app-card cardTitle="Séances" [options]="false">
+  <app-card cardTitle="pages.seances.title" [options]="false">
     <div class="table-toolbar">
       <div class="button-group">
-        <p-button label="Planifier Séance" icon="pi pi-plus" (click)="addSeance()" />
+        <p-button [label]="'pages.seances.add' | translate" icon="pi pi-plus" (click)="addSeance()" />
         <p-button
-          [label]="showAgenda ? 'Voir Liste' : 'Voir Agenda'"
+          [label]="(showAgenda ? 'pages.seances.viewList' : 'pages.seances.viewAgenda') | translate"
           [icon]="showAgenda ? 'pi pi-list' : 'pi pi-calendar'"
           (click)="toggleAgenda()"
           [outlined]="true"
@@ -14,7 +14,7 @@
         <p-inputicon>
           <i class="pi pi-search"></i>
         </p-inputicon>
-        <input pInputText type="text" (input)="dt1?.filterGlobal($event.target.value, 'contains')" placeholder="Rechercher..." />
+        <input pInputText type="text" (input)="dt1?.filterGlobal($event.target.value, 'contains')" [placeholder]="'common.search' | translate" />
       </p-iconfield>
     </div>
 
@@ -22,48 +22,48 @@
       <p-table #dt1 [value]="seances" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['patientId', 'therapistId', 'dateTime', 'duration', 'type', 'status', 'patientName', 'therapistName']" showGridlines>
         <ng-template #caption>
           <div class="flex">
-            <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+            <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
           </div>
         </ng-template>
         <ng-template #header>
           <tr>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Patient
+                {{ 'pages.seances.patient' | translate }}
                 <p-columnFilter type="text" field="patientId" display="menu" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Thérapeute
+                {{ 'pages.seances.therapist' | translate }}
                 <p-columnFilter type="text" field="therapistId" display="menu" />
               </div>
             </th>
             <th style="min-width:15rem">
               <div class="flex items-center justify-between">
-                Date
+                {{ 'pages.seances.date' | translate }}
                 <p-columnFilter type="date" field="dateTime" display="menu" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Durée (min)
+                {{ 'pages.seances.duration' | translate }}
                 <p-columnFilter type="numeric" field="duration" display="menu" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Type
+                {{ 'pages.seances.type' | translate }}
                 <p-columnFilter type="text" field="type" display="menu" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Statut
+                {{ 'pages.seances.status' | translate }}
                 <p-columnFilter type="text" field="status" display="menu" />
               </div>
             </th>
-            <th style="min-width:10rem">Actions</th>
+            <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template #body let-s>
@@ -79,14 +79,14 @@
               </span>
             </td>
             <td>
-              <p-button icon="pi pi-pencil" [outlined]="true" severity="info" (click)="editSeance(s)" pTooltip="Modifier Séance" />
-              <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deleteSeance(s.id!)" pTooltip="Supprimer Séance" />
+              <p-button icon="pi pi-pencil" [outlined]="true" severity="info" (click)="editSeance(s)" [pTooltip]="'pages.seances.edit' | translate" />
+              <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deleteSeance(s.id!)" [pTooltip]="'pages.seances.delete' | translate" />
             </td>
           </tr>
         </ng-template>
         <ng-template #emptymessage>
           <tr>
-            <td colspan="7">Aucune séance trouvée.</td>
+            <td colspan="7">{{ 'pages.seances.empty' | translate }}</td>
           </tr>
         </ng-template>
       </p-table>

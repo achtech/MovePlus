@@ -1,0 +1,104 @@
+.profile-page {
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e3eaef;
+  }
+
+  .profile-avatar {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+  }
+
+  .profile-header-info h4 {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .profile-value {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .profile-password {
+    letter-spacing: 0.15em;
+  }
+
+  .password-field {
+    position: relative;
+
+    input {
+      padding-right: 2.5rem;
+    }
+
+    i {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888;
+    }
+  }
+
+  .avatar-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+
+    &.readonly .avatar-option {
+      cursor: default;
+    }
+  }
+
+  .avatar-option-btn {
+    border: 2px solid transparent;
+    border-radius: 50%;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &.selected {
+      border-color: #04a9f5;
+    }
+  }
+
+  .avatar-option {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .avatar-picker.readonly .avatar-option {
+    opacity: 0.45;
+    border: 2px solid transparent;
+    border-radius: 50%;
+
+    &.selected {
+      opacity: 1;
+      border-color: #04a9f5;
+    }
+  }
+
+  .profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e3eaef;
+  }
+}

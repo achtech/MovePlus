@@ -1,8 +1,7 @@
 <div class="dashboard-page">
-  <!-- Stats -->
   <div class="row">
     <div class="col-xl-3 col-md-6">
-      <app-card cardTitle="Patients" [options]="false" cardClass="stat-widget stat-widget-primary">
+      <app-card cardTitle="dashboard.patientsCount" [options]="false" cardClass="stat-widget stat-widget-primary">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-users stat-icon"></i>
           {{ totalPatients }}
@@ -10,7 +9,7 @@
       </app-card>
     </div>
     <div class="col-xl-3 col-md-6">
-      <app-card cardTitle="Séances aujourd'hui" [options]="false" cardClass="stat-widget stat-widget-info">
+      <app-card cardTitle="dashboard.seancesToday" [options]="false" cardClass="stat-widget stat-widget-info">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-calendar stat-icon"></i>
           {{ seancesToday }}
@@ -18,7 +17,7 @@
       </app-card>
     </div>
     <div class="col-xl-3 col-md-6">
-      <app-card cardTitle="Séances cette semaine" [options]="false" cardClass="stat-widget stat-widget-success">
+      <app-card cardTitle="dashboard.seancesWeek" [options]="false" cardClass="stat-widget stat-widget-success">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-clock stat-icon"></i>
           {{ seancesWeek }}
@@ -26,7 +25,7 @@
       </app-card>
     </div>
     <div class="col-xl-3 col-md-6">
-      <app-card cardTitle="Séances ce mois" [options]="false" cardClass="stat-widget stat-widget-warning">
+      <app-card cardTitle="dashboard.seancesMonth" [options]="false" cardClass="stat-widget stat-widget-warning">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-activity stat-icon"></i>
           {{ seancesMonth }}
@@ -37,7 +36,7 @@
 
   <div class="row">
     <div class="col-xl-4 col-md-6">
-      <app-card cardTitle="Paiements aujourd'hui (€)" [options]="false" cardClass="stat-widget stat-widget-primary">
+      <app-card cardTitle="dashboard.paymentsToday" [options]="false" cardClass="stat-widget stat-widget-primary">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-credit-card stat-icon"></i>
           {{ paymentsToday | number:'1.0-2' }}
@@ -45,7 +44,7 @@
       </app-card>
     </div>
     <div class="col-xl-4 col-md-6">
-      <app-card cardTitle="Paiements cette semaine (€)" [options]="false" cardClass="stat-widget stat-widget-info">
+      <app-card cardTitle="dashboard.paymentsWeek" [options]="false" cardClass="stat-widget stat-widget-info">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-trending-up stat-icon"></i>
           {{ paymentsWeek | number:'1.0-2' }}
@@ -53,7 +52,7 @@
       </app-card>
     </div>
     <div class="col-xl-4 col-md-6">
-      <app-card cardTitle="Paiements ce mois (€)" [options]="false" cardClass="stat-widget stat-widget-success">
+      <app-card cardTitle="dashboard.paymentsMonth" [options]="false" cardClass="stat-widget stat-widget-success">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-dollar-sign stat-icon"></i>
           {{ paymentsMonth | number:'1.0-2' }}
@@ -62,29 +61,28 @@
     </div>
   </div>
 
-  <!-- Charts -->
   <div class="row">
     <div class="col-xl-6 col-md-12">
-      <app-card cardTitle="Séances par mois" [options]="false">
+      <app-card cardTitle="dashboard.seancesByMonth" [options]="false">
         <div class="chart-wrapper">
           <p-chart type="bar" [data]="barSeancesData" [options]="barSeancesOptions"></p-chart>
         </div>
       </app-card>
     </div>
     <div class="col-xl-6 col-md-12">
-      <app-card cardTitle="Évolution des paiements & charges" [options]="false">
+      <app-card cardTitle="dashboard.paymentsEvolution" [options]="false">
         <div class="chart-controls">
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="showValidated" [(ngModel)]="showValidated" (change)="onToggleChange()" />
-            <label class="form-check-label" for="showValidated">Paiements validés</label>
+            <label class="form-check-label" for="showValidated">{{ 'dashboard.showValidated' | translate }}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="showPending" [(ngModel)]="showPending" (change)="onToggleChange()" />
-            <label class="form-check-label" for="showPending">Paiements en attente</label>
+            <label class="form-check-label" for="showPending">{{ 'dashboard.showPending' | translate }}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="showExpenses" [(ngModel)]="showExpenses" (change)="onToggleChange()" />
-            <label class="form-check-label" for="showExpenses">Charges du cabinet</label>
+            <label class="form-check-label" for="showExpenses">{{ 'dashboard.showExpenses' | translate }}</label>
           </div>
         </div>
         <div class="chart-wrapper">
@@ -94,10 +92,9 @@
     </div>
   </div>
 
-  <!-- Séances lists -->
   <div class="row">
     <div class="col-xl-4 col-md-6">
-      <app-card cardTitle="Séances d'hier" [options]="false">
+      <app-card cardTitle="dashboard.seancesYesterday" [options]="false">
         <ul class="seance-day-list">
           @for (s of seancesYesterday; track s) {
             <li>
@@ -106,13 +103,13 @@
             </li>
           }
           @if (seancesYesterday.length === 0) {
-            <li class="empty-state">Aucune séance hier.</li>
+            <li class="empty-state">{{ 'dashboard.noSeanceYesterday' | translate }}</li>
           }
         </ul>
       </app-card>
     </div>
     <div class="col-xl-4 col-md-6">
-      <app-card cardTitle="Séances aujourd'hui" [options]="false">
+      <app-card cardTitle="dashboard.seancesTodayList" [options]="false">
         <ul class="seance-day-list">
           @for (s of seancesTodayList; track s) {
             <li>
@@ -121,13 +118,13 @@
             </li>
           }
           @if (seancesTodayList.length === 0) {
-            <li class="empty-state">Aucune séance aujourd'hui.</li>
+            <li class="empty-state">{{ 'dashboard.noSeanceToday' | translate }}</li>
           }
         </ul>
       </app-card>
     </div>
     <div class="col-xl-4 col-md-6">
-      <app-card cardTitle="Séances de demain" [options]="false">
+      <app-card cardTitle="dashboard.seancesTomorrow" [options]="false">
         <ul class="seance-day-list">
           @for (s of seancesTomorrow; track s) {
             <li>
@@ -136,7 +133,7 @@
             </li>
           }
           @if (seancesTomorrow.length === 0) {
-            <li class="empty-state">Aucune séance demain.</li>
+            <li class="empty-state">{{ 'dashboard.noSeanceTomorrow' | translate }}</li>
           }
         </ul>
       </app-card>

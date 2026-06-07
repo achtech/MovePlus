@@ -1,4 +1,4 @@
-import  {  Component,  OnInit  }  from  '@angular/core';
+import  {  Component  }  from  '@angular/core';
 import  {  MatDialog  }  from '@angular/material/dialog';
 import  {  StockService,  Stock }  from  '../stock.service';
 import  {  StockFormComponent  } from  '../stock-form/stock-form.component';
@@ -11,6 +11,8 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
 
 @Component({
     selector:  'app-stock-list',
@@ -19,14 +21,12 @@ import { MatIconModule } from '@angular/material/icon';
     standalone: true,
     imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, MatButtonModule, MatIconModule]
 })
-export  class  StockListComponent  implements  OnInit {
+export  class  StockListComponent {
     stock:  Stock[]  =  [];
     loading: boolean = true;
 
-    constructor(private  stockService:  StockService, private  dialog: MatDialog) {}
-
-    ngOnInit():  void  {
-        this.loadStock();
+    constructor(private  stockService:  StockService, private  dialog: MatDialog) {
+        runAfterBrowserHydration(() => this.loadStock());
     }
 
     loadStock():  void  {
@@ -37,7 +37,7 @@ export  class  StockListComponent  implements  OnInit {
     }
 
     addStock():  void  {
-       const  dialogRef  =  this.dialog.open(StockFormComponent, {  width:  '400px'  });
+       const  dialogRef  =  this.dialog.open(StockFormComponent, FORM_DIALOG_OPTIONS);
        dialogRef.afterClosed().subscribe(result  =>  {
            if  (result)  this.loadStock();
        });

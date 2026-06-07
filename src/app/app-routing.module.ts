@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './core/guards/auth.guard';
+import { authGuard } from './core/guards/auth.guard';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
 
@@ -8,7 +8,7 @@ export const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -48,6 +48,10 @@ export const routes: Routes = [
       {
         path: 'users',
         loadChildren: () => import('./modules/users/users.module').then((m) => m.UsersModule)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./modules/profile/profile.component').then((m) => m.ProfileComponent)
       }
     ]
   },

@@ -5,9 +5,9 @@
         <span class="pcoded-micon"><i class="feather" [ngClass]="item().icon"></i></span>
       }
       @if (item().icon) {
-        <span class="pcoded-mtext">{{ item().title }}</span>
+        <span class="pcoded-mtext">{{ (item().translate || item().title) | translate }}</span>
       } @else {
-        {{ item().title }}
+        {{ (item().translate || item().title) | translate }}
       }
       <ng-template #directTitle>
         {{ item().title }}
@@ -22,9 +22,9 @@
         <span class="pcoded-micon"><i class="feather" [ngClass]="item().icon"></i></span>
       }
       @if (item().icon) {
-        <span class="pcoded-mtext">{{ item().title }}</span>
+        <span class="pcoded-mtext">{{ (item().translate || item().title) | translate }}</span>
       } @else {
-        {{ item().title }}
+        {{ (item().translate || item().title) | translate }}
       }
       <ng-template #directTitle>
         {{ item().title }}

@@ -3,9 +3,6 @@ import  {  FormBuilder,  FormGroup, Validators  }  from  '@angular/forms';
 import  {  MatDialogRef,  MAT_DIALOG_DATA, MatDialogModule }  from  '@angular/material/dialog';
  import {  SaleService,  Sale  } from  '../sale.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
  
  @Component({
@@ -13,7 +10,7 @@ import { CommonModule } from '@angular/common';
     templateUrl:  './sale-form.component.html',
     styleUrls: ['./sale-form.component.scss'],
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule]
+    imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
 })
  export  class  SaleFormComponent {
      form: FormGroup;
@@ -28,9 +25,14 @@ import { CommonModule } from '@angular/common';
             productName: [data?.productName  ||  '',  Validators.required],
            quantity:  [data?.quantity ||  '',  Validators.required],
            unitPrice:  [data?.unitPrice  || '',  Validators.required],
-           saleDate:  [data?.saleDate  ||  '', Validators.required],
+           saleDate:  [this.toDateInput(data?.saleDate), Validators.required],
            notes: [data?.notes || '']
         });
+    }
+
+    private toDateInput(value?: string): string {
+      if (!value) return '';
+      return value.substring(0, 10);
     }
  
         save():  void  {

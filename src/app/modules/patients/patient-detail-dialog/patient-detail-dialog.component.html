@@ -15,7 +15,7 @@
                [rows]="5"
               [loading]="loadingSeances"
                [rowsPerPageOptions]="[5,10,20]"
-              [globalFilterFields]="['date','type','status']"
+              [globalFilterFields]="['dateTime','type','status']"
                sortMode="multiple">
 
               <ng-template  pTemplate="caption">
@@ -27,7 +27,7 @@
 
                <ng-template pTemplate="header">
                    <tr>
-                     <th  pSortableColumn="date">Date  <p-sortIcon  field="date"></p-sortIcon></th>
+                     <th  pSortableColumn="dateTime">Date  <p-sortIcon  field="dateTime"></p-sortIcon></th>
                       <th  pSortableColumn="type">Type <p-sortIcon  field="type"></p-sortIcon></th>
                       <th  pSortableColumn="status">Statut  <p-sortIcon  field="status"></p-sortIcon></th>
                   </tr>
@@ -35,7 +35,7 @@
 
                <ng-template pTemplate="body"  let-seance>
                   <tr>
-                      <td>{{  seance.date  |  date:'shortDate'  }}</td>
+                      <td>{{  seance.dateTime  |  date:'shortDate'  }}</td>
                      <td>{{  seance.type  }}</td>
                       <td>{{  seance.status  }}</td>
                   </tr>
@@ -96,6 +96,6 @@
 
 </mat-dialog-content>
 
-<mat-dialog-actions  align="end">
-   <button  mat-button  (click)="close()">Fermer</button>
+<mat-dialog-actions align="end" class="datta-dialog-actions">
+  <button type="button" class="btn btn-secondary" (click)="close()">Fermer</button>
 </mat-dialog-actions>

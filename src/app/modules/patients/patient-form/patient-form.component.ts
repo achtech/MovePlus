@@ -1,11 +1,7 @@
 import {  Component,  Inject  } from  '@angular/core';
-import  { FormBuilder,  FormGroup,  Validators  } from  '@angular/forms';
+import  { FormBuilder,  FormGroup,  Validators, ReactiveFormsModule  } from  '@angular/forms';
 import  { MatDialogRef,  MAT_DIALOG_DATA, MatDialogModule  }  from '@angular/material/dialog';
 import  {  PatientService, Patient  }  from  '../patient.service';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -13,7 +9,7 @@ import { CommonModule } from '@angular/common';
    templateUrl:  './patient-form.component.html',
    styleUrls: ['./patient-form.component.scss'],
    standalone: true,
-   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogModule]
+   imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
 })
 export class  PatientFormComponent  {
    form:  FormGroup;

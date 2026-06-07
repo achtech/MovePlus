@@ -1,285 +1,296 @@
-import  {  Component,  OnInit  }  from  '@angular/core';
-import {  CommonModule  }  from  '@angular/common';
-import  {  FormsModule }  from  '@angular/forms';
-import  {  ChartModule  }  from  'primeng/chart';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ChartModule } from 'primeng/chart';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { CardComponent } from '../../theme/shared/components/card/card.component';
+import { runAfterBrowserHydration } from '../../core/utils/browser-init';
 
-import  {  PatientService  }  from  '../patients/patient.service';
-import  { SeanceService  }  from  '../seances/seance.service';
-import  {  PaymentService  } from  '../payments/payment.service';
+import { PatientService } from '../patients/patient.service';
+import { SeanceService } from '../seances/seance.service';
+import { PaymentService } from '../payments/payment.service';
 
 @Component({
-    selector:  'app-dashboard',
-   standalone:  true,
-    imports:  [CommonModule, FormsModule, ChartModule, CardComponent],
-    templateUrl:  './dashboard.component.html',
-   styleUrls:  ['./dashboard.component.scss']
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ChartModule, CardComponent, TranslateModule],
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
-export  class  DashboardComponent  implements OnInit  {
+export class DashboardComponent implements OnInit, OnDestroy {
+  private patientService = inject(PatientService);
+  private seanceService = inject(SeanceService);
+  private paymentService = inject(PaymentService);
+  private translate = inject(TranslateService);
+  private langSub?: Subscription;
 
-    //  ---  OLD STATS  ---
-    totalPatients  =  0;
+  totalPatients = 0;
 
-   seancesToday  =  0;
-    seancesWeek =  0;
-    seancesMonth  =  0;
+  seancesToday = 0;
+  seancesWeek = 0;
+  seancesMonth = 0;
 
-   paymentsToday  =  0;
-    paymentsWeek =  0;
-    paymentsMonth  =  0;
+  paymentsToday = 0;
+  paymentsWeek = 0;
+  paymentsMonth = 0;
 
-   //  ---  RAW  DATA  ---
-   allPayments:  any[]  =  [];
-    allSeances: any[]  =  [];
-    allPatients:  any[]  = [];
+  allPayments: any[] = [];
+  allSeances: any[] = [];
+  allPatients: any[] = [];
 
-    //  ---  EXPENSES  (charges du  cabinet)  par  mois  (Jan..Dec)  ---
-   expensesByMonth:  number[]  =  [500,  450,  600,  700,  650, 800,  750,  900,  850,  950,  1000,  1100];
+  expensesByMonth: number[] = [500, 450, 600, 700, 650, 800, 750, 900, 850, 950, 1000, 1100];
 
-   //  ---  CHARTS  ---
-   lineStylesData:  any  =  {  labels:  [],  datasets:  [] };
-    lineStylesOptions:  any;
-    barSeancesData: any;
-    barSeancesOptions:  any;
+  lineStylesData: any = { labels: [], datasets: [] };
+  lineStylesOptions: any;
+  barSeancesData: any;
+  barSeancesOptions: any;
 
-   //  ---  monthly  series  ---
-    validatedByMonth: number[]  =  new  Array(12).fill(0);
-    pendingByMonth:  number[] =  new  Array(12).fill(0);
+  validatedByMonth: number[] = new Array(12).fill(0);
+  pendingByMonth: number[] = new Array(12).fill(0);
 
-    //  --- toggles  ---
-    showValidated  =  true;
-   showPending  =  true;
-    showExpenses  = true;
+  showValidated = true;
+  showPending = true;
+  showExpenses = true;
 
-    //  ---  lists  for yesterday  /  today  /  tomorrow  ---
-   seancesYesterday:  Array<{  patientName:  string;  time:  string;  type:  string }>  =  [];
-    seancesTodayList:  Array<{  patientName: string;  time:  string;  type:  string  }>  =  [];
-   seancesTomorrow:  Array<{  patientName:  string;  time:  string; type:  string  }>  =  [];
+  seancesYesterday: Array<{ patientName: string; time: string; type: string }> = [];
+  seancesTodayList: Array<{ patientName: string; time: string; type: string }> = [];
+  seancesTomorrow: Array<{ patientName: string; time: string; type: string }> = [];
 
-   constructor(
-        private  patientService:  PatientService,
-       private  seanceService:  SeanceService,
-       private  paymentService:  PaymentService
-   )  {}
+  constructor() {
+    runAfterBrowserHydration(() => this.loadStats());
+  }
 
-    ngOnInit()  {
-       this.initChartOptions();
-       this.loadStats();
-    }
+  ngOnInit() {
+    this.initChartOptions();
+    this.langSub = this.translate.onLangChange.subscribe(() => {
+      this.updateChartLabels();
+      this.updateLineData();
+    });
+  }
 
-    // ---------------------------
-    //  LOAD  STATS
-   //  ---------------------------
-    loadStats()  {
-       //  Patients
-       this.patientService.getPatients().subscribe(patients  =>  {
-           this.allPatients  =  patients  ||  [];
-           this.totalPatients  =  this.allPatients.length;
-       });
+  ngOnDestroy() {
+    this.langSub?.unsubscribe();
+  }
 
-       //  Seances
-        this.seanceService.getSeances().subscribe(seances =>  {
-           this.allSeances  =  seances  ||  [];
+  loadStats() {
+    this.patientService.getPatients().subscribe((patients) => {
+      this.allPatients = patients || [];
+      this.totalPatients = this.allPatients.length;
+      this.computeSeanceDayLists();
+    });
 
-           const  now  =  new Date();
-            const startOfWeek  =  this.getStartOfWeek(now);
-           const  startOfMonth  =  new  Date(now.getFullYear(),  now.getMonth(),  1);
+    this.seanceService.getSeances().subscribe((seances) => {
+      this.allSeances = seances || [];
 
-            this.seancesToday =  this.allSeances.filter(s  =>  this.isSameDay(new  Date(s.dateTime),  now)).length;
-           this.seancesWeek  =  this.allSeances.filter(s  => new  Date(s.dateTime)  >=  startOfWeek).length;
-           this.seancesMonth  =  this.allSeances.filter(s  =>  new  Date(s.dateTime) >=  startOfMonth).length;
+      const now = new Date();
+      const startOfWeek = this.getStartOfWeek(now);
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-           //  compute  lists  for  yesterday/today/tomorrow
-           this.computeSeanceDayLists();
-       });
+      this.seancesToday = this.allSeances.filter((s) => this.isSameDay(new Date(s.dateTime), now)).length;
+      this.seancesWeek = this.allSeances.filter((s) => new Date(s.dateTime) >= startOfWeek).length;
+      this.seancesMonth = this.allSeances.filter((s) => new Date(s.dateTime) >= startOfMonth).length;
 
-        // Payments
-        this.paymentService.getPayments().subscribe(payments  =>  {
-           this.allPayments  = payments  ||  [];
+      this.computeSeanceDayLists();
+    });
 
-           const  now  =  new  Date();
-           const  startOfWeek  = this.getStartOfWeek(now);
-            const startOfMonth  =  new  Date(now.getFullYear(),  now.getMonth(),  1);
+    this.paymentService.getPayments().subscribe((payments) => {
+      this.allPayments = payments || [];
 
-           this.paymentsToday  =  this.allPayments
-              .filter(p  =>  this.isSameDay(new  Date(p.date),  now))
-               .reduce((sum,  p)  => sum  +  (p.amount  ||  0),  0);
+      const now = new Date();
+      const startOfWeek = this.getStartOfWeek(now);
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-           this.paymentsWeek  =  this.allPayments
-              .filter(p  =>  new  Date(p.date)  >=  startOfWeek)
-               .reduce((sum,  p) =>  sum  +  (p.amount  ||  0),  0);
+      this.paymentsToday = this.allPayments
+        .filter((p) => this.isSameDay(new Date(p.date), now))
+        .reduce((sum, p) => sum + (p.amount || 0), 0);
 
-           this.paymentsMonth  = this.allPayments
-               .filter(p  =>  new  Date(p.date)  >=  startOfMonth)
-               .reduce((sum, p)  =>  sum  +  (p.amount  ||  0),  0);
+      this.paymentsWeek = this.allPayments
+        .filter((p) => new Date(p.date) >= startOfWeek)
+        .reduce((sum, p) => sum + (p.amount || 0), 0);
 
-            // compute  monthly  series  and  build  chart
-           this.computeMonthlyPaymentSeries();
-           this.updateLineData();
-       });
+      this.paymentsMonth = this.allPayments
+        .filter((p) => new Date(p.date) >= startOfMonth)
+        .reduce((sum, p) => sum + (p.amount || 0), 0);
 
-        //  prepare bar  chart  data  (static  example  or  compute  from seances  if  you  prefer)
-       this.barSeancesData  =  {
-           labels:  ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'],
-           datasets:  [{  label:  'Séances',  data:  [40,35,50,60,70,65,80,90,75,85,95,110],  backgroundColor: '#04a9f5'  }]
-        };
-       this.barSeancesOptions  =  {  responsive:  true, maintainAspectRatio:  false,  plugins:  {  legend:  {  position:  'top' }  },  scales:  {  y:  {  beginAtZero:  true }  }  };
-    }
+      this.computeMonthlyPaymentSeries();
+      this.updateLineData();
+    });
 
-   //  ---------------------------
-    //  SEANCE  LISTS
-   //  ---------------------------
-    computeSeanceDayLists()  {
-       //  ensure  patients  are loaded;  if  not  yet,  map  patientId  to  fallback name
-        const  patientMap  = new  Map<number,  string>();
-        this.allPatients.forEach(p =>  {
-           const  id  =  (p  as  any).id;
-           const  name  =  `${(p as  any).firstName  ||  ''}  ${(p  as  any).lastName  || ''}`.trim();
-            patientMap.set(id, name  ||  '—');
-        });
-
-        const  now  = new  Date();
-        const  yesterday =  new  Date(now);  yesterday.setDate(now.getDate()  -  1);
-       const  tomorrow  =  new  Date(now);  tomorrow.setDate(now.getDate() +  1);
-
-        const formatTime  =  (iso:  string)  =>  {
-           const  d  =  new Date(iso);
-            if (isNaN(d.getTime()))  return  '—';
-           return  d.toLocaleTimeString([],  {  hour:  '2-digit',  minute:  '2-digit' });
-        };
-
-       const  mapSeance  =  (s:  any) =>  ({
-           patientName:  patientMap.get(s.patientId)  ||  `Patient  #${s.patientId}`,
-           time:  formatTime(s.dateTime),
-           type:  s.type  ||  '—'
-       });
-
-       //  filter  and  map
-       this.seancesYesterday  =  this.allSeances
-           .filter(s  =>  this.isSameDay(new  Date(s.dateTime),  yesterday))
-           .map(mapSeance);
-
-       this.seancesTodayList  =  this.allSeances
-           .filter(s  =>  this.isSameDay(new  Date(s.dateTime), now))
-            .map(mapSeance);
-
-        this.seancesTomorrow  =  this.allSeances
-           .filter(s  => this.isSameDay(new  Date(s.dateTime),  tomorrow))
-           .map(mapSeance);
-
-        // optional:  sort  by  time
-       const  sortByTime  =  (a:  any,  b:  any)  => (a.time  >  b.time  ?  1  :  -1);
-       this.seancesYesterday.sort(sortByTime);
-       this.seancesTodayList.sort(sortByTime);
-        this.seancesTomorrow.sort(sortByTime);
-   }
-
-    //  ---------------------------
-   //  CHART  HELPERS
-    //  ---------------------------
-   initChartOptions()  {
-        this.lineStylesOptions =  {
-           responsive:  true,
-           maintainAspectRatio:  false,
-           plugins:  {
-               legend:  {  position:  'top'  },
-               tooltip: {  mode:  'index',  intersect:  false  }
-           },
-           interaction:  {  mode:  'nearest',  axis: 'x',  intersect:  false  },
-           scales:  {
-               x:  {  grid:  { display:  false  }  },
-               y:  {  beginAtZero:  true, ticks:  {  precision:  0  }  }
-           }
-       };
-
-        this.lineStylesData.labels =  ['Jan',  'Fév',  'Mar',  'Avr',  'Mai',  'Juin',  'Juil', 'Août',  'Sep',  'Oct',  'Nov',  'Déc'];
-    }
-
-    computeMonthlyPaymentSeries()  {
-       //  reset
-        this.validatedByMonth =  new  Array(12).fill(0);
-        this.pendingByMonth =  new  Array(12).fill(0);
-
-       this.allPayments.forEach(p  =>  {
-           const  d  =  new  Date(p.date);
-           if  (isNaN(d.getTime()))  return;
-           const  m  = d.getMonth();  //  0..11
-           const  amount  =  Number(p.amount  ||  0);
-           if  (p.status  === 'PENDING')  {
-               this.pendingByMonth[m]  +=  amount;
-           }  else  {
-               this.validatedByMonth[m]  += amount;
-            }
-       });
-    }
-
-    updateLineData()  {
-       const  labels  =  this.lineStylesData.labels;
-       const  datasets:  any[]  =  [];
-
-       if  (this.showValidated)  {
-           datasets.push({
-               label:  'Paiements  validés (€)',
-               data:  this.validatedByMonth,
-               fill:  false,
-               borderColor:  '#04a9f5',
-               backgroundColor: 'rgba(4,169,245,0.06)',
-               tension:  0.3,
-               borderWidth:  3,
-               pointRadius:  4,
-               pointBackgroundColor: '#04a9f5'
-            });
-       }
-
-       if  (this.showPending)  {
-           datasets.push({
-               label:  'Paiements  en  attente (€)',
-               data:  this.pendingByMonth,
-               fill:  false,
-               borderColor:  '#FFA726',
-               backgroundColor: 'rgba(255,167,38,0.06)',
-               borderDash:  [10,  6],
-               tension:  0.3,
-               borderWidth:  3,
-              pointRadius:  4,
-               pointBackgroundColor:  '#FFA726'
-           });
+    this.barSeancesData = {
+      labels: this.getMonthLabels(),
+      datasets: [
+        {
+          label: this.translate.instant('dashboard.chartSeances'),
+          data: [40, 35, 50, 60, 70, 65, 80, 90, 75, 85, 95, 110],
+          backgroundColor: '#04a9f5'
         }
+      ]
+    };
+    this.barSeancesOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'top' } },
+      scales: { y: { beginAtZero: true } }
+    };
+  }
 
-        if  (this.showExpenses)  {
-           datasets.push({
-               label: 'Charges  du  cabinet  (€)',
-               data:  this.expensesByMonth,
-               fill:  true,
-              backgroundColor:  'rgba(117,117,117,0.18)',
-               borderColor:  '#757575',
-               tension:  0.3,
-               borderWidth:  2,
-              pointRadius:  4,
-               pointBackgroundColor:  '#757575'
-           });
-        }
+  computeSeanceDayLists() {
+    const patientMap = new Map<number, string>();
+    this.allPatients.forEach((p) => {
+      const id = (p as any).id;
+      const name = `${(p as any).firstName || ''} ${(p as any).lastName || ''}`.trim();
+      patientMap.set(id, name || '—');
+    });
 
-        this.lineStylesData  =  { labels,  datasets  };
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+
+    const formatTime = (iso: string) => {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return '—';
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    const mapSeance = (s: any) => ({
+      patientName: patientMap.get(s.patientId) || `Patient #${s.patientId}`,
+      time: formatTime(s.dateTime),
+      type: s.type || '—'
+    });
+
+    this.seancesYesterday = this.allSeances.filter((s) => this.isSameDay(new Date(s.dateTime), yesterday)).map(mapSeance);
+
+    this.seancesTodayList = this.allSeances.filter((s) => this.isSameDay(new Date(s.dateTime), now)).map(mapSeance);
+
+    this.seancesTomorrow = this.allSeances.filter((s) => this.isSameDay(new Date(s.dateTime), tomorrow)).map(mapSeance);
+
+    const sortByTime = (a: any, b: any) => (a.time > b.time ? 1 : -1);
+    this.seancesYesterday.sort(sortByTime);
+    this.seancesTodayList.sort(sortByTime);
+    this.seancesTomorrow.sort(sortByTime);
+  }
+
+  initChartOptions() {
+    this.lineStylesOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      interaction: { mode: 'nearest', axis: 'x', intersect: false },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, ticks: { precision: 0 } }
+      }
+    };
+
+    this.lineStylesData.labels = this.getMonthLabels();
+  }
+
+  private getMonthLabels(): string[] {
+    const keys = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    return keys.map((k) => this.translate.instant(`common.months.${k}`));
+  }
+
+  private updateChartLabels(): void {
+    const labels = this.getMonthLabels();
+    this.lineStylesData = { ...this.lineStylesData, labels };
+    if (this.barSeancesData?.datasets?.[0]) {
+      this.barSeancesData = {
+        labels,
+        datasets: [
+          {
+            ...this.barSeancesData.datasets[0],
+            label: this.translate.instant('dashboard.chartSeances')
+          }
+        ]
+      };
+    }
+  }
+
+  computeMonthlyPaymentSeries() {
+    this.validatedByMonth = new Array(12).fill(0);
+    this.pendingByMonth = new Array(12).fill(0);
+
+    this.allPayments.forEach((p) => {
+      const d = new Date(p.date);
+      if (isNaN(d.getTime())) return;
+      const m = d.getMonth();
+      const amount = Number(p.amount || 0);
+      if (p.status === 'PENDING') {
+        this.pendingByMonth[m] += amount;
+      } else {
+        this.validatedByMonth[m] += amount;
+      }
+    });
+  }
+
+  updateLineData() {
+    const labels = this.getMonthLabels();
+    const datasets: any[] = [];
+
+    if (this.showValidated) {
+      datasets.push({
+        label: this.translate.instant('dashboard.chartValidatedPayments'),
+        data: this.validatedByMonth,
+        fill: false,
+        borderColor: '#04a9f5',
+        backgroundColor: 'rgba(4,169,245,0.06)',
+        tension: 0.3,
+        borderWidth: 3,
+        pointRadius: 4,
+        pointBackgroundColor: '#04a9f5'
+      });
     }
 
-   onToggleChange()  {
-        this.updateLineData();
-   }
-
-    //  ---------------------------
-   //  UTILITIES
-    //  ---------------------------
-   isSameDay(d1:  Date,  d2:  Date):  boolean  {
-       return  d1.getFullYear()  ===  d2.getFullYear() &&
-                     d1.getMonth()  ===  d2.getMonth()  &&
-                    d1.getDate()  ===  d2.getDate();
-   }
-
-    getStartOfWeek(date:  Date):  Date  {
-       const  d  =  new Date(date);
-        const  day  = d.getDay();
-        const  diff  = d.getDate()  -  day  +  (day  ===  0  ? -6  :  1);
-        return new  Date(d.setDate(diff));
+    if (this.showPending) {
+      datasets.push({
+        label: this.translate.instant('dashboard.chartPendingPayments'),
+        data: this.pendingByMonth,
+        fill: false,
+        borderColor: '#FFA726',
+        backgroundColor: 'rgba(255,167,38,0.06)',
+        borderDash: [10, 6],
+        tension: 0.3,
+        borderWidth: 3,
+        pointRadius: 4,
+        pointBackgroundColor: '#FFA726'
+      });
     }
+
+    if (this.showExpenses) {
+      datasets.push({
+        label: this.translate.instant('dashboard.chartClinicExpenses'),
+        data: this.expensesByMonth,
+        fill: true,
+        backgroundColor: 'rgba(117,117,117,0.18)',
+        borderColor: '#757575',
+        tension: 0.3,
+        borderWidth: 2,
+        pointRadius: 4,
+        pointBackgroundColor: '#757575'
+      });
+    }
+
+    this.lineStylesData = { labels, datasets };
+  }
+
+  onToggleChange() {
+    this.updateLineData();
+  }
+
+  isSameDay(d1: Date, d2: Date): boolean {
+    return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
+  }
+
+  getStartOfWeek(date: Date): Date {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff));
+  }
 }

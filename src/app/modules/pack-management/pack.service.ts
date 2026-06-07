@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface Pack {
   id?: number;
@@ -15,7 +17,7 @@ export interface Pack {
 
 @Injectable({ providedIn: 'root' })
 export class PackService {
-  private apiUrl = 'http://localhost:8080/api/packs';
+  private apiUrl = `${environment.apiUrl}/packs`;
 
   constructor(private http: HttpClient) {}
 

@@ -1,4 +1,4 @@
-import { Component, OnInit  }  from  '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog  } from  '@angular/material/dialog';
 import { PatientService,  Patient  }  from '../patient.service';
 import { PatientFormComponent }  from  '../patient-form/patient-form.component';
@@ -12,22 +12,23 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
  
 @Component({
      selector: 'app-patient-list',
      templateUrl: './patient-list.component.html',
      styleUrls: ['./patient-list.component.scss'],
      standalone: true,
-     imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, TooltipModule, CardComponent]
+     imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, TooltipModule, CardComponent, TranslateModule]
  }) 
- export  class PatientListComponent  implements  OnInit  {
+ export  class PatientListComponent  {
     patients:  Patient[]  =  [];
     loading: boolean = true;
 
-     constructor(private patientService:  PatientService,  private  dialog: MatDialog)  {}
- 
-    ngOnInit():  void  {
-       this.loadPatients();
+     constructor(private patientService:  PatientService,  private  dialog: MatDialog)  {
+       runAfterBrowserHydration(() => this.loadPatients());
      }
 
      loadPatients(): void  {
@@ -38,14 +39,14 @@ import { CardComponent } from '../../../theme/shared/components/card/card.compon
     }
  
     addPatient():  void  {
-       const  dialogRef  =  this.dialog.open(PatientFormComponent, {  width:  '400px'  });
+       const  dialogRef  =  this.dialog.open(PatientFormComponent, FORM_DIALOG_OPTIONS);
        dialogRef.afterClosed().subscribe(result  =>  {
            if  (result)  this.loadPatients();
        });
      }
 
      editPatient(patient: Patient):  void  {
-        const dialogRef  =  this.dialog.open(PatientFormComponent,  { width:  '400px',  data:  patient });
+        const dialogRef  =  this.dialog.open(PatientFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  patient });
         dialogRef.afterClosed().subscribe(result  =>  {
            if  (result) this.loadPatients();
         });
@@ -57,7 +58,7 @@ import { CardComponent } from '../../../theme/shared/components/card/card.compon
        width: '80vw',
        height:  '80vh',
        maxWidth: '90vw',
-       panelClass:  'middle-dialog',
+       panelClass: 'middle-dialog datta-dialog',
        data: {  patient  }
    });
 }

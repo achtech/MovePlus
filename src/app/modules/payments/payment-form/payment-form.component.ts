@@ -3,12 +3,6 @@ import  { FormBuilder,  FormGroup,  Validators  } from  '@angular/forms';
 import  { MatDialogRef,  MAT_DIALOG_DATA, MatDialogModule  }  from '@angular/material/dialog';
 import  {  PaymentService, Payment  }  from  '../payment.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -16,7 +10,7 @@ import { CommonModule } from '@angular/common';
    templateUrl:  './payment-form.component.html',
    styleUrls: ['./payment-form.component.scss'],
    standalone: true,
-   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule]
+   imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
 })
 export class  PaymentFormComponent  {
    form:  FormGroup;
@@ -34,10 +28,15 @@ export class  PaymentFormComponent  {
           patientId:  [data?.patientId ||  '',  Validators.required],
           seanceId:  [data?.seanceId  || ''],
            amount: [data?.amount  ||  '',  Validators.required],
-          date:  [data?.date ||  '',  Validators.required],
+          date:  [this.toDateInput(data?.date),  Validators.required],
           method:  [data?.method  || '',  Validators.required],
           status:  [data?.status  ||  '', Validators.required]
        });
+   }
+
+   private toDateInput(value?: string): string {
+     if (!value) return '';
+     return value.substring(0, 10);
    }
 
    save():  void  {

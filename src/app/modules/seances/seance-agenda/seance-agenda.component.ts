@@ -1,8 +1,9 @@
-import  {  Component,  OnInit }  from  '@angular/core';
+import  {  Component }  from  '@angular/core';
 import {  CalendarOptions  }  from '@fullcalendar/core';
 import  {  SeanceService }  from  '../seance.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CommonModule } from '@angular/common';
+import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
 
 @Component({
     selector: 'app-seance-agenda',
@@ -11,7 +12,7 @@ import { CommonModule } from '@angular/common';
     standalone: true,
     imports: [CommonModule, FullCalendarModule]
 })
-export  class SeanceAgendaComponent  implements  OnInit  {
+export  class SeanceAgendaComponent  {
    calendarOptions:  CalendarOptions =  {
        initialView:  'dayGridMonth',
       editable:  true,
@@ -19,15 +20,15 @@ export  class SeanceAgendaComponent  implements  OnInit  {
       events:  []
    };
 
-   constructor(private  seanceService:  SeanceService)  {}
-
-    ngOnInit(): void  {
-       this.seanceService.getSeances().subscribe(seances  => {
-           this.calendarOptions.events =  seances.map(s  =>  ({
-             id:  s.id?.toString(),
-              title:  `${s.type} -  Patient  ${s.patientId}`,
-              start: s.dateTime
-           }));
+   constructor(private  seanceService:  SeanceService)  {
+      runAfterBrowserHydration(() => {
+        this.seanceService.getSeances().subscribe(seances  => {
+          this.calendarOptions.events =  seances.map(s  =>  ({
+            id:  s.id?.toString(),
+            title:  `${s.type} -  Patient  ${s.patientId}`,
+            start: s.dateTime
+          }));
+        });
       });
     }
 }

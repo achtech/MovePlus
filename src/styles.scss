@@ -15,6 +15,7 @@
 @import 'scss/plugins/plugins';
 @import 'scss/custom';
 @import 'scss/move-plus-pages';
+@import 'scss/dialogs';
 
 /* Apply  the  theme  to all  Material  components  */
 html {
@@ -38,10 +39,51 @@ html, body  {
    background-color: #f4f7fa;
 }
 
-.middle-dialog  .mat-dialog-container  {
-   padding:  0;
-   border-radius:  12px;
-   overflow:  hidden;
-   display:  flex;
-   flex-direction:  column;
+.middle-dialog .mat-mdc-dialog-container,
+.middle-dialog .mat-dialog-container {
+  padding: 0;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* RTL layout overrides for Arabic */
+html[dir='rtl'] {
+  .pcoded-navbar {
+    right: 0;
+    left: auto;
+  }
+
+  .pcoded-main-container {
+    margin-right: 264px;
+    margin-left: 0;
+  }
+
+  .navbar-nav {
+    flex-direction: row-reverse;
+  }
+
+  .dropdown-menu-end {
+    right: auto !important;
+    left: 0 !important;
+  }
+
+  .table-toolbar {
+    flex-direction: row-reverse;
+  }
+
+  .search-input {
+    margin-right: auto;
+    margin-left: 0;
+  }
+
+  .pcoded-mtext {
+    text-align: right;
+  }
+}
+
+html[dir='rtl'] body.rtl-layout.pcoded-navbar-collapsed .pcoded-main-container {
+  margin-right: 80px;
+  margin-left: 0;
 }

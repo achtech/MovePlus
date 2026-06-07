@@ -1,35 +1,34 @@
-<h2 mat-dialog-title>{{  data  ?  'Modifier  Vente'  :  'Ajouter  Vente'  }}</h2>
+<h2 mat-dialog-title>{{ data ? 'Modifier Vente' : 'Ajouter Vente' }}</h2>
 <mat-dialog-content>
-    <form  [formGroup]="form">
-        <mat-form-field  appearance="fill">
-           <mat-label>Produit</mat-label>
-            <input  matInput  formControlName="productName">
-        </mat-form-field>
-
-       <mat-form-field  appearance="fill">
-            <mat-label>Quantité</mat-label>
-            <input  matInput  type="number"  formControlName="quantity">
-       </mat-form-field>
-
-        <mat-form-field  appearance="fill">
-            <mat-label>Prix  Unitaire</mat-label>
-            <input matInput  type="number"  formControlName="unitPrice">
-        </mat-form-field>
-
-        <mat-form-field  appearance="fill">
-            <mat-label>Date  de Vente</mat-label>
-            <input  matInput  type="date"  formControlName="saleDate">
-        </mat-form-field>
-
-        <mat-form-field  appearance="fill">
-            <mat-label>Notes</mat-label>
-            <textarea  matInput  formControlName="notes" rows="3"></textarea>
-        </mat-form-field>
-
-    </form>
+  <form [formGroup]="form" class="datta-form-grid">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="productName">Produit</label>
+        <input id="productName" type="text" class="form-control" formControlName="productName">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="quantity">Quantité</label>
+        <input id="quantity" type="number" class="form-control" formControlName="quantity">
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="unitPrice">Prix Unitaire</label>
+        <input id="unitPrice" type="number" class="form-control" formControlName="unitPrice">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="saleDate">Date de Vente</label>
+        <input id="saleDate" type="date" class="form-control" formControlName="saleDate">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="notes">Notes</label>
+      <textarea id="notes" class="form-control" rows="3" formControlName="notes"></textarea>
+    </div>
+  </form>
 </mat-dialog-content>
 
-<mat-dialog-actions  align="end">
-    <button  mat-button  (click)="cancel()">Annuler</button>
-    <button mat-raised-button  color="primary"  (click)="save()">Enregistrer</button>
+<mat-dialog-actions align="end" class="datta-dialog-actions">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+  <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
 </mat-dialog-actions>

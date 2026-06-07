@@ -1,48 +1,48 @@
 <div class="table-page">
-  <app-card cardTitle="Patients" [options]="false">
+  <app-card cardTitle="pages.patients.title" [options]="false">
     <div class="table-toolbar">
-      <p-button label="Ajouter Patient" icon="pi pi-plus" (click)="addPatient()" />
+      <p-button [label]="'pages.patients.add' | translate" icon="pi pi-plus" (click)="addPatient()" />
       <p-iconfield iconPosition="left" class="search-input">
         <p-inputicon>
           <i class="pi pi-search"></i>
         </p-inputicon>
-        <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Rechercher..." />
+        <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" [placeholder]="'common.search' | translate" />
       </p-iconfield>
     </div>
 
     <p-table #dt1 [value]="patients" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['firstName', 'lastName', 'phone', 'email']" showGridlines>
       <ng-template #caption>
         <div class="flex">
-          <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+          <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
         </div>
       </ng-template>
       <ng-template #header>
         <tr>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
-              Prénom
+              {{ 'pages.patients.firstName' | translate }}
               <p-columnFilter type="text" field="firstName" display="menu" />
             </div>
           </th>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
-              Nom
+              {{ 'pages.patients.lastName' | translate }}
               <p-columnFilter type="text" field="lastName" display="menu" />
             </div>
           </th>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
-              Téléphone
+              {{ 'pages.patients.phone' | translate }}
               <p-columnFilter type="text" field="phone" display="menu" />
             </div>
           </th>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
-              Email
+              {{ 'pages.patients.email' | translate }}
               <p-columnFilter type="text" field="email" display="menu" />
             </div>
           </th>
-          <th style="min-width:10rem">Actions</th>
+          <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
         </tr>
       </ng-template>
       <ng-template #body let-patient>
@@ -52,7 +52,7 @@
           <td>{{ patient.phone }}</td>
           <td>{{ patient.email }}</td>
           <td>
-            <p-button icon="pi pi-eye" [outlined]="true" (click)="showPatientDetails(patient)" pTooltip="Détails patient" />
+            <p-button icon="pi pi-eye" [outlined]="true" (click)="showPatientDetails(patient)" [pTooltip]="'pages.patients.details' | translate" />
             <p-button icon="pi pi-pencil" [outlined]="true" (click)="editPatient(patient)" />
             <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deletePatient(patient.id!)" />
           </td>
@@ -60,7 +60,7 @@
       </ng-template>
       <ng-template #emptymessage>
         <tr>
-          <td colspan="5">Aucun patient trouvé.</td>
+          <td colspan="5">{{ 'pages.patients.empty' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

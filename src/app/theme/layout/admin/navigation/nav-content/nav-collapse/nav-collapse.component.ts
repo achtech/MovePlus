@@ -1,5 +1,5 @@
 // angular import
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { NavigationItem } from '../../navigation';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { NavItemComponent } from '../nav-item/nav-item.component';
+import { PlatformService } from 'src/app/core/services/platform.service';
 
 @Component({
   selector: 'app-nav-collapse',
@@ -15,12 +16,16 @@ import { NavItemComponent } from '../nav-item/nav-item.component';
   styleUrls: ['./nav-collapse.component.scss']
 })
 export class NavCollapseComponent {
-  // public props
+  private platform = inject(PlatformService);
+
   item = input<NavigationItem>();
   visible = false;
 
-  // public method
   navCollapse(e: MouseEvent) {
+    if (!this.platform.isBrowser) {
+      return;
+    }
+
     this.visible = !this.visible;
     let parent = e.target as HTMLElement;
 
@@ -28,28 +33,28 @@ export class NavCollapseComponent {
       parent = parent.parentElement!;
     }
 
-    parent = (parent as HTMLElement).parentElement as HTMLElement;
+    parent = parent.parentElement as HTMLElement;
 
-    const sections = document.querySelectorAll('.pcoded-hasmenu');
-    for (let i = 0; i < sections.length; i++) {
-      if (sections[i] !== parent) {
-        sections[i].classList.remove('pcoded-trigger');
+    for (const section of this.platform.querySelectorAll('.pcoded-hasmenu')) {
+      if (section !== parent) {
+        section.classList.remove('pcoded-trigger');
       }
     }
 
     let first_parent = parent.parentElement;
-    let pre_parent = ((parent as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement;
-    if (first_parent.classList.contains('pcoded-hasmenu')) {
+    let pre_parent = parent.parentElement?.parentElement;
+    if (first_parent?.classList.contains('pcoded-hasmenu')) {
       do {
         first_parent.classList.add('pcoded-trigger');
-        first_parent = ((first_parent as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement;
-      } while (first_parent.classList.contains('pcoded-hasmenu'));
-    } else if (pre_parent.classList.contains('pcoded-submenu')) {
+        first_parent = first_parent.parentElement?.parentElement ?? null;
+      } while (first_parent?.classList.contains('pcoded-hasmenu'));
+    } else if (pre_parent?.classList.contains('pcoded-submenu') && pre_parent.parentElement) {
       do {
         pre_parent.parentElement.classList.add('pcoded-trigger');
-        pre_parent = (((pre_parent as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement;
-      } while (pre_parent.classList.contains('pcoded-submenu'));
+        pre_parent = pre_parent.parentElement?.parentElement?.parentElement ?? null;
+      } while (pre_parent?.classList.contains('pcoded-submenu'));
     }
+
     parent.classList.toggle('pcoded-trigger');
   }
 }

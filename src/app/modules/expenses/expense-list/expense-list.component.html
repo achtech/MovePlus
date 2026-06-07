@@ -1,12 +1,12 @@
 <div class="table-page">
-  <app-card cardTitle="Charges" [options]="false">
+  <app-card cardTitle="pages.expenses.title" [options]="false">
     <div class="table-toolbar">
-      <p-button label="Ajouter Charge" icon="pi pi-plus" (click)="addExpense()" />
+      <p-button [label]="'pages.expenses.add' | translate" icon="pi pi-plus" (click)="addExpense()" />
       <p-iconfield iconPosition="left" class="search-input">
         <p-inputicon>
           <i class="pi pi-search"></i>
         </p-inputicon>
-        <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Rechercher..." />
+        <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" [placeholder]="'common.search' | translate" />
       </p-iconfield>
     </div>
 
@@ -15,35 +15,35 @@
         <tr>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
-              Description
+              {{ 'pages.expenses.description' | translate }}
               <p-columnFilter type="text" field="description" display="menu" />
             </div>
           </th>
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
-              Montant
+              {{ 'pages.expenses.amount' | translate }}
               <p-columnFilter type="numeric" field="amount" display="menu" currency="EUR" />
             </div>
           </th>
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
-              Catégorie
+              {{ 'pages.expenses.category' | translate }}
               <p-columnFilter type="text" field="category" display="menu" />
             </div>
           </th>
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
-              Date & Heure
+              {{ 'pages.expenses.dateTime' | translate }}
               <p-columnFilter type="date" field="createdAt" display="menu" />
             </div>
           </th>
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
-              Payé par
+              {{ 'pages.expenses.paidBy' | translate }}
               <p-columnFilter type="numeric" field="paidBy" display="menu" />
             </div>
           </th>
-          <th style="min-width:10rem">Actions</th>
+          <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-e>
@@ -51,7 +51,7 @@
           <td>{{ e.description }}</td>
           <td>{{ e.amount | currency:'EUR' }}</td>
           <td>{{ e.category }}</td>
-          <td>{{ e.createdAt | date:'short' }}</td>
+          <td>{{ e.expenseDate || e.createdAt | date:'short' }}</td>
           <td>{{ e.paidByName || e.paidBy }}</td>
           <td>
             <p-button icon="pi pi-pencil" [outlined]="true" (click)="editExpense(e)" />
@@ -61,7 +61,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="6">Aucune charge trouvée.</td>
+          <td colspan="6">{{ 'pages.expenses.empty' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

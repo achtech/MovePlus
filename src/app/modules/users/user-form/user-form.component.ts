@@ -3,10 +3,6 @@ import {  FormBuilder,  FormGroup,  Validators }  from  '@angular/forms';
 import {  MatDialogRef,  MAT_DIALOG_DATA, MatDialogModule  } from  '@angular/material/dialog';
 import  { UserService,  User  }  from '../user.service';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,7 +10,7 @@ import { CommonModule } from '@angular/common';
    templateUrl:  './user-form.component.html',
    styleUrls:  ['./user-form.component.scss'],
    standalone: true,
-   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatDialogModule]
+   imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
 })
 export  class  UserFormComponent  {
    form:  FormGroup;

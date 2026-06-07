@@ -1,0 +1,156 @@
+<div class="profile-page">
+  <app-card cardTitle="profile.title" [options]="false">
+    @if (loading) {
+      <p class="text-muted mb-0">{{ 'common.loading' | translate }}</p>
+    } @else if (errorMessage && !user) {
+      <div class="alert alert-danger mb-0" role="alert">{{ errorMessage }}</div>
+    } @else if (user) {
+      @if (successMessage) {
+        <div class="alert alert-success" role="alert">{{ successMessage }}</div>
+      }
+      @if (errorMessage) {
+        <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+      }
+
+      <div class="profile-header">
+        <img [src]="avatarSrc" [alt]="displayName" class="profile-avatar img-radius" />
+        <div class="profile-header-info">
+          <h4 class="mb-1">{{ displayName }}</h4>
+          <span class="badge bg-primary">{{ user.role }}</span>
+        </div>
+        @if (!editing) {
+          <button type="button" class="btn btn-primary ms-auto" (click)="startEdit()">
+            <i class="feather icon-edit me-1"></i>
+            {{ 'profile.edit' | translate }}
+          </button>
+        }
+      </div>
+
+      @if (!editing) {
+        <div class="profile-view">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted">{{ 'profile.username' | translate }}</label>
+              <p class="profile-value">{{ user.username }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted">{{ 'profile.password' | translate }}</label>
+              <p class="profile-value profile-password">{{ hiddenPassword }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted">{{ 'profile.firstName' | translate }}</label>
+              <p class="profile-value">{{ user.firstName || '—' }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted">{{ 'profile.lastName' | translate }}</label>
+              <p class="profile-value">{{ user.lastName || '—' }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted">{{ 'profile.phone' | translate }}</label>
+              <p class="profile-value">{{ user.phone || '—' }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted">{{ 'profile.role' | translate }}</label>
+              <p class="profile-value">{{ user.role }}</p>
+            </div>
+            <div class="col-12">
+              <label class="form-label text-muted">{{ 'profile.address' | translate }}</label>
+              <p class="profile-value">{{ user.address || '—' }}</p>
+            </div>
+            <div class="col-12">
+              <label class="form-label text-muted">{{ 'profile.avatar' | translate }}</label>
+              <div class="avatar-picker readonly">
+                @for (avatar of avatars; track avatar) {
+                  <img
+                    [src]="avatarImagePath(avatar)"
+                    [alt]="avatar"
+                    class="avatar-option img-radius"
+                    [class.selected]="isSelectedAvatar(avatar)"
+                  />
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="saveProfile()" class="profile-form datta-form-grid">
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label class="form-label" for="username">{{ 'profile.username' | translate }}</label>
+              <input id="username" type="text" class="form-control" [value]="user.username" readonly disabled />
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label" for="password">{{ 'profile.password' | translate }}</label>
+              <div class="password-field">
+                <input
+                  id="password"
+                  [type]="showPassword ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="password"
+                  [placeholder]="'profile.passwordPlaceholder' | translate"
+                  autocomplete="new-password"
+                />
+                <i
+                  [ngClass]="showPassword ? 'feather icon-eye' : 'feather icon-eye-off'"
+                  (click)="togglePasswordVisibility()"
+                ></i>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label class="form-label" for="firstName">{{ 'profile.firstName' | translate }}</label>
+              <input id="firstName" type="text" class="form-control" formControlName="firstName" />
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label" for="lastName">{{ 'profile.lastName' | translate }}</label>
+              <input id="lastName" type="text" class="form-control" formControlName="lastName" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label class="form-label" for="phone">{{ 'profile.phone' | translate }}</label>
+              <input id="phone" type="text" class="form-control" formControlName="phone" />
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label">{{ 'profile.role' | translate }}</label>
+              <input type="text" class="form-control" [value]="user.role" readonly disabled />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="address">{{ 'profile.address' | translate }}</label>
+            <textarea id="address" class="form-control" rows="2" formControlName="address"></textarea>
+          </div>
+          <div class="form-group">
+              <label class="form-label">{{ 'profile.selectAvatar' | translate }}</label>
+              <div class="avatar-picker">
+                @for (avatar of avatars; track avatar) {
+                  <button
+                    type="button"
+                    class="avatar-option-btn"
+                    [class.selected]="isSelectedAvatar(avatar)"
+                    (click)="selectAvatar(avatar)"
+                  >
+                    <img [src]="avatarImagePath(avatar)" [alt]="avatar" class="avatar-option img-radius" />
+                  </button>
+                }
+              </div>
+          </div>
+
+          <div class="profile-actions">
+            <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()" [disabled]="saving">
+              {{ 'profile.cancel' | translate }}
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid || saving">
+              @if (saving) {
+                {{ 'common.loading' | translate }}
+              } @else {
+                {{ 'profile.save' | translate }}
+              }
+            </button>
+          </div>
+        </form>
+      }
+    }
+  </app-card>
+</div>

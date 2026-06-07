@@ -12,7 +12,7 @@
           <div class="mb-4">
             <img src="move-plus-logo.svg" alt="Move +" class="auth-logo" />
           </div>
-          <h3 class="mb-4">Connexion</h3>
+          <h3 class="mb-4">{{ 'auth.login' | translate }}</h3>
 
           <div class="input-group mb-3">
             <input
@@ -20,11 +20,11 @@
               class="form-control"
               formControlName="username"
               autocomplete="username"
-              placeholder="Nom d'utilisateur"
+              [placeholder]="'auth.username' | translate"
               [class.is-invalid]="form.get('username')?.invalid && form.get('username')?.touched"
             />
             @if (form.get('username')?.invalid && form.get('username')?.touched) {
-              <div class="invalid-feedback d-block">Nom d'utilisateur requis</div>
+              <div class="invalid-feedback d-block">{{ 'auth.usernameRequired' | translate }}</div>
             }
           </div>
 
@@ -34,7 +34,7 @@
               class="form-control"
               formControlName="password"
               autocomplete="current-password"
-              placeholder="Mot de passe"
+              [placeholder]="'auth.password' | translate"
               [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
             />
             <i
@@ -43,7 +43,7 @@
               (click)="togglePasswordVisibility()"
             ></i>
             @if (form.get('password')?.invalid && form.get('password')?.touched) {
-              <div class="invalid-feedback d-block">Mot de passe requis</div>
+              <div class="invalid-feedback d-block">{{ 'auth.passwordRequired' | translate }}</div>
             }
           </div>
 
@@ -53,16 +53,16 @@
 
           <button type="submit" class="btn btn-primary mb-4" [disabled]="form.invalid || loading">
             @if (loading) {
-              Connexion...
+              {{ 'auth.signingIn' | translate }}
             } @else {
-              Se connecter
+              {{ 'auth.signIn' | translate }}
             }
           </button>
         </form>
 
         <p class="mb-0 text-muted">
-          Pas de compte ?
-          <a [routerLink]="['/login/register']">S'inscrire</a>
+          {{ 'auth.noAccount' | translate }}
+          <a [routerLink]="['/login/register']">{{ 'auth.register' | translate }}</a>
         </p>
       </div>
     </div>

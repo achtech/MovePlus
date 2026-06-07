@@ -1,59 +1,164 @@
-import  {  Injectable  } from  '@angular/core';
-import  {  Observable, of  } from  'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { PlatformService } from '../../core/services/platform.service';
 
-export interface  User  {
-   id?:  number;
-   username:  string;
-   email:  string;
-   password?:  string;
-   role:  string;
-   enabled:  boolean;
+export interface User {
+  id?: number;
+  username: string;
+  email: string;
+  password?: string;
+  role: string;
+  enabled: boolean;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  address?: string;
+  avatar?: string;
 }
 
-@Injectable({  providedIn:  'root' })
-export  class  UserService {
-    private users: User[] = [
-        { id: 1, username: 'admin', email: 'admin@example.com', password: 'admin', role: 'ADMIN', enabled: true },
-        { id: 2, username: 'kine1', email: 'kine1@example.com', password: 'kine1', role: 'KINE', enabled: true },
-        { id: 3, username: 'assistant', email: 'assistant@example.com', password: 'assistant', role: 'ASSISTANT', enabled: true },
-        { id: 4, username: 'trainer', email: 'trainer@example.com', password: 'trainer', role: 'TRAINER', enabled: false },
-        { id: 5, username: 'Khalidovic', email: 'khalidovic@example.com', password: 'Move+2026', role: 'ADMIN', enabled: true }
-    ];
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private http = inject(HttpClient);
+  private platform = inject(PlatformService);
+  private apiUrl = `${environment.apiUrl}/users`;
+  private profileStorageKey = 'moveplus_profile_extras';
 
-   constructor()  {}
+  private defaultProfileExtras: Record<string, Partial<User>> = {
+    admin: {
+      firstName: 'Admin',
+      lastName: 'User',
+      phone: '+33 6 00 00 00 01',
+      address: '12 Rue de la Santé, Paris',
+      avatar: 'avatar-1.jpg'
+    },
+    kine1: {
+      firstName: 'Marie',
+      lastName: 'Dupont',
+      phone: '+33 6 00 00 00 02',
+      address: '45 Avenue des Champs, Lyon',
+      avatar: 'avatar-2.jpg'
+    },
+    assistant: {
+      firstName: 'Sophie',
+      lastName: 'Martin',
+      phone: '+33 6 00 00 00 03',
+      address: '8 Boulevard Central, Marseille',
+      avatar: 'avatar-3.jpg'
+    },
+    trainer: {
+      firstName: 'Lucas',
+      lastName: 'Bernard',
+      phone: '+33 6 00 00 00 04',
+      address: '3 Place du Sport, Toulouse',
+      avatar: 'avatar-4.jpg'
+    },
+    Khalidovic: {
+      firstName: 'Khalid',
+      lastName: 'Alami',
+      phone: '+33 6 00 00 00 05',
+      address: '1 Clinique Move+, Casablanca',
+      avatar: 'avatar-5.jpg'
+    }
+  };
 
-   getUsers():  Observable<User[]>  {
-      return  of(this.users);
-   }
+  private profileUpdated = new Subject<User>();
 
-   addUser(user:  User):  Observable<User>  {
-      user.id = this.users.length + 1;
-      this.users.push(user);
-      return  of(user);
-   }
+  onProfileUpdated(): Observable<User> {
+    return this.profileUpdated.asObservable();
+  }
 
-   updateUser(id:  number,  user: User):  Observable<User>  {
-       const index = this.users.findIndex(u => u.id === id);
-       if (index !== -1) {
-           this.users[index] = { ...user, id };
-           return of(this.users[index]);
-       }
-       return of(null as any);
-   }
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl).pipe(
+      map((users) => users.map((u) => this.mergeUser(u))),
+      catchError((error) => {
+        console.error('UserService error:', error);
+        return of([]);
+      })
+    );
+  }
 
-   deleteUser(id:  number):  Observable<void>  {
-      this.users = this.users.filter(u => u.id !== id);
-      return  of(void 0);
-   }
+  getUserById(id: number): Observable<User | null> {
+    return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
+      map((user) => this.mergeUser(user)),
+      catchError((error) => {
+        console.error('UserService error:', error);
+        return of(null);
+      })
+    );
+  }
 
-   resetPassword(id: number, newPassword?: string): Observable<void> {
-       // In a real application, this would call an API to reset the password
-       // For now, we'll just simulate the operation
-       const user = this.users.find(u => u.id === id);
-       if (user) {
-           // Use provided new password or fall back to a default
-           user.password = newPassword ?? 'reset123';
-       }
-       return of(void 0);
-   }
+  getUserByUsername(username: string): Observable<User | null> {
+    return this.getUsers().pipe(map((users) => users.find((u) => u.username === username) ?? null));
+  }
+
+  resolveUser(userId: number | null, username: string | null): Observable<User | null> {
+    if (userId) {
+      return this.getUserById(userId).pipe(
+        switchMap((user) => (user ? of(user) : username ? this.getUserByUsername(username) : of(null)))
+      );
+    }
+    return username ? this.getUserByUsername(username) : of(null);
+  }
+
+  addUser(user: User): Observable<User> {
+    const { firstName, lastName, phone, address, avatar, password, ...apiUser } = user;
+    return this.http.post<User>(this.apiUrl, apiUser).pipe(
+      map((created) => {
+        const merged = this.mergeUser(created);
+        this.saveProfileExtras(created.username, { firstName, lastName, phone, address, avatar, password });
+        return merged;
+      })
+    );
+  }
+
+  updateUser(id: number, user: User): Observable<User> {
+    const { firstName, lastName, phone, address, avatar, password, ...apiUser } = user;
+    this.saveProfileExtras(user.username, { firstName, lastName, phone, address, avatar, password });
+
+    return this.http.put<User>(`${this.apiUrl}/${id}`, { ...apiUser, id }).pipe(
+      map((saved) => this.mergeUser({ ...user, ...saved, id })),
+      tap((updated) => this.profileUpdated.next(updated)),
+      catchError((error) => {
+        console.error('UserService error:', error);
+        return of(null as unknown as User);
+      })
+    );
+  }
+
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  resetPassword(_id: number, _newPassword?: string): Observable<void> {
+    return of(void 0);
+  }
+
+  private mergeUser(user: User): User {
+    const extras = this.getProfileExtras(user.username);
+    return { ...this.defaultProfileExtras[user.username], ...extras, ...user };
+  }
+
+  private getProfileExtras(username: string): Partial<User> {
+    if (!this.platform.isBrowser) {
+      return this.defaultProfileExtras[username] ?? {};
+    }
+    try {
+      const all = JSON.parse(localStorage.getItem(this.profileStorageKey) || '{}') as Record<string, Partial<User>>;
+      return all[username] ?? {};
+    } catch {
+      return {};
+    }
+  }
+
+  private saveProfileExtras(username: string, extras: Partial<User>): void {
+    if (!this.platform.isBrowser) {
+      return;
+    }
+    const all = JSON.parse(localStorage.getItem(this.profileStorageKey) || '{}') as Record<string, Partial<User>>;
+    all[username] = { ...(all[username] ?? {}), ...extras };
+    localStorage.setItem(this.profileStorageKey, JSON.stringify(all));
+  }
 }

@@ -4,15 +4,15 @@
       <a ngbDropdownToggle href="javascript:void(0)" data-toggle="dropdown"><i class="icon feather icon-bell"></i></a>
       <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end notification">
         <div class="notification-head">
-          <h6 class="d-inline-block m-b-0">Notifications</h6>
+          <h6 class="d-inline-block m-b-0">{{ 'header.notifications' | translate }}</h6>
           <div class="float-end">
-            <a href="javascript:void(0)" class="m-r-10 text-decoration-none">mark as read</a>
-            <a href="javascript:void(0)" class="text-decoration-none">clear all</a>
+            <a href="javascript:void(0)" class="m-r-10 text-decoration-none">{{ 'header.markAsRead' | translate }}</a>
+            <a href="javascript:void(0)" class="text-decoration-none">{{ 'header.clearAll' | translate }}</a>
           </div>
         </div>
         <ul class="notification-body">
           <li class="n-title">
-            <p class="m-b-0">NEW</p>
+            <p class="m-b-0">{{ 'header.new' | translate }}</p>
           </li>
           <li class="notification">
             <div class="d-flex">
@@ -30,7 +30,7 @@
             </div>
           </li>
           <li class="n-title">
-            <p class="m-b-0">EARLIER</p>
+            <p class="m-b-0">{{ 'header.earlier' | translate }}</p>
           </li>
           <li class="notification">
             <div class="d-flex">
@@ -64,8 +64,30 @@
           </li>
         </ul>
         <div class="notification-footer">
-          <a href="javascript:void(0)">show all</a>
+          <a href="javascript:void(0)">{{ 'header.showAll' | translate }}</a>
         </div>
+      </div>
+    </div>
+  </li>
+  <li>
+    <div class="dropdown" ngbDropdown placement="auto">
+      <a ngbDropdownToggle href="javascript:void(0)" data-toggle="dropdown" [title]="'languages.select' | translate">
+        <i class="icon feather icon-globe"></i>
+      </a>
+      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end language-menu">
+        @for (lang of languages; track lang.code) {
+          <button
+            type="button"
+            class="dropdown-item d-flex align-items-center justify-content-between"
+            [class.active]="isCurrentLanguage(lang.code)"
+            (click)="selectLanguage(lang.code)"
+          >
+            <span>{{ lang.labelKey | translate }}</span>
+            @if (isCurrentLanguage(lang.code)) {
+              <i class="feather icon-check"></i>
+            }
+          </button>
+        }
       </div>
     </div>
   </li>
@@ -76,35 +98,23 @@
       </a>
       <div class="dropdown-menu dropdown-menu-end profile-notification" ngbDropdownMenu>
         <div class="pro-head">
-          <img src="assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image" />
-          <span>John Doe</span>
-          <a href="javascript:void(0)" class="dud-logout" title="Logout" (click)="logout()">
+          <img [src]="avatarSrc" class="img-radius" alt="User-Profile-Image" />
+          <span>{{ displayName }}</span>
+          <a href="javascript:void(0)" class="dud-logout" [title]="'header.logout' | translate" (click)="logout()">
             <i class="feather icon-log-out"></i>
           </a>
         </div>
         <ul class="pro-body">
           <li>
-            <a href="javascript:void(0)" class="dropdown-item">
-              <i class="feather icon-settings"></i>
-              Settings
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" class="dropdown-item">
+            <a routerLink="/profile" class="dropdown-item">
               <i class="feather icon-user"></i>
-              Profile
+              {{ 'header.profile' | translate }}
             </a>
           </li>
           <li>
-            <a href="javascript:void(0)" class="dropdown-item">
-              <i class="feather icon-mail"></i>
-              My Messages
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" class="dropdown-item">
-              <i class="feather icon-lock"></i>
-              Lock Screen
+            <a href="javascript:void(0)" class="dropdown-item" (click)="logout()">
+              <i class="feather icon-log-out"></i>
+              {{ 'header.logout' | translate }}
             </a>
           </li>
         </ul>

@@ -2,7 +2,7 @@
   @if (!hidHeader) {
     <div class="card-header" [ngClass]="headerClass()">
       @if (!customHeader) {
-        <h5>{{ cardTitle }}</h5>
+        <h5>{{ cardTitle | translate }}</h5>
       }
       @if (this.options && !customHeader) {
         <div class="card-header-right">

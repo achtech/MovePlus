@@ -2,14 +2,18 @@
 import { Component, ElementRef, Input, OnInit, TemplateRef, inject, contentChild, input } from '@angular/core';
 import { animate, AUTO_STYLE, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 // bootstrap import
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
+// project import
+import { PlatformService } from 'src/app/core/services/platform.service';
+
 @Component({
   selector: 'app-card',
-  imports: [CommonModule, NgbDropdownModule],
+  imports: [CommonModule, NgbDropdownModule, TranslateModule],
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
   providers: [NgbDropdownConfig],
@@ -50,7 +54,8 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
   ]
 })
 export class CardComponent implements OnInit {
-  // public props
+  private platform = inject(PlatformService);
+
   @Input() cardTitle: string;
   @Input() cardClass: string;
   blockClass = input<string>();
@@ -69,7 +74,6 @@ export class CardComponent implements OnInit {
   loadCard: boolean;
   cardRemove: string;
 
-  // constructor
   constructor() {
     const config = inject(NgbDropdownConfig);
 
@@ -89,14 +93,12 @@ export class CardComponent implements OnInit {
     this.cardRemove = 'open';
   }
 
-  // life cycle event
   ngOnInit() {
     if (!this.options || this.hidHeader || this.customHeader) {
       this.collapsedCard = 'false';
     }
   }
 
-  // public method
   fullCardToggle(animation: string, status: boolean) {
     animation = this.cardClass === 'full-card' ? 'zoomOut' : 'zoomIn';
     this.fullIcon = this.cardClass === 'full-card' ? 'icon-maximize' : 'icon-minimize';
@@ -108,10 +110,14 @@ export class CardComponent implements OnInit {
 
     setTimeout(() => {
       this.cardClass = animation === 'zoomOut' ? '' : this.cardClass;
+      const body = this.platform.getBody();
+      if (!body) {
+        return;
+      }
       if (this.cardClass === 'full-card') {
-        document.querySelector('body').style.overflow = 'hidden';
+        body.style.overflow = 'hidden';
       } else {
-        document.querySelector('body').removeAttribute('style');
+        body.removeAttribute('style');
       }
     }, 500);
   }
@@ -124,7 +130,7 @@ export class CardComponent implements OnInit {
   cardRefresh() {
     this.loadCard = true;
     this.cardClass = 'card-load';
-    document.querySelector('body').removeAttribute('style');
+    this.platform.getBody()?.removeAttribute('style');
     setTimeout(() => {
       this.loadCard = false;
       this.cardClass = 'expanded';

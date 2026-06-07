@@ -1,61 +1,61 @@
 <div class="table-page">
-  <app-card cardTitle="Paiements" [options]="false">
+  <app-card cardTitle="pages.payments.title" [options]="false">
     <div class="table-toolbar">
-      <p-button label="Ajouter Paiement" icon="pi pi-plus" (click)="addPayment()" />
+      <p-button [label]="'pages.payments.add' | translate" icon="pi pi-plus" (click)="addPayment()" />
       <p-iconfield iconPosition="left" class="search-input">
         <p-inputicon>
           <i class="pi pi-search"></i>
         </p-inputicon>
-        <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Rechercher..." />
+        <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" [placeholder]="'common.search' | translate" />
       </p-iconfield>
     </div>
 
-    <p class="page-summary">Total : {{ totalAmount | currency:'EUR' }}</p>
+    <p class="page-summary">{{ 'common.total' | translate }} : {{ totalAmount | currency:'EUR' }}</p>
 
-    <p-table #dt1 [value]="payments" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['patientId', 'amount', 'date', 'method', 'status']" showGridlines>
+    <p-table #dt1 [value]="payments" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['patientName', 'amount', 'date', 'method', 'status']" showGridlines>
       <ng-template #caption>
         <div class="flex">
-          <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+          <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
         </div>
       </ng-template>
       <ng-template #header>
         <tr>
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
-              Patient
-              <p-columnFilter type="text" field="patientId" display="menu" />
+              {{ 'pages.payments.patient' | translate }}
+              <p-columnFilter type="text" field="patientName" display="menu" />
             </div>
           </th>
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
-              Montant
+              {{ 'pages.payments.amount' | translate }}
               <p-columnFilter type="numeric" field="amount" display="menu" currency="EUR" />
             </div>
           </th>
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
-              Date
+              {{ 'pages.payments.date' | translate }}
               <p-columnFilter type="date" field="date" display="menu" />
             </div>
           </th>
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
-              Méthode
+              {{ 'pages.payments.method' | translate }}
               <p-columnFilter type="text" field="method" display="menu" />
             </div>
           </th>
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
-              Statut
+              {{ 'pages.payments.status' | translate }}
               <p-columnFilter type="text" field="status" display="menu" />
             </div>
           </th>
-          <th style="min-width:10rem">Actions</th>
+          <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
         </tr>
       </ng-template>
       <ng-template #body let-p>
         <tr>
-          <td>{{ p.patientId }}</td>
+          <td>{{ getPatientName(p.patientId) }}</td>
           <td>{{ p.amount | currency:'EUR' }}</td>
           <td>{{ p.date | date:'shortDate' }}</td>
           <td>{{ p.method }}</td>
@@ -68,7 +68,7 @@
       </ng-template>
       <ng-template #emptymessage>
         <tr>
-          <td colspan="6">Aucun paiement trouvé.</td>
+          <td colspan="6">{{ 'pages.payments.empty' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

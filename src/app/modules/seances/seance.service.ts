@@ -1,52 +1,53 @@
-import  {  Injectable  } from  '@angular/core';
-import {  Observable, of  } from  'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
-export interface  Seance  {
-   id?:  number;
-   patientId:  number;
-   therapistId:  number;
-   dateTime:  string;
-   duration:  number;
-   type:  string;
-   notes:  string;
-   status:  string;
+export interface Seance {
+  id?: number;
+  patientId: number;
+  therapistId: number;
+  dateTime: string;
+  duration: number;
+  type: string;
+  notes: string;
+  status: string;
 }
 
-@Injectable({  providedIn:  'root' })
-export  class  SeanceService {
-    private seances: Seance[] = [
-        { id: 1, patientId: 1, therapistId: 2, dateTime: '2026-01-15T10:00:00', duration: 60, type: 'Massage', notes: 'Relaxation session', status: 'COMPLETED' },
-        { id: 2, patientId: 2, therapistId: 2, dateTime: '2026-01-16T14:00:00', duration: 45, type: 'Physio', notes: 'Back exercises', status: 'SCHEDULED' },
-        { id: 3, patientId: 3, therapistId: 2, dateTime: '2026-01-17T09:00:00', duration: 30, type: 'Consultation', notes: 'Initial assessment', status: 'CANCELLED' }
-    ];
+@Injectable({ providedIn: 'root' })
+export class SeanceService {
+  private apiUrl = `${environment.apiUrl}/seances`;
 
-   constructor()  {}
+  constructor(private http: HttpClient) {}
 
-   getSeances():  Observable<Seance[]>  {
-      return  of(this.seances);
-   }
+  getSeances(): Observable<Seance[]> {
+    return this.http.get<Seance[]>(this.apiUrl).pipe(catchError(this.handleError([])));
+  }
 
-   addSeance(seance:  Seance):  Observable<Seance>  {
-      seance.id = this.seances.length + 1;
-      this.seances.push(seance);
-      return  of(seance);
-   }
+  addSeance(seance: Seance): Observable<Seance> {
+    return this.http.post<Seance>(this.apiUrl, seance);
+  }
 
-   updateSeance(id:  number,  seance: Seance):  Observable<Seance>  {
-       const index = this.seances.findIndex(s => s.id === id);
-       if (index !== -1) {
-           this.seances[index] = { ...seance, id };
-           return of(this.seances[index]);
-       }
-       return of(null as any);
-   }
+  updateSeance(id: number, seance: Seance): Observable<Seance> {
+    return this.http.put<Seance>(`${this.apiUrl}/${id}`, seance);
+  }
 
-   deleteSeance(id:  number):  Observable<void>  {
-      this.seances = this.seances.filter(s => s.id !== id);
-      return  of(void 0);
-   }
+  deleteSeance(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 
-   getSeancesByPatientId(patientId: number): Observable<Seance[]> {
-      return of(this.seances.filter(s => s.patientId === patientId));
-   }
+  getSeancesByPatientId(patientId: number): Observable<Seance[]> {
+    return this.http.get<Seance[]>(`${this.apiUrl}/patient/${patientId}`).pipe(catchError(this.handleError([])));
+  }
+
+  private handleError<T>(fallback: T) {
+    return (error: unknown): Observable<T> => {
+      console.error('SeanceService error:', error);
+      return new Observable((subscriber) => {
+        subscriber.next(fallback);
+        subscriber.complete();
+      });
+    };
+  }
 }

@@ -1,16 +1,17 @@
 // Angular Import
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule, Event } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 // project import
 import { NavigationItem, NavigationItems } from 'src/app/theme/layout/admin/navigation/navigation';
 import { SharedModule } from '../../shared.module';
 
 interface titleType {
-  // eslint-disable-next-line
-  url: string | boolean | any | undefined;
+  url: string | boolean | undefined;
   title: string;
   breadcrumbs: unknown;
   type: string;
@@ -22,56 +23,70 @@ interface titleType {
   templateUrl: './breadcrumbs.component.html',
   styleUrls: ['./breadcrumbs.component.scss']
 })
-export class BreadcrumbsComponent {
+export class BreadcrumbsComponent implements OnDestroy {
   private route = inject(Router);
   private titleService = inject(Title);
+  private translate = inject(TranslateService);
+  private langSub?: Subscription;
 
-  // public props
-  @Input() type: string;
+  @Input() type = 'theme1';
 
   navigations: NavigationItem[];
   breadcrumbList: string[] = [];
   navigationList!: titleType[];
 
-  // constructor
   constructor() {
     this.navigations = NavigationItems;
-    this.type = 'theme1';
     this.setBreadcrumb();
+    this.langSub = this.translate.onLangChange.subscribe(() => this.updateFromCurrentRoute());
   }
 
-  // public method
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
+  }
+
   setBreadcrumb() {
     this.route.events.subscribe((router: Event) => {
       if (router instanceof NavigationEnd) {
-        const activeLink = router.url;
-        const breadcrumbList = this.filterNavigation(this.navigations, activeLink);
-        this.navigationList = breadcrumbList;
-        const title = breadcrumbList[breadcrumbList.length - 1]?.title || 'Welcome';
-        this.titleService.setTitle(title + ' | Move + Clinic');
+        this.updateFromUrl(router.urlAfterRedirects || router.url);
       }
     });
   }
 
+  private updateFromCurrentRoute(): void {
+    this.updateFromUrl(this.route.url);
+  }
+
+  private updateFromUrl(url: string): void {
+    const breadcrumbList = this.filterNavigation(this.navigations, url);
+    this.navigationList = breadcrumbList;
+    const title = breadcrumbList[breadcrumbList.length - 1]?.title || this.translate.instant('app.welcome');
+    this.titleService.setTitle(`${title} | ${this.translate.instant('app.name')}`);
+  }
+
+  private getNavTitle(item: NavigationItem): string {
+    return item.translate ? this.translate.instant(item.translate) : item.title;
+  }
+
   filterNavigation(navItems: NavigationItem[], activeLink: string): titleType[] {
     for (const navItem of navItems) {
-      if (navItem.type === 'item' && 'url' in navItem && navItem.url === activeLink) {
+      if (navItem.type === 'item' && navItem.url === activeLink) {
         return [
           {
-            url: 'url' in navItem ? navItem.url : false,
-            title: navItem.title,
-            breadcrumbs: 'breadcrumbs' in navItem ? navItem.breadcrumbs : true,
+            url: navItem.url,
+            title: this.getNavTitle(navItem),
+            breadcrumbs: navItem.breadcrumbs ?? true,
             type: navItem.type
           }
         ];
       }
-      if ((navItem.type === 'group' || navItem.type === 'collapse') && 'children' in navItem) {
-        const breadcrumbList = this.filterNavigation(navItem.children!, activeLink);
+      if ((navItem.type === 'group' || navItem.type === 'collapse') && navItem.children) {
+        const breadcrumbList = this.filterNavigation(navItem.children, activeLink);
         if (breadcrumbList.length > 0) {
           breadcrumbList.unshift({
-            url: 'url' in navItem ? navItem.url : false,
-            title: navItem.title,
-            breadcrumbs: 'breadcrumbs' in navItem ? navItem.breadcrumbs : true,
+            url: navItem.url,
+            title: this.getNavTitle(navItem),
+            breadcrumbs: navItem.breadcrumbs ?? true,
             type: navItem.type
           });
           return breadcrumbList;

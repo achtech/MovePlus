@@ -1,11 +1,11 @@
 <div class="table-page">
-  <app-card cardTitle="Ventes & Stock" [options]="false">
+  <app-card cardTitle="pages.salesStock.title" [options]="false">
     <div class="table-toolbar">
       <div class="button-group">
-        <p-button label="Ajouter Vente" icon="pi pi-plus" (click)="addSale()" />
-        <p-button label="Ajouter Stock" icon="pi pi-plus" (click)="addStock()" [outlined]="true" />
+        <p-button [label]="'pages.salesStock.addSale' | translate" icon="pi pi-plus" (click)="addSale()" />
+        <p-button [label]="'pages.salesStock.addStock' | translate" icon="pi pi-plus" (click)="addStock()" [outlined]="true" />
         <p-button
-          [label]="showSales ? 'Voir Stock' : 'Voir Ventes'"
+          [label]="(showSales ? 'pages.salesStock.viewStock' : 'pages.salesStock.viewSales') | translate"
           [icon]="showSales ? 'pi pi-box' : 'pi pi-shopping-cart'"
           (click)="toggleView()"
           [outlined]="true"
@@ -15,13 +15,13 @@
         <p-inputicon>
           <i class="pi pi-search"></i>
         </p-inputicon>
-        <input pInputText type="text" (input)="dt1?.filterGlobal($event.target.value, 'contains')" placeholder="Rechercher dans les ventes" />
+        <input pInputText type="text" (input)="dt1?.filterGlobal($event.target.value, 'contains')" [placeholder]="'pages.salesStock.searchSales' | translate" />
       </p-iconfield>
       <p-iconfield iconPosition="left" class="search-input" *ngIf="!showSales">
         <p-inputicon>
           <i class="pi pi-search"></i>
         </p-inputicon>
-        <input pInputText type="text" (input)="dt2?.filterGlobal($event.target.value, 'contains')" placeholder="Rechercher dans le stock" />
+        <input pInputText type="text" (input)="dt2?.filterGlobal($event.target.value, 'contains')" [placeholder]="'pages.salesStock.searchStock' | translate" />
       </p-iconfield>
     </div>
 
@@ -29,42 +29,42 @@
       <p-table #dt1 [value]="sales" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['productName', 'quantity', 'unitPrice', 'total', 'saleDate', 'notes']" showGridlines>
         <ng-template #caption>
           <div class="flex">
-            <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+            <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
           </div>
         </ng-template>
         <ng-template #header>
           <tr>
             <th style="min-width:15rem">
               <div class="flex items-center justify-between">
-                Produit
+                {{ 'pages.salesStock.product' | translate }}
                 <p-columnFilter type="text" field="productName" display="menu" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Quantité
+                {{ 'pages.salesStock.quantity' | translate }}
                 <p-columnFilter type="numeric" field="quantity" display="menu" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Prix de Vente
+                {{ 'pages.salesStock.salePrice' | translate }}
                 <p-columnFilter type="numeric" field="unitPrice" display="menu" currency="EUR" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Date Opération
+                {{ 'pages.salesStock.operationDate' | translate }}
                 <p-columnFilter type="date" field="saleDate" display="menu" />
               </div>
             </th>
             <th style="min-width:15rem">
               <div class="flex items-center justify-between">
-                Note
+                {{ 'pages.salesStock.note' | translate }}
                 <p-columnFilter type="text" field="notes" display="menu" />
               </div>
             </th>
-            <th style="min-width:10rem">Actions</th>
+            <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template #body let-s>
@@ -82,7 +82,7 @@
         </ng-template>
         <ng-template #emptymessage>
           <tr>
-            <td colspan="6">Aucune vente trouvée.</td>
+            <td colspan="6">{{ 'pages.salesStock.emptySales' | translate }}</td>
           </tr>
         </ng-template>
       </p-table>
@@ -92,42 +92,42 @@
       <p-table #dt2 [value]="stock" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['productName', 'quantity', 'unitPrice', 'minStockAlert', 'lastUpdated']" showGridlines>
         <ng-template #caption>
           <div class="flex">
-            <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt2)" />
+            <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt2)" />
           </div>
         </ng-template>
         <ng-template #header>
           <tr>
             <th style="min-width:15rem">
               <div class="flex items-center justify-between">
-                Produit
+                {{ 'pages.salesStock.product' | translate }}
                 <p-columnFilter type="text" field="productName" display="menu" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Qté en Stock
+                {{ 'pages.salesStock.stockQty' | translate }}
                 <p-columnFilter type="numeric" field="quantity" display="menu" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Prix d'Achat
+                {{ 'pages.salesStock.purchasePrice' | translate }}
                 <p-columnFilter type="numeric" field="unitPrice" display="menu" currency="EUR" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Alerte Stock Min
+                {{ 'pages.salesStock.minAlert' | translate }}
                 <p-columnFilter type="numeric" field="minStockAlert" display="menu" />
               </div>
             </th>
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
-                Date Dernier Achat
+                {{ 'pages.salesStock.lastPurchase' | translate }}
                 <p-columnFilter type="date" field="lastUpdated" display="menu" />
               </div>
             </th>
-            <th style="min-width:10rem">Actions</th>
+            <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template #body let-s>
@@ -147,7 +147,7 @@
         </ng-template>
         <ng-template #emptymessage>
           <tr>
-            <td colspan="6">Aucun stock trouvé.</td>
+            <td colspan="6">{{ 'pages.salesStock.emptyStock' | translate }}</td>
           </tr>
         </ng-template>
       </p-table>

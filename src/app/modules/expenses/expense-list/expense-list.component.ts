@@ -1,4 +1,4 @@
-import  { Component,  OnInit, ChangeDetectorRef  }  from '@angular/core';
+import  { Component, ChangeDetectorRef  }  from '@angular/core';
 import  {  MatDialog }  from  '@angular/material/dialog';
 import {  ExpenseService,  Expense  } from  '../expense.service';
 import  { ExpenseFormComponent  }  from  '../expense-form/expense-form.component';
@@ -10,15 +10,18 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
 
 @Component({
     selector: 'app-expense-list',
     templateUrl: './expense-list.component.html',
     styleUrls: ['./expense-list.component.scss'],
     standalone: true,
-    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent]
+    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule]
 })
-export  class ExpenseListComponent  implements  OnInit  {
+export  class ExpenseListComponent  {
    expenses:  Expense[]  =  [];
    loading: boolean = true;
 
@@ -26,10 +29,8 @@ export  class ExpenseListComponent  implements  OnInit  {
         private expenseService: ExpenseService,
         private dialog: MatDialog,
         private cdr: ChangeDetectorRef
-    ) {}
-
-   ngOnInit():  void  {
-      this.loadExpenses();
+    ) {
+      runAfterBrowserHydration(() => this.loadExpenses());
     }
 
     loadExpenses(): void  {
@@ -49,7 +50,7 @@ export  class ExpenseListComponent  implements  OnInit  {
    }
 
    addExpense():  void  {
-       const dialogRef  =  this.dialog.open(ExpenseFormComponent,  { width:  '400px'  });
+       const dialogRef  =  this.dialog.open(ExpenseFormComponent, FORM_DIALOG_OPTIONS);
        dialogRef.afterClosed().subscribe(result =>  {
           if  (result)  {
               this.loadExpenses();
@@ -58,7 +59,7 @@ export  class ExpenseListComponent  implements  OnInit  {
    }
 
    editExpense(expense:  Expense): void  {
-       const  dialogRef =  this.dialog.open(ExpenseFormComponent,  {  width: '400px',  data:  expense  });
+       const  dialogRef =  this.dialog.open(ExpenseFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  expense  });
       dialogRef.afterClosed().subscribe(result  =>  {
           if  (result)  {
               this.loadExpenses();

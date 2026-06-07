@@ -2,11 +2,9 @@ import  {  Component, Inject  }  from  '@angular/core';
 import  {  FormBuilder,  FormGroup, Validators  }  from  '@angular/forms';
 import  {  MatDialogRef,  MAT_DIALOG_DATA, MatDialogModule }  from  '@angular/material/dialog';
  import {  SeanceService,  Seance  } from  '../seance.service';
-import { PatientService, Patient } from '../../patients/patient.service';import { UserService, User } from '../../users/user.service';import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
+import { PatientService, Patient } from '../../patients/patient.service';
+import { UserService, User } from '../../users/user.service';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
  @Component({
@@ -14,7 +12,7 @@ import { CommonModule } from '@angular/common';
     templateUrl:  './seance-form.component.html',
     styleUrls: ['./seance-form.component.scss'],
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatDialogModule]
+    imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
 })
  export  class  SeanceFormComponent {
      form: FormGroup;
@@ -34,7 +32,7 @@ import { CommonModule } from '@angular/common';
         this.form  = this.fb.group({
             patientId: [data?.patientId  ||  '',  Validators.required],
            therapistId:  [data?.therapistId ||  '',  Validators.required],
-           dateTime:  [data?.dateTime  || '',  Validators.required],
+           dateTime:  [this.toDateTimeLocal(data?.dateTime),  Validators.required],
            duration:  [data?.duration  || 60, Validators.required],
            type:  [data?.type  || '', Validators.required],
            status:  [data?.status  || 'SCHEDULED', Validators.required],
@@ -54,10 +52,17 @@ import { CommonModule } from '@angular/common';
         });
     }
 
+    private toDateTimeLocal(value?: string): string {
+      if (!value) return '';
+      return value.length >= 16 ? value.substring(0, 16) : value;
+    }
+
         save():  void  {
         if (this.form.valid)  {
             const  seance  =  this.form.value;
-            seance.status = 'SCHEDULED'; // Default status for new seances
+            if (!this.data?.id) {
+              seance.status = seance.status || 'SCHEDULED';
+            }
             if  (this.data?.id)  {
                this.seanceService.updateSeance(this.data.id,  seance).subscribe(()  =>  this.dialogRef.close(true));
             }  else  {
