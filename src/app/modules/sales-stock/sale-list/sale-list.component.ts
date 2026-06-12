@@ -13,6 +13,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { Table } from 'primeng/table';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
@@ -22,7 +23,7 @@ import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
    templateUrl:  './sale-list.component.html',
    styleUrls:  ['./sale-list.component.scss'],
    standalone: true,
-   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule]
+   imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule, AppCurrencyPipe]
 })
 export  class  SaleListComponent {
    sales:  Sale[]  =  [];

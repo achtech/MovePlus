@@ -5,6 +5,8 @@ import { ChartModule } from 'primeng/chart';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { CardComponent } from '../../theme/shared/components/card/card.component';
+import { AppCurrencyPipe } from '../../core/pipes/app-currency.pipe';
+import { APP_CURRENCY_SYMBOL } from '../../core/constants/currency.config';
 import { runAfterBrowserHydration } from '../../core/utils/browser-init';
 
 import { PatientService } from '../patients/patient.service';
@@ -14,7 +16,7 @@ import { PaymentService } from '../payments/payment.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChartModule, CardComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, ChartModule, CardComponent, TranslateModule, AppCurrencyPipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -174,17 +176,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   initChartOptions() {
+    const currencyLabel = (context: { parsed: { y: number }; dataset: { label?: string } }) =>
+      `${context.dataset.label}: ${context.parsed.y.toLocaleString('fr-MA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${APP_CURRENCY_SYMBOL}`;
+
     this.lineStylesOptions = {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
         legend: { position: 'top' },
-        tooltip: { mode: 'index', intersect: false }
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          callbacks: { label: currencyLabel }
+        }
       },
       interaction: { mode: 'nearest', axis: 'x', intersect: false },
       scales: {
         x: { grid: { display: false } },
-        y: { beginAtZero: true, ticks: { precision: 0 } }
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0,
+            callback: (value: string | number) => `${value} ${APP_CURRENCY_SYMBOL}`
+          }
+        }
       }
     };
 

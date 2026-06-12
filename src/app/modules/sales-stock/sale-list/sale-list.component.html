@@ -26,7 +26,7 @@
     </div>
 
     <div *ngIf="showSales">
-      <p-table #dt1 [value]="sales" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['productName', 'quantity', 'unitPrice', 'total', 'saleDate', 'notes']" showGridlines>
+      <p-table #dt1 [value]="sales" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['productName', 'quantity', 'unitPrice', 'total', 'saleDate', 'notes']" showGridlines>
         <ng-template #caption>
           <div class="flex">
             <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
@@ -49,7 +49,7 @@
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
                 {{ 'pages.salesStock.salePrice' | translate }}
-                <p-columnFilter type="numeric" field="unitPrice" display="menu" currency="EUR" />
+                <p-columnFilter type="numeric" field="unitPrice" display="menu" currency="MAD" />
               </div>
             </th>
             <th style="min-width:10rem">
@@ -71,7 +71,7 @@
           <tr>
             <td>{{ s.productName }}</td>
             <td>{{ s.quantity }}</td>
-            <td>{{ s.unitPrice | currency:'EUR' }}</td>
+            <td>{{ s.unitPrice | appCurrency }}</td>
             <td>{{ s.saleDate | date:'shortDate' }}</td>
             <td>{{ s.notes }}</td>
             <td>
@@ -85,11 +85,17 @@
             <td colspan="6">{{ 'pages.salesStock.emptySales' | translate }}</td>
           </tr>
         </ng-template>
+        <ng-template pTemplate="paginatorpreviouspagelinkicon">
+          {{ 'pagination.previous' | translate }}
+        </ng-template>
+        <ng-template pTemplate="paginatornextpagelinkicon">
+          {{ 'pagination.next' | translate }}
+        </ng-template>
       </p-table>
     </div>
 
     <div *ngIf="!showSales">
-      <p-table #dt2 [value]="stock" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['productName', 'quantity', 'unitPrice', 'minStockAlert', 'lastUpdated']" showGridlines>
+      <p-table #dt2 [value]="stock" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['productName', 'quantity', 'unitPrice', 'minStockAlert', 'lastUpdated']" showGridlines>
         <ng-template #caption>
           <div class="flex">
             <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt2)" />
@@ -112,7 +118,7 @@
             <th style="min-width:10rem">
               <div class="flex items-center justify-between">
                 {{ 'pages.salesStock.purchasePrice' | translate }}
-                <p-columnFilter type="numeric" field="unitPrice" display="menu" currency="EUR" />
+                <p-columnFilter type="numeric" field="unitPrice" display="menu" currency="MAD" />
               </div>
             </th>
             <th style="min-width:10rem">
@@ -136,7 +142,7 @@
             <td>
               <span [ngClass]="{'low-stock': isLowStock(s)}">{{ s.quantity }}</span>
             </td>
-            <td>{{ s.unitPrice | currency:'EUR' }}</td>
+            <td>{{ s.unitPrice | appCurrency }}</td>
             <td>{{ s.minStockAlert }}</td>
             <td>{{ s.lastUpdated | date:'shortDate' }}</td>
             <td>
@@ -149,6 +155,12 @@
           <tr>
             <td colspan="6">{{ 'pages.salesStock.emptyStock' | translate }}</td>
           </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorpreviouspagelinkicon">
+          {{ 'pagination.previous' | translate }}
+        </ng-template>
+        <ng-template pTemplate="paginatornextpagelinkicon">
+          {{ 'pagination.next' | translate }}
         </ng-template>
       </p-table>
     </div>

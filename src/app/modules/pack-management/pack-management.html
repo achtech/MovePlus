@@ -4,7 +4,7 @@
       <p-button [label]="'pages.packs.add' | translate" icon="pi pi-plus" (click)="addPack()" />
     </div>
 
-    <p-table #dt1 [value]="packs" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['nom', 'nombreDeSeance', 'prixMaison', 'prixCabinet']" showGridlines>
+    <p-table #dt1 [value]="packs" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['nom', 'nombreDeSeance', 'prixMaison', 'prixCabinet']" showGridlines>
       <ng-template pTemplate="header">
         <tr>
           <th style="min-width:15rem">
@@ -38,8 +38,8 @@
         <tr>
           <td>{{ pack.nom }}</td>
           <td>{{ pack.nombreDeSeance }}</td>
-          <td>{{ pack.prixMaison }}</td>
-          <td>{{ pack.prixCabinet }}</td>
+          <td>{{ pack.prixMaison | appCurrency }}</td>
+          <td>{{ pack.prixCabinet | appCurrency }}</td>
           <td>
             <p-button icon="pi pi-pencil" [outlined]="true" (click)="editPack(pack)" />
             <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deletePack(pack.id!)" />
@@ -50,6 +50,12 @@
         <tr>
           <td colspan="5">{{ 'pages.packs.empty' | translate }}</td>
         </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorpreviouspagelinkicon">
+        {{ 'pagination.previous' | translate }}
+      </ng-template>
+      <ng-template pTemplate="paginatornextpagelinkicon">
+        {{ 'pagination.next' | translate }}
       </ng-template>
     </p-table>
   </app-card>

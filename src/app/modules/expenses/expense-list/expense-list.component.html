@@ -10,7 +10,7 @@
       </p-iconfield>
     </div>
 
-    <p-table #dt1 [value]="expenses" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['description', 'amount', 'category', 'createdAt', 'paidBy']" showGridlines>
+    <p-table #dt1 [value]="expenses" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['description', 'amount', 'category', 'createdAt', 'paidBy']" showGridlines>
       <ng-template pTemplate="header">
         <tr>
           <th style="min-width:15rem">
@@ -22,7 +22,7 @@
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
               {{ 'pages.expenses.amount' | translate }}
-              <p-columnFilter type="numeric" field="amount" display="menu" currency="EUR" />
+              <p-columnFilter type="numeric" field="amount" display="menu" currency="MAD" />
             </div>
           </th>
           <th style="min-width:10rem">
@@ -49,7 +49,7 @@
       <ng-template pTemplate="body" let-e>
         <tr>
           <td>{{ e.description }}</td>
-          <td>{{ e.amount | currency:'EUR' }}</td>
+          <td>{{ e.amount | appCurrency }}</td>
           <td>{{ e.category }}</td>
           <td>{{ e.expenseDate || e.createdAt | date:'short' }}</td>
           <td>{{ e.paidByName || e.paidBy }}</td>
@@ -63,6 +63,12 @@
         <tr>
           <td colspan="6">{{ 'pages.expenses.empty' | translate }}</td>
         </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorpreviouspagelinkicon">
+        {{ 'pagination.previous' | translate }}
+      </ng-template>
+      <ng-template pTemplate="paginatornextpagelinkicon">
+        {{ 'pagination.next' | translate }}
       </ng-template>
     </p-table>
   </app-card>

@@ -53,6 +53,11 @@
     "updateError": "Failed to update profile.",
     "loadError": "Unable to load profile."
   },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "rowsPerPage": "Rows per page"
+  },
   "common": {
     "search": "Search...",
     "clear": "Clear",
@@ -101,9 +106,9 @@
     "seancesToday": "Sessions today",
     "seancesWeek": "Sessions this week",
     "seancesMonth": "Sessions this month",
-    "paymentsToday": "Payments today (€)",
-    "paymentsWeek": "Payments this week (€)",
-    "paymentsMonth": "Payments this month (€)",
+    "paymentsToday": "Payments today (Dh)",
+    "paymentsWeek": "Payments this week (Dh)",
+    "paymentsMonth": "Payments this month (Dh)",
     "seancesByMonth": "Sessions by month",
     "paymentsEvolution": "Payments & expenses trend",
     "showValidated": "Validated payments",
@@ -116,9 +121,9 @@
     "noSeanceToday": "No sessions today.",
     "noSeanceTomorrow": "No sessions tomorrow.",
     "chartSeances": "Sessions",
-    "chartValidatedPayments": "Validated payments (€)",
-    "chartPendingPayments": "Pending payments (€)",
-    "chartClinicExpenses": "Clinic expenses (€)"
+    "chartValidatedPayments": "Validated payments (Dh)",
+    "chartPendingPayments": "Pending payments (Dh)",
+    "chartClinicExpenses": "Clinic expenses (Dh)"
   },
   "pages": {
     "patients": {

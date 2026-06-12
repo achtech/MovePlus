@@ -199,6 +199,110 @@
   }
 }
 
+/* Datta Able bootstrap-style pagination (centered, Previous / Next text) */
+.p-paginator.datta-paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  border: none;
+  background: transparent;
+  padding: 0.75rem 0 0.5rem;
+
+  .p-paginator-first,
+  .p-paginator-last {
+    display: none;
+  }
+
+  .p-paginator-prev,
+  .p-paginator-next,
+  .p-paginator-page {
+    min-width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: $primary-color;
+    background-color: $white;
+    border: 1px solid $theme-border;
+    border-radius: 0;
+    box-shadow: none;
+    cursor: pointer;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out;
+
+    &:not(:disabled):hover {
+      z-index: 2;
+      color: $primary-color;
+      background-color: $theme-background;
+      border-color: $theme-border;
+    }
+
+    &:disabled {
+      color: $theme-font-color;
+      opacity: 0.65;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+
+  .p-paginator-prev {
+    border-top-left-radius: var(--bs-border-radius, 0.375rem);
+    border-bottom-left-radius: var(--bs-border-radius, 0.375rem);
+  }
+
+  .p-paginator-next {
+    border-top-right-radius: var(--bs-border-radius, 0.375rem);
+    border-bottom-right-radius: var(--bs-border-radius, 0.375rem);
+  }
+
+  .p-paginator-prev-icon,
+  .p-paginator-next-icon {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .p-paginator-pages {
+    display: inline-flex;
+    align-items: stretch;
+  }
+
+  .p-paginator-page {
+    border-radius: 0;
+    margin-inline-start: -1px;
+
+    &.p-paginator-page-selected,
+    &[aria-current='page'] {
+      z-index: 3;
+      color: $white;
+      background-color: $primary-color;
+      border-color: $primary-color;
+    }
+  }
+
+  .p-paginator-rpp-dropdown,
+  .p-paginator-jtp-dropdown {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
+    border: none;
+    min-width: auto;
+    height: auto;
+
+    .p-select {
+      min-width: 5rem;
+      height: auto;
+      font-size: 0.875rem;
+    }
+  }
+}
+
 .p-button.p-button-outlined {
   border-color: $primary-color;
   color: $primary-color;

@@ -53,6 +53,11 @@
     "updateError": "Error al actualizar el perfil.",
     "loadError": "No se pudo cargar el perfil."
   },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "rowsPerPage": "Filas por página"
+  },
   "common": {
     "search": "Buscar...",
     "clear": "Limpiar",
@@ -101,9 +106,9 @@
     "seancesToday": "Sesiones hoy",
     "seancesWeek": "Sesiones esta semana",
     "seancesMonth": "Sesiones este mes",
-    "paymentsToday": "Pagos hoy (€)",
-    "paymentsWeek": "Pagos esta semana (€)",
-    "paymentsMonth": "Pagos este mes (€)",
+    "paymentsToday": "Pagos hoy (Dh)",
+    "paymentsWeek": "Pagos esta semana (Dh)",
+    "paymentsMonth": "Pagos este mes (Dh)",
     "seancesByMonth": "Sesiones por mes",
     "paymentsEvolution": "Evolución de pagos y gastos",
     "showValidated": "Pagos validados",
@@ -116,9 +121,9 @@
     "noSeanceToday": "No hay sesiones hoy.",
     "noSeanceTomorrow": "No hay sesiones mañana.",
     "chartSeances": "Sesiones",
-    "chartValidatedPayments": "Pagos validados (€)",
-    "chartPendingPayments": "Pagos pendientes (€)",
-    "chartClinicExpenses": "Gastos de la clínica (€)"
+    "chartValidatedPayments": "Pagos validados (Dh)",
+    "chartPendingPayments": "Pagos pendientes (Dh)",
+    "chartClinicExpenses": "Gastos de la clínica (Dh)"
   },
   "pages": {
     "patients": {

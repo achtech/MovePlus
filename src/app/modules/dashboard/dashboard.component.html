@@ -39,7 +39,7 @@
       <app-card cardTitle="dashboard.paymentsToday" [options]="false" cardClass="stat-widget stat-widget-primary">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-credit-card stat-icon"></i>
-          {{ paymentsToday | number:'1.0-2' }}
+          {{ paymentsToday | appCurrency }}
         </h3>
       </app-card>
     </div>
@@ -47,7 +47,7 @@
       <app-card cardTitle="dashboard.paymentsWeek" [options]="false" cardClass="stat-widget stat-widget-info">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-trending-up stat-icon"></i>
-          {{ paymentsWeek | number:'1.0-2' }}
+          {{ paymentsWeek | appCurrency }}
         </h3>
       </app-card>
     </div>
@@ -55,7 +55,7 @@
       <app-card cardTitle="dashboard.paymentsMonth" [options]="false" cardClass="stat-widget stat-widget-success">
         <h3 class="d-flex align-items-center mb-0">
           <i class="feather icon-dollar-sign stat-icon"></i>
-          {{ paymentsMonth | number:'1.0-2' }}
+          {{ paymentsMonth | appCurrency }}
         </h3>
       </app-card>
     </div>

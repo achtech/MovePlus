@@ -11,7 +11,7 @@
            <p-table  
               #dt1
                [value]="seances"
-              [paginator]="true"
+              [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false"
                [rows]="5"
               [loading]="loadingSeances"
                [rowsPerPageOptions]="[5,10,20]"
@@ -44,6 +44,12 @@
                <ng-template pTemplate="emptymessage">
                    <tr><td colspan="3">Aucune  séance  trouvée.</td></tr>
                </ng-template>
+               <ng-template pTemplate="paginatorpreviouspagelinkicon">
+                 {{ 'pagination.previous' | translate }}
+               </ng-template>
+               <ng-template pTemplate="paginatornextpagelinkicon">
+                 {{ 'pagination.next' | translate }}
+               </ng-template>
 
            </p-table>
        </div>
@@ -55,7 +61,7 @@
            <p-table  
               #dt2
                [value]="payments"
-              [paginator]="true"
+              [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false"
                [rows]="5"
               [loading]="loadingPayments"
                [rowsPerPageOptions]="[5,10,20]"
@@ -80,13 +86,19 @@
                <ng-template pTemplate="body"  let-payment>
                   <tr>
                       <td>{{  payment.date  |  date:'shortDate'  }}</td>
-                     <td>{{  payment.amount  |  currency:'EUR'  }}</td>
+                     <td>{{  payment.amount  |  appCurrency  }}</td>
                       <td>{{ payment.method  }}</td>
                   </tr>
                </ng-template>
 
               <ng-template  pTemplate="emptymessage">
                   <tr><td  colspan="3">Aucun  paiement  trouvé.</td></tr>
+              </ng-template>
+              <ng-template pTemplate="paginatorpreviouspagelinkicon">
+                {{ 'pagination.previous' | translate }}
+              </ng-template>
+              <ng-template pTemplate="paginatornextpagelinkicon">
+                {{ 'pagination.next' | translate }}
               </ng-template>
 
            </p-table>

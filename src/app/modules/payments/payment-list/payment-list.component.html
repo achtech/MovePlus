@@ -10,9 +10,9 @@
       </p-iconfield>
     </div>
 
-    <p class="page-summary">{{ 'common.total' | translate }} : {{ totalAmount | currency:'EUR' }}</p>
+    <p class="page-summary">{{ 'common.total' | translate }} : {{ totalAmount | appCurrency }}</p>
 
-    <p-table #dt1 [value]="payments" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['patientName', 'amount', 'date', 'method', 'status']" showGridlines>
+    <p-table #dt1 [value]="payments" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['patientName', 'amount', 'date', 'method', 'status']" showGridlines>
       <ng-template #caption>
         <div class="flex">
           <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
@@ -29,7 +29,7 @@
           <th style="min-width:10rem">
             <div class="flex items-center justify-between">
               {{ 'pages.payments.amount' | translate }}
-              <p-columnFilter type="numeric" field="amount" display="menu" currency="EUR" />
+              <p-columnFilter type="numeric" field="amount" display="menu" currency="MAD" />
             </div>
           </th>
           <th style="min-width:10rem">
@@ -56,7 +56,7 @@
       <ng-template #body let-p>
         <tr>
           <td>{{ getPatientName(p.patientId) }}</td>
-          <td>{{ p.amount | currency:'EUR' }}</td>
+          <td>{{ p.amount | appCurrency }}</td>
           <td>{{ p.date | date:'shortDate' }}</td>
           <td>{{ p.method }}</td>
           <td>{{ p.status }}</td>
@@ -70,6 +70,12 @@
         <tr>
           <td colspan="6">{{ 'pages.payments.empty' | translate }}</td>
         </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorpreviouspagelinkicon">
+        {{ 'pagination.previous' | translate }}
+      </ng-template>
+      <ng-template pTemplate="paginatornextpagelinkicon">
+        {{ 'pagination.next' | translate }}
       </ng-template>
     </p-table>
   </app-card>

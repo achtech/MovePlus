@@ -11,6 +11,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { CardComponent } from '../../theme/shared/components/card/card.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppCurrencyPipe } from '../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../core/constants/dialog.config';
 import { runAfterBrowserHydration } from '../../core/utils/browser-init';
 
@@ -19,7 +20,7 @@ import { runAfterBrowserHydration } from '../../core/utils/browser-init';
   templateUrl: './pack-management.html',
   styleUrl: './pack-management.scss',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule]
+  imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule, AppCurrencyPipe]
 })
 export class PackManagement {
   packs: Pack[] = [];

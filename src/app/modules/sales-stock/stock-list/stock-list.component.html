@@ -13,7 +13,7 @@
    </div>
 
    <div class="table-list-panel">
-       <p-table #dt1 [value]="stock" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['productName', 'quantity', 'unitPrice', 'minStockAlert', 'lastUpdated']" showGridlines>
+       <p-table #dt1 [value]="stock" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['productName', 'quantity', 'unitPrice', 'minStockAlert', 'lastUpdated']" showGridlines>
            <ng-template #caption>
                <div class="flex">
                    <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
@@ -36,7 +36,7 @@
                    <th style="min-width:10rem">
                        <div class="flex items-center justify-between">
                            Prix Unitaire
-                           <p-columnFilter type="numeric" field="unitPrice" display="menu" currency="EUR" />
+                           <p-columnFilter type="numeric" field="unitPrice" display="menu" currency="MAD" />
                        </div>
                    </th>
                    <th style="min-width:10rem">
@@ -62,7 +62,7 @@
                        {{ s.quantity }}
                    </td>
                    <td>
-                       {{ s.unitPrice | currency:'EUR' }}
+                       {{ s.unitPrice | appCurrency }}
                    </td>
                    <td>
                        {{ s.minStockAlert }}
@@ -76,6 +76,12 @@
                <tr>
                    <td colspan="5">No stock items found.</td>
                </tr>
+           </ng-template>
+           <ng-template pTemplate="paginatorpreviouspagelinkicon">
+             {{ 'pagination.previous' | translate }}
+           </ng-template>
+           <ng-template pTemplate="paginatornextpagelinkicon">
+             {{ 'pagination.next' | translate }}
            </ng-template>
        </p-table>
    </div>

@@ -53,6 +53,11 @@
     "updateError": "فشل تحديث الملف الشخصي.",
     "loadError": "تعذر تحميل الملف الشخصي."
   },
+  "pagination": {
+    "previous": "السابق",
+    "next": "التالي",
+    "rowsPerPage": "صفوف في الصفحة"
+  },
   "common": {
     "search": "بحث...",
     "clear": "مسح",
@@ -101,9 +106,9 @@
     "seancesToday": "جلسات اليوم",
     "seancesWeek": "جلسات هذا الأسبوع",
     "seancesMonth": "جلسات هذا الشهر",
-    "paymentsToday": "مدفوعات اليوم (€)",
-    "paymentsWeek": "مدفوعات هذا الأسبوع (€)",
-    "paymentsMonth": "مدفوعات هذا الشهر (€)",
+    "paymentsToday": "مدفوعات اليوم (Dh)",
+    "paymentsWeek": "مدفوعات هذا الأسبوع (Dh)",
+    "paymentsMonth": "مدفوعات هذا الشهر (Dh)",
     "seancesByMonth": "الجلسات حسب الشهر",
     "paymentsEvolution": "تطور المدفوعات والمصاريف",
     "showValidated": "مدفوعات مؤكدة",
@@ -116,9 +121,9 @@
     "noSeanceToday": "لا توجد جلسات اليوم.",
     "noSeanceTomorrow": "لا توجد جلسات غداً.",
     "chartSeances": "الجلسات",
-    "chartValidatedPayments": "المدفوعات المعتمدة (€)",
-    "chartPendingPayments": "المدفوعات المعلقة (€)",
-    "chartClinicExpenses": "مصاريف العيادة (€)"
+    "chartValidatedPayments": "المدفوعات المعتمدة (Dh)",
+    "chartPendingPayments": "المدفوعات المعلقة (Dh)",
+    "chartClinicExpenses": "مصاريف العيادة (Dh)"
   },
   "pages": {
     "patients": {

@@ -10,7 +10,7 @@
       </p-iconfield>
     </div>
 
-    <p-table #dt1 [value]="users" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['username', 'email', 'role', 'enabled']" showGridlines>
+    <p-table #dt1 [value]="users" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['username', 'email', 'role', 'enabled']" showGridlines>
       <ng-template #caption>
         <div class="flex">
           <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
@@ -62,6 +62,12 @@
         <tr>
           <td colspan="5">{{ 'pages.users.empty' | translate }}</td>
         </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorpreviouspagelinkicon">
+        {{ 'pagination.previous' | translate }}
+      </ng-template>
+      <ng-template pTemplate="paginatornextpagelinkicon">
+        {{ 'pagination.next' | translate }}
       </ng-template>
     </p-table>
   </app-card>

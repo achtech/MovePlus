@@ -19,7 +19,7 @@
     </div>
 
     <div *ngIf="!showAgenda">
-      <p-table #dt1 [value]="seances" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" [globalFilterFields]="['patientId', 'therapistId', 'dateTime', 'duration', 'type', 'status', 'patientName', 'therapistName']" showGridlines>
+      <p-table #dt1 [value]="seances" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['patientId', 'therapistId', 'dateTime', 'duration', 'type', 'status', 'patientName', 'therapistName']" showGridlines>
         <ng-template #caption>
           <div class="flex">
             <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
@@ -88,6 +88,12 @@
           <tr>
             <td colspan="7">{{ 'pages.seances.empty' | translate }}</td>
           </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorpreviouspagelinkicon">
+          {{ 'pagination.previous' | translate }}
+        </ng-template>
+        <ng-template pTemplate="paginatornextpagelinkicon">
+          {{ 'pagination.next' | translate }}
         </ng-template>
       </p-table>
     </div>

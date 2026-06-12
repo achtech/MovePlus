@@ -8,6 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 
 import  {  TableModule  }  from 'primeng/table';
 import  {  FormsModule  } from  '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 
 @Component({
    selector:  'app-patient-detail-dialog',
@@ -19,7 +21,9 @@ import  {  FormsModule  } from  '@angular/forms';
        FormsModule,
        MatDialogModule,
        TableModule,
-       MatIconModule
+       MatIconModule,
+       TranslateModule,
+       AppCurrencyPipe
    ]
 })
 export  class PatientDetailDialogComponent  {

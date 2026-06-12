@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, tap } from 'rxjs';
 import { PlatformService } from './platform.service';
+import { PrimeNgI18nService } from './prime-ng-i18n.service';
 
 export interface AppLanguage {
   code: string;
@@ -12,6 +13,7 @@ export interface AppLanguage {
 export class LanguageService {
   private readonly translate = inject(TranslateService);
   private readonly platform = inject(PlatformService);
+  private readonly primeNgI18n = inject(PrimeNgI18nService);
   private readonly storageKey = 'app_language';
 
   readonly languages: AppLanguage[] = [
@@ -33,6 +35,7 @@ export class LanguageService {
   setLanguage(code: string): Observable<unknown> {
     return this.translate.use(code).pipe(
       tap(() => {
+        this.primeNgI18n.sync();
         if (this.platform.isBrowser) {
           localStorage.setItem(this.storageKey, code);
           this.applyDocumentLanguage(code);

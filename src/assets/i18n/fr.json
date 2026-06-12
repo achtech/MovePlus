@@ -53,6 +53,11 @@
     "updateError": "Échec de la mise à jour du profil.",
     "loadError": "Impossible de charger le profil."
   },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "rowsPerPage": "Lignes par page"
+  },
   "common": {
     "search": "Rechercher...",
     "clear": "Effacer",
@@ -101,9 +106,9 @@
     "seancesToday": "Séances aujourd'hui",
     "seancesWeek": "Séances cette semaine",
     "seancesMonth": "Séances ce mois",
-    "paymentsToday": "Paiements aujourd'hui (€)",
-    "paymentsWeek": "Paiements cette semaine (€)",
-    "paymentsMonth": "Paiements ce mois (€)",
+    "paymentsToday": "Paiements aujourd'hui (Dh)",
+    "paymentsWeek": "Paiements cette semaine (Dh)",
+    "paymentsMonth": "Paiements ce mois (Dh)",
     "seancesByMonth": "Séances par mois",
     "paymentsEvolution": "Évolution des paiements & charges",
     "showValidated": "Paiements validés",
@@ -116,9 +121,9 @@
     "noSeanceToday": "Aucune séance aujourd'hui.",
     "noSeanceTomorrow": "Aucune séance demain.",
     "chartSeances": "Séances",
-    "chartValidatedPayments": "Paiements validés (€)",
-    "chartPendingPayments": "Paiements en attente (€)",
-    "chartClinicExpenses": "Charges du cabinet (€)"
+    "chartValidatedPayments": "Paiements validés (Dh)",
+    "chartPendingPayments": "Paiements en attente (Dh)",
+    "chartClinicExpenses": "Charges du cabinet (Dh)"
   },
   "pages": {
     "patients": {
