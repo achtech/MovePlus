@@ -17,7 +17,7 @@ import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { panelClass: 'datta-dialog', autoFocus: false } },
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { panelClass: ['datta-dialog'], autoFocus: false } },
     provideBrowserGlobalErrorListeners(),
     provideAnimations(),
     provideRouter(routes),

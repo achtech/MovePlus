@@ -1,8 +1,20 @@
-.user-list  {
-   padding:  20px;
+.user-list {
+  padding: 20px;
 }
 
-table  {
-   width:  100%;
-   margin-top:  20px;
+table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.user-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }

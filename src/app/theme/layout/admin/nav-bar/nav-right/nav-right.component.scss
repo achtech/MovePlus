@@ -6,3 +6,10 @@
 .language-menu .dropdown-item {
   min-width: 160px;
 }
+
+:host ::ng-deep .profile-notification .dropdown-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+}

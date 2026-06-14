@@ -1,0 +1,97 @@
+<div class="table-page">
+  <app-card cardTitle="pages.team.title" [options]="false">
+    <div class="table-toolbar">
+      <p-button [label]="'pages.team.add' | translate" icon="pi pi-plus" (click)="addTeamMember()" />
+      <p-iconfield iconPosition="left" class="search-input">
+        <p-inputicon>
+          <i class="pi pi-search"></i>
+        </p-inputicon>
+        <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" [placeholder]="'common.search' | translate" />
+      </p-iconfield>
+    </div>
+
+    <p-table
+      #dt1
+      [value]="teamMembers"
+      dataKey="id"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [loading]="loading"
+      [paginator]="true"
+      paginatorStyleClass="datta-paginator"
+      [showFirstLastIcon]="false"
+      [globalFilterFields]="['fullName', 'phoneNumber', 'role', 'status']"
+      showGridlines
+    >
+      <ng-template #caption>
+        <div class="flex">
+          <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+          <p-button
+            [label]="(showInactive ? 'pages.team.showActive' : 'pages.team.showInactive') | translate"
+            [outlined]="true"
+            icon="pi pi-users"
+            (click)="toggleInactiveView()"
+          />
+        </div>
+      </ng-template>
+      <ng-template #header>
+        <tr>
+          <th style="min-width:15rem">
+            <div class="flex items-center justify-between">
+              {{ 'pages.team.fullName' | translate }}
+              <p-columnFilter type="text" field="fullName" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:15rem">
+            <div class="flex items-center justify-between">
+              {{ 'pages.team.phoneNumber' | translate }}
+              <p-columnFilter type="text" field="phoneNumber" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:10rem">
+            <div class="flex items-center justify-between">
+              {{ 'pages.team.role' | translate }}
+              <p-columnFilter type="text" field="role" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:10rem">
+            <div class="flex items-center justify-between">
+              {{ 'pages.team.status' | translate }}
+              <p-columnFilter type="text" field="status" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-member>
+        <tr>
+          <td>{{ member.fullName }}</td>
+          <td>{{ member.phoneNumber }}</td>
+          <td>{{ member.role }}</td>
+          <td>{{ member.status === 'ACTIVE' ? ('pages.team.active' | translate) : ('pages.team.inactive' | translate) }}</td>
+          <td>
+            <p-button icon="pi pi-pencil" [outlined]="true" (click)="editTeamMember(member)" />
+            <p-button
+              icon="pi pi-power-off"
+              [outlined]="true"
+              (click)="toggleStatus(member)"
+              [pTooltip]="(member.status === 'ACTIVE' ? 'pages.team.deactivate' : 'pages.team.activate') | translate"
+            />
+            <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deleteTeamMember(member.id)" />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="5">{{ 'pages.team.empty' | translate }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorpreviouspagelinkicon">
+        {{ 'pagination.previous' | translate }}
+      </ng-template>
+      <ng-template pTemplate="paginatornextpagelinkicon">
+        {{ 'pagination.next' | translate }}
+      </ng-template>
+    </p-table>
+  </app-card>
+</div>

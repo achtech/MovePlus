@@ -1,5 +1,5 @@
 // angular import
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, OnInit, output } from '@angular/core';
 import { Location } from '@angular/common';
 
 // project import
@@ -8,6 +8,7 @@ import { NavigationItem, NavigationItems } from '../navigation';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { NavGroupComponent } from './nav-group/nav-group.component';
 import { PlatformService } from 'src/app/core/services/platform.service';
+import { RoleService } from 'src/app/core/services/role.service';
 
 @Component({
   selector: 'app-nav-content',
@@ -15,22 +16,50 @@ import { PlatformService } from 'src/app/core/services/platform.service';
   templateUrl: './nav-content.component.html',
   styleUrls: ['./nav-content.component.scss']
 })
-export class NavContentComponent {
+export class NavContentComponent implements OnInit {
   private location = inject(Location);
   private platform = inject(PlatformService);
+  private roleService = inject(RoleService);
 
   title = 'Demo application for version numbering';
   currentApplicationVersion = environment.appVersion;
 
-  navigations!: NavigationItem[];
+  navigations: NavigationItem[] = NavigationItems;
   wrapperWidth = 0;
   windowWidth: number;
 
   NavCollapsedMob = output();
 
   constructor() {
-    this.navigations = NavigationItems;
     this.windowWidth = this.platform.getWindowWidth();
+  }
+
+  ngOnInit(): void {
+    if (!this.platform.isBrowser) {
+      return;
+    }
+
+    this.roleService.ensureRoleLoaded().subscribe(() => {
+      this.navigations = this.filterNavigation(NavigationItems);
+    });
+  }
+
+  private filterNavigation(items: NavigationItem[]): NavigationItem[] {
+    return items.map((group) => ({
+      ...group,
+      children: group.children?.filter((item) => this.canAccessItem(item))
+    }));
+  }
+
+  private canAccessItem(item: NavigationItem): boolean {
+    if (!item.roles?.length) {
+      return true;
+    }
+    const role = this.roleService.getRole();
+    if (!role) {
+      return false;
+    }
+    return item.roles.includes(role);
   }
 
   fireOutClick() {

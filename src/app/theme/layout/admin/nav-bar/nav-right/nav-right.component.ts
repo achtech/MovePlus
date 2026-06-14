@@ -1,17 +1,13 @@
-// angular import
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-
-// bootstrap import
-import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
-
-// project import
+import { NgbDropdown, NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
 import { SharedModule } from '../../../../shared/shared.module';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { RoleService } from '../../../../../core/services/role.service';
 import { LanguageService, AppLanguage } from '../../../../../core/services/language.service';
 import { User, UserService } from '../../../../../modules/users/user.service';
 import { avatarImagePath, userDisplayName } from '../../../../../core/constants/avatars';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-nav-right',
@@ -21,7 +17,10 @@ import { Subscription } from 'rxjs';
   providers: [NgbDropdownConfig]
 })
 export class NavRightComponent implements OnInit, OnDestroy {
+  @ViewChild('userDropdown') userDropdown?: NgbDropdown;
+
   private authService = inject(AuthService);
+  private roleService = inject(RoleService);
   private router = inject(Router);
   private languageService = inject(LanguageService);
   private userService = inject(UserService);
@@ -34,6 +33,7 @@ export class NavRightComponent implements OnInit, OnDestroy {
   constructor() {
     const config = inject(NgbDropdownConfig);
     config.placement = 'bottom-end';
+    config.autoClose = true;
   }
 
   ngOnInit(): void {
@@ -64,8 +64,19 @@ export class NavRightComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
+    this.roleService.clear();
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  goToProfile(event: Event): void {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    this.userDropdown?.close();
+
+    void this.router.navigate(['/profile']).then(() => {
+      this.userService.notifyProfileOpen();
+    });
   }
 
   private loadCurrentUser(): void {

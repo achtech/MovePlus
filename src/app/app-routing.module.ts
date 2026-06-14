@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
 
@@ -46,7 +47,12 @@ export const routes: Routes = [
         loadChildren: () => import('./modules/expenses/expenses.module').then((m) => m.ExpensesModule)
       },
       {
+        path: 'team',
+        loadChildren: () => import('./modules/team/team.module').then((m) => m.TeamModule)
+      },
+      {
         path: 'users',
+        canActivate: [adminGuard],
         loadChildren: () => import('./modules/users/users.module').then((m) => m.UsersModule)
       },
       {

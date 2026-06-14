@@ -5,6 +5,7 @@ export interface NavigationItem {
   translate?: string;
   icon?: string;
   hidden?: boolean;
+  roles?: string[];
   url?: string;
   classes?: string;
   exactMatch?: boolean;
@@ -28,7 +29,8 @@ export const NavigationItems: NavigationItem[] = [
       { id: 'payments', title: 'Payments', translate: 'nav.payments', type: 'item', url: '/payments', icon: 'icon-credit-card' },
       { id: 'sales-stock', title: 'Sales & Stock', translate: 'nav.salesStock', type: 'item', url: '/sales-stock', icon: 'icon-shopping-cart' },
       { id: 'expenses', title: 'Expenses', translate: 'nav.expenses', type: 'item', url: '/expenses', icon: 'icon-file-text' },
-      { id: 'users', title: 'Users', translate: 'nav.users', type: 'item', url: '/users', icon: 'icon-user' }
+      { id: 'team', title: 'Team', translate: 'nav.team', type: 'item', url: '/team', icon: 'icon-user-check' },
+      { id: 'users', title: 'Users', translate: 'nav.users', type: 'item', url: '/users', icon: 'icon-user', roles: ['ADMIN'] }
     ]
   }
 ];

@@ -17,6 +17,7 @@ import { CardComponent } from '../../../theme/shared/components/card/card.compon
 import { TranslateModule } from '@ngx-translate/core';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { avatarImagePath, userDisplayName } from '../../../core/constants/avatars';
 
 @Component({
     selector:  'app-user-list',
@@ -29,6 +30,8 @@ import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
 export class  UserListComponent {
    users:  User[]  = [];
    loading: boolean = true;
+   readonly avatarImagePath = avatarImagePath;
+   readonly userDisplayName = userDisplayName;
 
    constructor(private  userService:  UserService,  private dialog:  MatDialog, private confirmationService: ConfirmationService)  {
        runAfterBrowserHydration(() => this.loadUsers());

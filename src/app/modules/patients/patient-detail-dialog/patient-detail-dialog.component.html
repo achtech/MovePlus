@@ -1,113 +1,131 @@
-<h2 mat-dialog-title> Détails du patient — {{ data.patient.lastName }} {{ data.patient.firstName }}</h2>
+<h2 mat-dialog-title>
+  {{ 'pages.patients.details' | translate }} — {{ data.patient.lastName }} {{ data.patient.firstName }}
+</h2>
 
 <mat-dialog-content>
+  <div class="detail-tabs">
+    <button type="button" class="detail-tab" [class.active]="activeTab === 'info'" (click)="setTab('info')">
+      {{ 'pages.patients.tabInfo' | translate }}
+    </button>
+    <button type="button" class="detail-tab" [class.active]="activeTab === 'seances'" (click)="setTab('seances')">
+      {{ 'pages.seances.title' | translate }}
+    </button>
+    <button type="button" class="detail-tab" [class.active]="activeTab === 'payments'" (click)="setTab('payments')">
+      {{ 'pages.payments.title' | translate }}
+    </button>
+  </div>
 
-    <div class="grid-container">
+  @if (activeTab === 'info') {
+    <section class="patient-info">
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">{{ 'pages.patients.firstName' | translate }}</span>
+          <span class="info-value">{{ data.patient.firstName || '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">{{ 'pages.patients.lastName' | translate }}</span>
+          <span class="info-value">{{ data.patient.lastName || '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">{{ 'pages.patients.birthDate' | translate }}</span>
+          <span class="info-value">{{ data.patient.birthDate ? (data.patient.birthDate | date: 'mediumDate') : '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">{{ 'pages.patients.phone' | translate }}</span>
+          <span class="info-value">{{ data.patient.phone || '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">{{ 'pages.patients.email' | translate }}</span>
+          <span class="info-value">{{ data.patient.email || '—' }}</span>
+        </div>
+        <div class="info-item info-item-full">
+          <span class="info-label">{{ 'pages.patients.address' | translate }}</span>
+          <span class="info-value">{{ data.patient.address || '—' }}</span>
+        </div>
+      </div>
+      <div class="info-notes">
+        <span class="info-label">{{ 'pages.patients.medicalNotes' | translate }}</span>
+        <p class="info-value">{{ data.patient.medicalNotes || '—' }}</p>
+      </div>
+    </section>
+  }
 
-       <!--  PANEL  SEANCES  -->
-       <div  class="panel">
-           <h3  class="panel-title"><mat-icon>event_note</mat-icon>Séances de  {{  data.patient.lastName  }}  {{  data.patient.firstName }}</h3>
+  @if (activeTab === 'seances') {
+    <div class="panel">
+      <p-table
+        #dtSeances
+        [value]="seances"
+        dataKey="id"
+        [paginator]="true"
+        paginatorStyleClass="datta-paginator"
+        [showFirstLastIcon]="false"
+        [rows]="5"
+        [loading]="loadingSeances"
+        [globalFilterFields]="['dateTime', 'type', 'status']"
+        showGridlines
+      >
+        <ng-template #header>
+          <tr>
+            <th>{{ 'pages.seances.date' | translate }}</th>
+            <th>{{ 'pages.seances.type' | translate }}</th>
+            <th>{{ 'pages.seances.status' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-seance>
+          <tr>
+            <td>{{ seance.dateTime | date: 'short' }}</td>
+            <td>{{ seance.type || '—' }}</td>
+            <td>{{ seance.status || '—' }}</td>
+          </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="3">{{ 'pages.seances.empty' | translate }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  }
 
-           <p-table  
-              #dt1
-               [value]="seances"
-              [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false"
-               [rows]="5"
-              [loading]="loadingSeances"
-               [rowsPerPageOptions]="[5,10,20]"
-              [globalFilterFields]="['dateTime','type','status']"
-               sortMode="multiple">
-
-              <ng-template  pTemplate="caption">
-                  <div  class="table-header">
-                      <input  pInputText  type="text" placeholder="Rechercher..."  
-                                   (input)="dt1.filterGlobal($event.target.value,  'contains')"  />
-                  </div>
-              </ng-template>
-
-               <ng-template pTemplate="header">
-                   <tr>
-                     <th  pSortableColumn="dateTime">Date  <p-sortIcon  field="dateTime"></p-sortIcon></th>
-                      <th  pSortableColumn="type">Type <p-sortIcon  field="type"></p-sortIcon></th>
-                      <th  pSortableColumn="status">Statut  <p-sortIcon  field="status"></p-sortIcon></th>
-                  </tr>
-              </ng-template>
-
-               <ng-template pTemplate="body"  let-seance>
-                  <tr>
-                      <td>{{  seance.dateTime  |  date:'shortDate'  }}</td>
-                     <td>{{  seance.type  }}</td>
-                      <td>{{  seance.status  }}</td>
-                  </tr>
-              </ng-template>
-
-               <ng-template pTemplate="emptymessage">
-                   <tr><td colspan="3">Aucune  séance  trouvée.</td></tr>
-               </ng-template>
-               <ng-template pTemplate="paginatorpreviouspagelinkicon">
-                 {{ 'pagination.previous' | translate }}
-               </ng-template>
-               <ng-template pTemplate="paginatornextpagelinkicon">
-                 {{ 'pagination.next' | translate }}
-               </ng-template>
-
-           </p-table>
-       </div>
-
-       <!--  PANEL  PAYMENTS  -->
-       <div  class="panel">
-           <h3  class="panel-title"><mat-icon>payments</mat-icon>Paiements de  {{  data.patient.lastName  }}  {{  data.patient.firstName }}</h3>
-
-           <p-table  
-              #dt2
-               [value]="payments"
-              [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false"
-               [rows]="5"
-              [loading]="loadingPayments"
-               [rowsPerPageOptions]="[5,10,20]"
-              [globalFilterFields]="['date','amount','method']"
-               sortMode="multiple">
-
-              <ng-template  pTemplate="caption">
-                  <div  class="table-header">
-                      <input  pInputText  type="text" placeholder="Rechercher..."  
-                                   (input)="dt2.filterGlobal($event.target.value,  'contains')"  />
-                  </div>
-              </ng-template>
-
-               <ng-template pTemplate="header">
-                   <tr>
-                     <th  pSortableColumn="date">Date  <p-sortIcon  field="date"></p-sortIcon></th>
-                      <th  pSortableColumn="amount">Montant <p-sortIcon  field="amount"></p-sortIcon></th>
-                      <th  pSortableColumn="method">Mode  <p-sortIcon  field="method"></p-sortIcon></th>
-                  </tr>
-              </ng-template>
-
-               <ng-template pTemplate="body"  let-payment>
-                  <tr>
-                      <td>{{  payment.date  |  date:'shortDate'  }}</td>
-                     <td>{{  payment.amount  |  appCurrency  }}</td>
-                      <td>{{ payment.method  }}</td>
-                  </tr>
-               </ng-template>
-
-              <ng-template  pTemplate="emptymessage">
-                  <tr><td  colspan="3">Aucun  paiement  trouvé.</td></tr>
-              </ng-template>
-              <ng-template pTemplate="paginatorpreviouspagelinkicon">
-                {{ 'pagination.previous' | translate }}
-              </ng-template>
-              <ng-template pTemplate="paginatornextpagelinkicon">
-                {{ 'pagination.next' | translate }}
-              </ng-template>
-
-           </p-table>
-       </div>
-
-   </div>
-
+  @if (activeTab === 'payments') {
+    <div class="panel">
+      <p-table
+        #dtPayments
+        [value]="payments"
+        dataKey="id"
+        [paginator]="true"
+        paginatorStyleClass="datta-paginator"
+        [showFirstLastIcon]="false"
+        [rows]="5"
+        [loading]="loadingPayments"
+        showGridlines
+      >
+        <ng-template #header>
+          <tr>
+            <th>{{ 'pages.payments.date' | translate }}</th>
+            <th>{{ 'pages.payments.amount' | translate }}</th>
+            <th>{{ 'pages.payments.method' | translate }}</th>
+            <th>{{ 'pages.payments.status' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-payment>
+          <tr>
+            <td>{{ payment.date | date: 'shortDate' }}</td>
+            <td>{{ payment.amount | appCurrency }}</td>
+            <td>{{ payment.method || '—' }}</td>
+            <td>{{ payment.status || '—' }}</td>
+          </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="4">{{ 'pages.payments.empty' | translate }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" class="datta-dialog-actions">
-  <button type="button" class="btn btn-secondary" (click)="close()">Fermer</button>
+  <button type="button" class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
 </mat-dialog-actions>

@@ -15,6 +15,11 @@ export interface Seance {
   status: string;
 }
 
+export interface SeancesByMonthStats {
+  year: number;
+  counts: number[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class SeanceService {
   private apiUrl = `${environment.apiUrl}/seances`;
@@ -39,6 +44,12 @@ export class SeanceService {
 
   getSeancesByPatientId(patientId: number): Observable<Seance[]> {
     return this.http.get<Seance[]>(`${this.apiUrl}/patient/${patientId}`).pipe(catchError(this.handleError([])));
+  }
+
+  getSeancesByMonth(): Observable<SeancesByMonthStats> {
+    return this.http
+      .get<SeancesByMonthStats>(`${this.apiUrl}/stats/by-month`)
+      .pipe(catchError(this.handleError({ year: new Date().getFullYear(), counts: new Array(12).fill(0) })));
   }
 
   private handleError<T>(fallback: T) {

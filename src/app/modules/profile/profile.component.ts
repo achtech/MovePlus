@@ -1,13 +1,14 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NavigationEnd, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { CardComponent } from '../../theme/shared/components/card/card.component';
 import { AuthService } from '../../core/services/auth.service';
+import { PlatformService } from '../../core/services/platform.service';
 import { User, UserService } from '../users/user.service';
 import { USER_AVATARS, avatarImagePath, userDisplayName } from '../../core/constants/avatars';
-import { runAfterBrowserHydration } from '../../core/utils/browser-init';
 
 @Component({
   selector: 'app-profile',
@@ -16,13 +17,17 @@ import { runAfterBrowserHydration } from '../../core/utils/browser-init';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnDestroy {
+export class ProfileComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private platform = inject(PlatformService);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
   private translate = inject(TranslateService);
 
   private sub?: Subscription;
+  private routerSub?: Subscription;
+  private profileOpenSub?: Subscription;
 
   user: User | null = null;
   form!: FormGroup;
@@ -38,12 +43,30 @@ export class ProfileComponent implements OnDestroy {
   readonly avatars = USER_AVATARS;
   readonly avatarImagePath = avatarImagePath;
 
-  constructor() {
-    runAfterBrowserHydration(() => this.loadProfile());
+  ngOnInit(): void {
+    if (!this.platform.isBrowser) {
+      return;
+    }
+
+    this.loadProfile();
+
+    this.profileOpenSub = this.userService.onProfileOpenRequested().subscribe(() => {
+      this.loadProfile();
+    });
+
+    this.routerSub = this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        if (event.urlAfterRedirects.startsWith('/profile')) {
+          this.loadProfile();
+        }
+      });
   }
 
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
+    this.routerSub?.unsubscribe();
+    this.profileOpenSub?.unsubscribe();
   }
 
   get displayName(): string {
@@ -57,6 +80,9 @@ export class ProfileComponent implements OnDestroy {
   loadProfile(): void {
     this.loading = true;
     this.errorMessage = '';
+    this.editing = false;
+    this.successMessage = '';
+
     const userId = this.authService.getCurrentUserId();
     const username = this.authService.getCurrentUsername();
 
@@ -129,6 +155,11 @@ export class ProfileComponent implements OnDestroy {
 
     this.userService.updateUser(this.user.id, updated).subscribe({
       next: (saved) => {
+        if (!saved) {
+          this.saving = false;
+          this.errorMessage = this.translate.instant('profile.updateError');
+          return;
+        }
         this.user = saved;
         this.saving = false;
         this.editing = false;

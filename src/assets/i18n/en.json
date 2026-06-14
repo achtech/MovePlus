@@ -19,7 +19,8 @@
     "payments": "Payments",
     "salesStock": "Sales & Stock",
     "expenses": "Expenses",
-    "users": "Users"
+    "users": "Users",
+    "team": "Team"
   },
   "header": {
     "notifications": "Notifications",
@@ -66,6 +67,7 @@
     "yes": "Yes",
     "no": "No",
     "loading": "Loading...",
+    "close": "Close",
     "noneFound": "No records found.",
     "months": {
       "jan": "Jan",
@@ -134,6 +136,10 @@
       "lastName": "Last name",
       "phone": "Phone",
       "email": "Email",
+      "birthDate": "Birth date",
+      "address": "Address",
+      "medicalNotes": "Medical notes",
+      "tabInfo": "Information",
       "details": "Patient details"
     },
     "packs": {
@@ -169,11 +175,31 @@
       "title": "Users",
       "add": "Add User",
       "empty": "No users found.",
+      "photo": "Photo",
       "username": "Username",
       "email": "Email",
       "role": "Role",
       "active": "Active",
       "resetPassword": "Reset password"
+    },
+    "team": {
+      "title": "Team",
+      "add": "Add Team Member",
+      "empty": "No team members found.",
+      "photo": "Photo",
+      "fullName": "Full Name",
+      "phoneNumber": "Phone Number",
+      "specialty": "Specialty",
+      "role": "Role",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "showInactive": "Show Inactive Team Members",
+      "showActive": "Show Active Team Members",
+      "activate": "Activate",
+      "deactivate": "Deactivate"
     },
     "seances": {
       "title": "Sessions",

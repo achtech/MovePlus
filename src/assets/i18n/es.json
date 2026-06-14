@@ -19,7 +19,8 @@
     "payments": "Pagos",
     "salesStock": "Ventas e Inventario",
     "expenses": "Gastos",
-    "users": "Usuarios"
+    "users": "Usuarios",
+    "team": "Equipo"
   },
   "header": {
     "notifications": "Notificaciones",
@@ -66,6 +67,7 @@
     "yes": "Sí",
     "no": "No",
     "loading": "Cargando...",
+    "close": "Cerrar",
     "noneFound": "No se encontraron registros.",
     "months": {
       "jan": "Ene",
@@ -134,6 +136,10 @@
       "lastName": "Apellido",
       "phone": "Teléfono",
       "email": "Email",
+      "birthDate": "Fecha de nacimiento",
+      "address": "Dirección",
+      "medicalNotes": "Notas médicas",
+      "tabInfo": "Información",
       "details": "Detalles del paciente"
     },
     "packs": {
@@ -169,11 +175,31 @@
       "title": "Usuarios",
       "add": "Agregar usuario",
       "empty": "No se encontraron usuarios.",
+      "photo": "Foto",
       "username": "Nombre de usuario",
       "email": "Email",
       "role": "Rol",
       "active": "Activo",
       "resetPassword": "Restablecer contraseña"
+    },
+    "team": {
+      "title": "Equipo",
+      "add": "Agregar miembro",
+      "empty": "No se encontraron miembros.",
+      "photo": "Foto",
+      "fullName": "Nombre completo",
+      "phoneNumber": "Teléfono",
+      "specialty": "Especialidad",
+      "role": "Rol",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha de fin",
+      "status": "Estado",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "showInactive": "Mostrar miembros inactivos",
+      "showActive": "Mostrar miembros activos",
+      "activate": "Activar",
+      "deactivate": "Desactivar"
     },
     "seances": {
       "title": "Sesiones",

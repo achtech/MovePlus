@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export  class  UserFormComponent  {
    form:  FormGroup;
-   roles  = ['ADMIN',  'KINE',  'ASSISTANT',  'TRAINER'];
+   roles  = ['ADMIN', 'ASSISTANT'];
 
     constructor(
       private  fb:  FormBuilder,
@@ -32,18 +32,30 @@ export  class  UserFormComponent  {
       }, { validators: data ? null : UserFormComponent.passwordMatchValidator });
     }
 
-    save(): void  {
-       if  (this.form.valid) {
-           const user  =  this.form.value;
-           // Remove confirmPassword before saving
-           delete user.confirmPassword;
-          if  (this.data?.id)  {
-             this.userService.updateUser(this.data.id,  user).subscribe(()  =>  this.dialogRef.close(true));
-          }  else {
-              this.userService.addUser(user).subscribe(()  =>  this.dialogRef.close(true));
-          }
-       }
-   }
+    save(): void {
+      if (!this.form.valid) {
+        return;
+      }
+
+      const formValue = { ...this.form.value };
+      delete formValue.confirmPassword;
+
+      if (this.data?.id) {
+        const user: User = { ...this.data, ...formValue };
+        if (!formValue.password) {
+          delete user.password;
+        }
+        this.userService.updateUser(this.data.id, user).subscribe({
+          next: () => this.dialogRef.close(true),
+          error: () => {}
+        });
+      } else {
+        this.userService.addUser(formValue).subscribe({
+          next: () => this.dialogRef.close(true),
+          error: () => {}
+        });
+      }
+    }
 
    static passwordMatchValidator(form: FormGroup) {
        const password = form.get('password');

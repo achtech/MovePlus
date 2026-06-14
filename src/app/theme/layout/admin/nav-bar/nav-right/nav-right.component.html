@@ -92,8 +92,8 @@
     </div>
   </li>
   <li>
-    <div class="dropdown drp-user" ngbDropdown placement="auto">
-      <a href="javascript:void(0)" ngbDropdownToggle data-toggle="dropdown">
+    <div class="dropdown drp-user" ngbDropdown #userDropdown="ngbDropdown" placement="auto" autoClose="true">
+      <a href="javascript:void(0)" ngbDropdownToggle data-toggle="dropdown" (click)="$event.preventDefault()">
         <i class="icon feather icon-settings"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-end profile-notification" ngbDropdownMenu>
@@ -106,10 +106,10 @@
         </div>
         <ul class="pro-body">
           <li>
-            <a routerLink="/profile" class="dropdown-item">
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="goToProfile($event)">
               <i class="feather icon-user"></i>
               {{ 'header.profile' | translate }}
-            </a>
+            </button>
           </li>
           <li>
             <a href="javascript:void(0)" class="dropdown-item" (click)="logout()">

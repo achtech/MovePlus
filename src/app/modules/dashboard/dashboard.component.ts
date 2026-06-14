@@ -8,6 +8,7 @@ import { CardComponent } from '../../theme/shared/components/card/card.component
 import { AppCurrencyPipe } from '../../core/pipes/app-currency.pipe';
 import { APP_CURRENCY_SYMBOL } from '../../core/constants/currency.config';
 import { runAfterBrowserHydration } from '../../core/utils/browser-init';
+import { RoleService } from '../../core/services/role.service';
 
 import { PatientService } from '../patients/patient.service';
 import { SeanceService } from '../seances/seance.service';
@@ -25,7 +26,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private seanceService = inject(SeanceService);
   private paymentService = inject(PaymentService);
   private translate = inject(TranslateService);
+  private roleService = inject(RoleService);
   private langSub?: Subscription;
+
+  canViewFinancialSections = false;
 
   totalPatients = 0;
 
@@ -60,7 +64,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   seancesTomorrow: Array<{ patientName: string; time: string; type: string }> = [];
 
   constructor() {
-    runAfterBrowserHydration(() => this.loadStats());
+    runAfterBrowserHydration(() => {
+      this.roleService.ensureRoleLoaded().subscribe(() => {
+        this.canViewFinancialSections = this.roleService.isAdmin();
+        this.loadStats();
+      });
+    });
   }
 
   ngOnInit() {
@@ -96,6 +105,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.computeSeanceDayLists();
     });
 
+    if (!this.canViewFinancialSections) {
+      return;
+    }
+
+    this.seanceService.getSeancesByMonth().subscribe((stats) => {
+      this.barSeancesData = {
+        labels: this.getMonthLabels(),
+        datasets: [
+          {
+            label: this.translate.instant('dashboard.chartSeances'),
+            data: stats?.counts?.length === 12 ? stats.counts : new Array(12).fill(0),
+            backgroundColor: '#04a9f5'
+          }
+        ]
+      };
+      this.barSeancesOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top' } },
+        scales: { y: { beginAtZero: true } }
+      };
+    });
+
     this.paymentService.getPayments().subscribe((payments) => {
       this.allPayments = payments || [];
 
@@ -118,23 +150,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.computeMonthlyPaymentSeries();
       this.updateLineData();
     });
-
-    this.barSeancesData = {
-      labels: this.getMonthLabels(),
-      datasets: [
-        {
-          label: this.translate.instant('dashboard.chartSeances'),
-          data: [40, 35, 50, 60, 70, 65, 80, 90, 75, 85, 95, 110],
-          backgroundColor: '#04a9f5'
-        }
-      ]
-    };
-    this.barSeancesOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: 'top' } },
-      scales: { y: { beginAtZero: true } }
-    };
   }
 
   computeSeanceDayLists() {

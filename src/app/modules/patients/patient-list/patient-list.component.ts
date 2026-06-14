@@ -13,7 +13,7 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { FORM_DIALOG_OPTIONS, PATIENT_DETAIL_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
  
 @Component({
@@ -52,16 +52,12 @@ import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
         });
     }
     
-   showPatientDetails(patient: Patient): void 
-     {
-   this.dialog.open(PatientDetailDialogComponent,  {
-       width: '80vw',
-       height:  '80vh',
-       maxWidth: '90vw',
-       panelClass: 'middle-dialog datta-dialog',
-       data: {  patient  }
-   });
-}
+   showPatientDetails(patient: Patient): void {
+     this.dialog.open(PatientDetailDialogComponent, {
+       ...PATIENT_DETAIL_DIALOG_OPTIONS,
+       data: { patient }
+     });
+   }
 
  
     deletePatient(id:  number):  void  {

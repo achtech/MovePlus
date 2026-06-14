@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
+    "build:backend": "ng build && node scripts/sync-to-backend.mjs",
+    "sync:backend": "node scripts/sync-to-backend.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:move-plus": "node dist/move-plus/server/server.mjs"

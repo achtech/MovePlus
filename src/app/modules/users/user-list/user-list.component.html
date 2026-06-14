@@ -10,7 +10,7 @@
       </p-iconfield>
     </div>
 
-    <p-table #dt1 [value]="users" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['username', 'email', 'role', 'enabled']" showGridlines>
+    <p-table #dt1 [value]="users" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['username', 'email', 'role', 'enabled', 'firstName', 'lastName']" showGridlines>
       <ng-template #caption>
         <div class="flex">
           <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
@@ -18,6 +18,7 @@
       </ng-template>
       <ng-template #header>
         <tr>
+          <th style="min-width:4rem">{{ 'pages.users.photo' | translate }}</th>
           <th style="min-width:15rem">
             <div class="flex items-center justify-between">
               {{ 'pages.users.username' | translate }}
@@ -47,7 +48,19 @@
       </ng-template>
       <ng-template #body let-u>
         <tr>
-          <td>{{ u.username }}</td>
+          <td>
+            <img
+              [src]="avatarImagePath(u.avatar ?? 'avatar-1.jpg')"
+              [alt]="userDisplayName(u)"
+              class="user-avatar img-radius"
+            />
+          </td>
+          <td>
+            <div class="user-name-cell">
+              <strong>{{ u.username }}</strong>
+              <small class="text-muted">{{ userDisplayName(u) }}</small>
+            </div>
+          </td>
           <td>{{ u.email }}</td>
           <td>{{ u.role }}</td>
           <td>{{ u.enabled ? ('common.yes' | translate) : ('common.no' | translate) }}</td>
@@ -60,7 +73,7 @@
       </ng-template>
       <ng-template #emptymessage>
         <tr>
-          <td colspan="5">{{ 'pages.users.empty' | translate }}</td>
+          <td colspan="6">{{ 'pages.users.empty' | translate }}</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="paginatorpreviouspagelinkicon">

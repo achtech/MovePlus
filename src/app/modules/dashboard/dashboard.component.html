@@ -34,63 +34,67 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xl-4 col-md-6">
-      <app-card cardTitle="dashboard.paymentsToday" [options]="false" cardClass="stat-widget stat-widget-primary">
-        <h3 class="d-flex align-items-center mb-0">
-          <i class="feather icon-credit-card stat-icon"></i>
-          {{ paymentsToday | appCurrency }}
-        </h3>
-      </app-card>
+  @if (canViewFinancialSections) {
+    <div class="row">
+      <div class="col-xl-4 col-md-6">
+        <app-card cardTitle="dashboard.paymentsToday" [options]="false" cardClass="stat-widget stat-widget-primary">
+          <h3 class="d-flex align-items-center mb-0">
+            <i class="feather icon-credit-card stat-icon"></i>
+            {{ paymentsToday | appCurrency }}
+          </h3>
+        </app-card>
+      </div>
+      <div class="col-xl-4 col-md-6">
+        <app-card cardTitle="dashboard.paymentsWeek" [options]="false" cardClass="stat-widget stat-widget-info">
+          <h3 class="d-flex align-items-center mb-0">
+            <i class="feather icon-trending-up stat-icon"></i>
+            {{ paymentsWeek | appCurrency }}
+          </h3>
+        </app-card>
+      </div>
+      <div class="col-xl-4 col-md-6">
+        <app-card cardTitle="dashboard.paymentsMonth" [options]="false" cardClass="stat-widget stat-widget-success">
+          <h3 class="d-flex align-items-center mb-0">
+            <i class="feather icon-dollar-sign stat-icon"></i>
+            {{ paymentsMonth | appCurrency }}
+          </h3>
+        </app-card>
+      </div>
     </div>
-    <div class="col-xl-4 col-md-6">
-      <app-card cardTitle="dashboard.paymentsWeek" [options]="false" cardClass="stat-widget stat-widget-info">
-        <h3 class="d-flex align-items-center mb-0">
-          <i class="feather icon-trending-up stat-icon"></i>
-          {{ paymentsWeek | appCurrency }}
-        </h3>
-      </app-card>
-    </div>
-    <div class="col-xl-4 col-md-6">
-      <app-card cardTitle="dashboard.paymentsMonth" [options]="false" cardClass="stat-widget stat-widget-success">
-        <h3 class="d-flex align-items-center mb-0">
-          <i class="feather icon-dollar-sign stat-icon"></i>
-          {{ paymentsMonth | appCurrency }}
-        </h3>
-      </app-card>
-    </div>
-  </div>
+  }
 
-  <div class="row">
-    <div class="col-xl-6 col-md-12">
-      <app-card cardTitle="dashboard.seancesByMonth" [options]="false">
-        <div class="chart-wrapper">
-          <p-chart type="bar" [data]="barSeancesData" [options]="barSeancesOptions"></p-chart>
-        </div>
-      </app-card>
+  @if (canViewFinancialSections) {
+    <div class="row">
+      <div class="col-xl-6 col-md-12">
+        <app-card cardTitle="dashboard.seancesByMonth" [options]="false">
+          <div class="chart-wrapper">
+            <p-chart type="bar" [data]="barSeancesData" [options]="barSeancesOptions"></p-chart>
+          </div>
+        </app-card>
+      </div>
+      <div class="col-xl-6 col-md-12">
+        <app-card cardTitle="dashboard.paymentsEvolution" [options]="false">
+          <div class="chart-controls">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="showValidated" [(ngModel)]="showValidated" (change)="onToggleChange()" />
+              <label class="form-check-label" for="showValidated">{{ 'dashboard.showValidated' | translate }}</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="showPending" [(ngModel)]="showPending" (change)="onToggleChange()" />
+              <label class="form-check-label" for="showPending">{{ 'dashboard.showPending' | translate }}</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="showExpenses" [(ngModel)]="showExpenses" (change)="onToggleChange()" />
+              <label class="form-check-label" for="showExpenses">{{ 'dashboard.showExpenses' | translate }}</label>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <p-chart type="line" [data]="lineStylesData" [options]="lineStylesOptions"></p-chart>
+          </div>
+        </app-card>
+      </div>
     </div>
-    <div class="col-xl-6 col-md-12">
-      <app-card cardTitle="dashboard.paymentsEvolution" [options]="false">
-        <div class="chart-controls">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="showValidated" [(ngModel)]="showValidated" (change)="onToggleChange()" />
-            <label class="form-check-label" for="showValidated">{{ 'dashboard.showValidated' | translate }}</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="showPending" [(ngModel)]="showPending" (change)="onToggleChange()" />
-            <label class="form-check-label" for="showPending">{{ 'dashboard.showPending' | translate }}</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="showExpenses" [(ngModel)]="showExpenses" (change)="onToggleChange()" />
-            <label class="form-check-label" for="showExpenses">{{ 'dashboard.showExpenses' | translate }}</label>
-          </div>
-        </div>
-        <div class="chart-wrapper">
-          <p-chart type="line" [data]="lineStylesData" [options]="lineStylesOptions"></p-chart>
-        </div>
-      </app-card>
-    </div>
-  </div>
+  }
 
   <div class="row">
     <div class="col-xl-4 col-md-6">
