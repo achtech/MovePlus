@@ -68,6 +68,8 @@
     "no": "Non",
     "loading": "Chargement...",
     "close": "Fermer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
     "noneFound": "Aucun enregistrement trouvé.",
     "months": {
       "jan": "Jan",
@@ -149,7 +151,39 @@
       "name": "Nom",
       "sessionCount": "Nombre de Séances",
       "homePrice": "Prix Maison",
-      "officePrice": "Prix Cabinet"
+      "officePrice": "Prix Cabinet",
+      "activeSubscribers": "Abonnés Actifs",
+      "subscribersTitle": "Abonnés actifs",
+      "noSubscribers": "Aucun abonné actif pour ce pack.",
+      "remainingSessions": "Séances restantes"
+    },
+    "patientPack": {
+      "subscriptionStatus": "Statut d'abonnement",
+      "remainingSessionsShort": "Séances restantes",
+      "noActivePack": "Aucun pack actif (Tarif à la séance)",
+      "totalCost": "Coût total du pack",
+      "amountPaid": "Montant payé",
+      "remainingToPay": "Reste à payer",
+      "collectDeposit": "Encaisser un acompte",
+      "assignPack": "Assigner un pack",
+      "assignTitle": "Assigner un pack au patient",
+      "assignConfirm": "Confirmer l'abonnement",
+      "selectPack": "Sélectionner un pack...",
+      "priceType": "Tarif appliqué",
+      "purchaseDate": "Date d'achat",
+      "agreedPrice": "Prix convenu",
+      "assignError": "Impossible d'assigner le pack. Le patient a peut-être déjà un abonnement actif.",
+      "cancelPack": "Annuler le pack",
+      "changePack": "Changer de pack",
+      "confirmCancelPack": "Annuler le pack actif de ce patient ? Les paiements déjà enregistrés seront conservés.",
+      "confirmChangePack": "Changer de pack annulera l'abonnement actuel puis vous permettra d'en choisir un nouveau. Continuer ?",
+      "historyTitle": "Historique des abonnements",
+      "historyEmpty": "Aucun ancien abonnement.",
+      "subscriptionLabel": "Statut abonnement",
+      "sessionsUsed": "Séances utilisées",
+      "statusActive": "Actif",
+      "statusCompleted": "Terminé",
+      "statusCancelled": "Annulé"
     },
     "payments": {
       "title": "Paiements",
@@ -159,7 +193,9 @@
       "amount": "Montant",
       "date": "Date",
       "method": "Méthode",
-      "status": "Statut"
+      "status": "Statut",
+      "label": "Libellé",
+      "singleSession": "Séance Unique"
     },
     "expenses": {
       "title": "Charges",

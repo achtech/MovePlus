@@ -8,6 +8,9 @@ export interface Payment {
   id?: number;
   patientId: number;
   seanceId?: number;
+  patientPackId?: number;
+  paymentType?: 'PACK' | 'SEANCE';
+  label?: string;
   amount: number;
   date: string;
   paymentDate?: string;
@@ -52,7 +55,8 @@ export class PaymentService {
   private fromApi(payment: ApiPayment): Payment {
     return {
       ...payment,
-      date: payment.date || payment.paymentDate || ''
+      date: payment.date || payment.paymentDate || '',
+      label: payment.label || (payment.paymentType === 'PACK' ? 'Pack' : 'Séance Unique')
     };
   }
 
@@ -60,7 +64,9 @@ export class PaymentService {
     const { date, ...rest } = payment;
     return {
       ...rest,
-      paymentDate: date || payment.paymentDate || ''
+      paymentDate: date || payment.paymentDate || '',
+      paymentType: payment.paymentType || (payment.patientPackId ? 'PACK' : 'SEANCE'),
+      label: payment.label || (payment.paymentType === 'PACK' ? 'Pack' : 'Séance Unique')
     };
   }
 

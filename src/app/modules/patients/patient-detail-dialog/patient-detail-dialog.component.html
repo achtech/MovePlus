@@ -47,10 +47,91 @@
         <span class="info-label">{{ 'pages.patients.medicalNotes' | translate }}</span>
         <p class="info-value">{{ data.patient.medicalNotes || '—' }}</p>
       </div>
+
+      <section class="pack-section">
+        <h4 class="pack-section-title">{{ 'pages.patientPack.subscriptionStatus' | translate }}</h4>
+        @if (activePack) {
+          <div class="pack-badge pack-badge-inline">
+            <strong>{{ activePack.packName }}</strong>
+            — {{ activePack.remainingSessions }} / {{ activePack.totalSessions }}
+            {{ 'pages.patientPack.remainingSessionsShort' | translate }}
+            · {{ activePack.paymentStatus }}
+          </div>
+          <div class="pack-actions">
+            <button type="button" class="btn btn-outline-primary btn-sm" (click)="changePack()">
+              {{ 'pages.patientPack.changePack' | translate }}
+            </button>
+            <button type="button" class="btn btn-outline-danger btn-sm" (click)="cancelPack()">
+              {{ 'pages.patientPack.cancelPack' | translate }}
+            </button>
+          </div>
+        } @else {
+          <p class="pack-empty">{{ 'pages.patientPack.noActivePack' | translate }}</p>
+          <button type="button" class="btn btn-primary btn-sm" (click)="assignPack()">
+            {{ 'pages.patientPack.assignPack' | translate }}
+          </button>
+        }
+      </section>
+
+      <section class="pack-section pack-history-section">
+        <h4 class="pack-section-title">{{ 'pages.patientPack.historyTitle' | translate }}</h4>
+        @if (loadingPackHistory) {
+          <p class="pack-empty">{{ 'common.loading' | translate }}</p>
+        } @else if (packHistory.length === 0) {
+          <p class="pack-empty">{{ 'pages.patientPack.historyEmpty' | translate }}</p>
+        } @else {
+          <div class="panel">
+            <p-table [value]="packHistory" dataKey="id" [rows]="5" [paginator]="packHistory.length > 5" showGridlines>
+              <ng-template #header>
+                <tr>
+                  <th>{{ 'pages.packs.name' | translate }}</th>
+                  <th>{{ 'pages.patientPack.purchaseDate' | translate }}</th>
+                  <th>{{ 'pages.patientPack.sessionsUsed' | translate }}</th>
+                  <th>{{ 'pages.payments.amount' | translate }}</th>
+                  <th>{{ 'pages.patientPack.subscriptionLabel' | translate }}</th>
+                </tr>
+              </ng-template>
+              <ng-template #body let-pack>
+                <tr>
+                  <td>{{ pack.packName || '—' }}</td>
+                  <td>{{ pack.purchaseDate | date: 'mediumDate' }}</td>
+                  <td>{{ sessionsUsed(pack) }} / {{ pack.totalSessions }}</td>
+                  <td>{{ pack.amountPaid | appCurrency }} / {{ pack.agreedPrice | appCurrency }}</td>
+                  <td>
+                    <span class="status-chip" [class]="'status-' + pack.subscriptionStatus.toLowerCase()">
+                      {{ subscriptionStatusKey(pack.subscriptionStatus) | translate }}
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        }
+      </section>
     </section>
   }
 
   @if (activeTab === 'seances') {
+    <div class="pack-badge" [class.pack-badge-empty]="!activePack">
+      @if (activePack) {
+        <strong>{{ 'pages.patientPack.subscriptionStatus' | translate }}:</strong>
+        {{ activePack.packName }}
+        ({{ 'pages.patientPack.remainingSessionsShort' | translate }}: {{ activePack.remainingSessions }} / {{ activePack.totalSessions }})
+        <span class="pack-actions-inline">
+          <button type="button" class="btn btn-outline-primary btn-sm" (click)="changePack()">
+            {{ 'pages.patientPack.changePack' | translate }}
+          </button>
+          <button type="button" class="btn btn-outline-danger btn-sm" (click)="cancelPack()">
+            {{ 'pages.patientPack.cancelPack' | translate }}
+          </button>
+        </span>
+      } @else {
+        {{ 'pages.patientPack.noActivePack' | translate }}
+        <button type="button" class="btn btn-primary btn-sm ms-2" (click)="assignPack()">
+          {{ 'pages.patientPack.assignPack' | translate }}
+        </button>
+      }
+    </div>
     <div class="panel">
       <p-table
         #dtSeances
@@ -88,6 +169,38 @@
   }
 
   @if (activeTab === 'payments') {
+    @if (activePack) {
+      <section class="pack-payment-summary">
+        <h4>{{ activePack.packName }}</h4>
+        <div class="summary-grid">
+          <div>
+            <span class="info-label">{{ 'pages.patientPack.totalCost' | translate }}</span>
+            <span class="info-value">{{ activePack.agreedPrice | appCurrency }}</span>
+          </div>
+          <div>
+            <span class="info-label">{{ 'pages.patientPack.amountPaid' | translate }}</span>
+            <span class="info-value">{{ activePack.amountPaid | appCurrency }}</span>
+          </div>
+          <div>
+            <span class="info-label">{{ 'pages.patientPack.remainingToPay' | translate }}</span>
+            <span class="info-value">{{ activePack.amountRemaining | appCurrency }}</span>
+          </div>
+        </div>
+        @if ((activePack.amountRemaining ?? 0) > 0) {
+          <button type="button" class="btn btn-primary btn-sm mt-2" (click)="collectDeposit()">
+            {{ 'pages.patientPack.collectDeposit' | translate }}
+          </button>
+        }
+        <div class="pack-actions mt-2">
+          <button type="button" class="btn btn-outline-primary btn-sm" (click)="changePack()">
+            {{ 'pages.patientPack.changePack' | translate }}
+          </button>
+          <button type="button" class="btn btn-outline-danger btn-sm" (click)="cancelPack()">
+            {{ 'pages.patientPack.cancelPack' | translate }}
+          </button>
+        </div>
+      </section>
+    }
     <div class="panel">
       <p-table
         #dtPayments
@@ -105,6 +218,7 @@
             <th>{{ 'pages.payments.date' | translate }}</th>
             <th>{{ 'pages.payments.amount' | translate }}</th>
             <th>{{ 'pages.payments.method' | translate }}</th>
+            <th>{{ 'pages.payments.label' | translate }}</th>
             <th>{{ 'pages.payments.status' | translate }}</th>
           </tr>
         </ng-template>
@@ -113,12 +227,13 @@
             <td>{{ payment.date | date: 'shortDate' }}</td>
             <td>{{ payment.amount | appCurrency }}</td>
             <td>{{ payment.method || '—' }}</td>
+            <td>{{ payment.label || ('pages.payments.singleSession' | translate) }}</td>
             <td>{{ payment.status || '—' }}</td>
           </tr>
         </ng-template>
         <ng-template #emptymessage>
           <tr>
-            <td colspan="4">{{ 'pages.payments.empty' | translate }}</td>
+            <td colspan="5">{{ 'pages.payments.empty' | translate }}</td>
           </tr>
         </ng-template>
       </p-table>

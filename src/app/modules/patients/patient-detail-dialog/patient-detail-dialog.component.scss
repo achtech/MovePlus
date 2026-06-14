@@ -80,3 +80,111 @@
 .panel {
   padding-top: 0.25rem;
 }
+
+.pack-badge {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #93c5fd;
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 0.9rem;
+}
+
+.pack-badge-empty {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pack-badge-inline {
+  margin: 0;
+}
+
+.pack-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pack-section-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.pack-empty {
+  margin: 0 0 0.75rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.pack-actions,
+.pack-actions-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.pack-actions-inline {
+  margin-top: 0;
+  margin-left: auto;
+}
+
+.pack-payment-summary {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+  background: #fff;
+
+  h4 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+.pack-history-section {
+  margin-top: 1.25rem;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.status-completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-active {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+}

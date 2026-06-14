@@ -10,6 +10,14 @@
             {{ patient.firstName }} {{ patient.lastName }}
           </option>
         </select>
+        @if (activePack) {
+          <p class="pack-hint">
+            Patient abonné au <strong>{{ activePack.packName }}</strong>
+            (Il reste {{ activePack.remainingSessions }} séance(s))
+          </p>
+        } @else if (form.get('patientId')?.value) {
+          <p class="pack-hint pack-hint-muted">Aucun pack actif (Tarif à la séance)</p>
+        }
       </div>
       <div class="form-group col-md-6">
         <label for="therapistId">Thérapeute</label>

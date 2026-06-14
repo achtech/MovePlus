@@ -2,6 +2,8 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { MatDialog  } from  '@angular/material/dialog';
 import { PackService,  Pack  }  from './pack.service';
 import { PackFormDialogComponent } from './pack-form-dialog/pack-form-dialog.component';
+import { PatientPackService } from './patient-pack.service';
+import { PackSubscribersDialogComponent } from './pack-subscribers-dialog/pack-subscribers-dialog.component';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -24,10 +26,12 @@ import { runAfterBrowserHydration } from '../../core/utils/browser-init';
 })
 export class PackManagement {
   packs: Pack[] = [];
+  activeCounts: Record<number, number> = {};
   loading: boolean = true;
   
   constructor(
     private packService: PackService,
+    private patientPackService: PatientPackService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
   ) {
@@ -41,12 +45,37 @@ export class PackManagement {
         this.packs = data;
         this.loading = false;
         this.cdr.markForCheck();
+        this.loadActiveCounts();
       },
       error: (error) => {
         console.error('Error loading packs:', error);
         this.loading = false;
         this.cdr.markForCheck();
       }
+    });
+  }
+
+  loadActiveCounts(): void {
+    this.patientPackService.getActiveSubscriberCounts().subscribe((counts) => {
+      this.activeCounts = counts;
+      this.cdr.markForCheck();
+    });
+  }
+
+  getActiveCount(packId?: number): number {
+    return packId ? this.activeCounts[packId] ?? 0 : 0;
+  }
+
+  showSubscribers(pack: Pack): void {
+    if (!pack.id) {
+      return;
+    }
+    this.patientPackService.getActiveSubscribersByPack(pack.id).subscribe((subscribers) => {
+      this.dialog.open(PackSubscribersDialogComponent, {
+        ...FORM_DIALOG_OPTIONS,
+        width: '560px',
+        data: { packName: pack.nom, subscribers }
+      });
     });
   }
 

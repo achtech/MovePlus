@@ -12,7 +12,7 @@
 
     <p class="page-summary">{{ 'common.total' | translate }} : {{ totalAmount | appCurrency }}</p>
 
-    <p-table #dt1 [value]="payments" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['patientName', 'amount', 'date', 'method', 'status']" showGridlines>
+    <p-table #dt1 [value]="payments" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['patientName', 'amount', 'date', 'method', 'status', 'label']" showGridlines>
       <ng-template #caption>
         <div class="flex">
           <p-button [label]="'common.clear' | translate" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
@@ -50,6 +50,12 @@
               <p-columnFilter type="text" field="status" display="menu" />
             </div>
           </th>
+          <th style="min-width:12rem">
+            <div class="flex items-center justify-between">
+              {{ 'pages.payments.label' | translate }}
+              <p-columnFilter type="text" field="label" display="menu" />
+            </div>
+          </th>
           <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
         </tr>
       </ng-template>
@@ -60,6 +66,7 @@
           <td>{{ p.date | date:'shortDate' }}</td>
           <td>{{ p.method }}</td>
           <td>{{ p.status }}</td>
+          <td>{{ p.label || ('pages.payments.singleSession' | translate) }}</td>
           <td>
             <p-button icon="pi pi-pencil" [outlined]="true" (click)="editPayment(p)" />
             <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deletePayment(p.id!)" />
@@ -68,7 +75,7 @@
       </ng-template>
       <ng-template #emptymessage>
         <tr>
-          <td colspan="6">{{ 'pages.payments.empty' | translate }}</td>
+          <td colspan="7">{{ 'pages.payments.empty' | translate }}</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="paginatorpreviouspagelinkicon">

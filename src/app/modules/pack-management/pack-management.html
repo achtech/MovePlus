@@ -31,6 +31,7 @@
               <p-columnFilter type="text" field="prixCabinet" display="menu" />
             </div>
           </th>
+          <th style="min-width:10rem">{{ 'pages.packs.activeSubscribers' | translate }}</th>
           <th style="min-width:10rem">{{ 'common.actions' | translate }}</th>
         </tr>
       </ng-template>
@@ -41,6 +42,11 @@
           <td>{{ pack.prixMaison | appCurrency }}</td>
           <td>{{ pack.prixCabinet | appCurrency }}</td>
           <td>
+            <button type="button" class="subscriber-link" (click)="showSubscribers(pack)">
+              {{ getActiveCount(pack.id) }}
+            </button>
+          </td>
+          <td>
             <p-button icon="pi pi-pencil" [outlined]="true" (click)="editPack(pack)" />
             <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deletePack(pack.id!)" />
           </td>
@@ -48,7 +54,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5">{{ 'pages.packs.empty' | translate }}</td>
+          <td colspan="6">{{ 'pages.packs.empty' | translate }}</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="paginatorpreviouspagelinkicon">

@@ -68,6 +68,8 @@
     "no": "No",
     "loading": "Loading...",
     "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
     "noneFound": "No records found.",
     "months": {
       "jan": "Jan",
@@ -149,7 +151,39 @@
       "name": "Name",
       "sessionCount": "Number of sessions",
       "homePrice": "Home price",
-      "officePrice": "Office price"
+      "officePrice": "Office price",
+      "activeSubscribers": "Active subscribers",
+      "subscribersTitle": "Active subscribers",
+      "noSubscribers": "No active subscribers for this pack.",
+      "remainingSessions": "Remaining sessions"
+    },
+    "patientPack": {
+      "subscriptionStatus": "Subscription status",
+      "remainingSessionsShort": "Remaining sessions",
+      "noActivePack": "No active pack (Pay per session)",
+      "totalCost": "Total pack cost",
+      "amountPaid": "Amount paid",
+      "remainingToPay": "Remaining balance",
+      "collectDeposit": "Collect deposit",
+      "assignPack": "Assign a pack",
+      "assignTitle": "Assign pack to patient",
+      "assignConfirm": "Confirm subscription",
+      "selectPack": "Select a pack...",
+      "priceType": "Price type",
+      "purchaseDate": "Purchase date",
+      "agreedPrice": "Agreed price",
+      "assignError": "Unable to assign pack. Patient may already have an active subscription.",
+      "cancelPack": "Cancel pack",
+      "changePack": "Change pack",
+      "confirmCancelPack": "Cancel this patient's active pack? Recorded payments will be kept.",
+      "confirmChangePack": "Changing pack will cancel the current subscription, then let you choose a new one. Continue?",
+      "historyTitle": "Subscription history",
+      "historyEmpty": "No previous subscriptions.",
+      "subscriptionLabel": "Subscription status",
+      "sessionsUsed": "Sessions used",
+      "statusActive": "Active",
+      "statusCompleted": "Completed",
+      "statusCancelled": "Cancelled"
     },
     "payments": {
       "title": "Payments",
@@ -159,7 +193,9 @@
       "amount": "Amount",
       "date": "Date",
       "method": "Method",
-      "status": "Status"
+      "status": "Status",
+      "label": "Label",
+      "singleSession": "Single session"
     },
     "expenses": {
       "title": "Expenses",

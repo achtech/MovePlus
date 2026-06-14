@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>{{ 'pages.patientPack.assignTitle' | translate }}</h2>
+
+<mat-dialog-content>
+  <p class="patient-line">
+    {{ data.patient.firstName }} {{ data.patient.lastName }}
+  </p>
+
+  <form [formGroup]="form" class="datta-form-grid">
+    <div class="form-group">
+      <label for="packId">{{ 'pages.packs.title' | translate }}</label>
+      <select id="packId" class="form-control" formControlName="packId">
+        <option value="">{{ 'pages.patientPack.selectPack' | translate }}</option>
+        @for (pack of packs; track pack.id) {
+          <option [ngValue]="pack.id">{{ pack.nom }} ({{ pack.nombreDeSeance }} séances)</option>
+        }
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="priceType">{{ 'pages.patientPack.priceType' | translate }}</label>
+      <select id="priceType" class="form-control" formControlName="priceType">
+        <option value="CABINET">{{ 'pages.packs.officePrice' | translate }}</option>
+        <option value="MAISON">{{ 'pages.packs.homePrice' | translate }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="purchaseDate">{{ 'pages.patientPack.purchaseDate' | translate }}</label>
+      <input id="purchaseDate" type="date" class="form-control" formControlName="purchaseDate" />
+    </div>
+  </form>
+
+  @if (errorMessage) {
+    <p class="error-msg">
+      @if (errorMessage.startsWith('pages.')) {
+        {{ errorMessage | translate }}
+      } @else {
+        {{ errorMessage }}
+      }
+    </p>
+  }
+
+  @if (selectedPack) {
+    <div class="preview-box">
+      <div><strong>{{ selectedPack.nom }}</strong></div>
+      <div>{{ 'pages.packs.sessionCount' | translate }}: {{ selectedPack.nombreDeSeance }}</div>
+      <div>{{ 'pages.patientPack.agreedPrice' | translate }}: {{ agreedPrice | appCurrency }}</div>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="datta-dialog-actions">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+  <button type="button" class="btn btn-primary" [disabled]="form.invalid || saving" (click)="save()">
+    {{ 'pages.patientPack.assignConfirm' | translate }}
+  </button>
+</mat-dialog-actions>
