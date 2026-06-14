@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
-import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../../core/utils/browser-init';
 
 @Component({
     selector:  'app-stock-list',
@@ -27,8 +27,8 @@ export  class  StockListComponent {
     stock:  Stock[]  =  [];
     loading: boolean = true;
 
-    constructor(private  stockService:  StockService, private  dialog: MatDialog) {
-        runAfterBrowserHydration(() => this.loadStock());
+    constructor(private stockService: StockService, private dialog: MatDialog, private browserHydration: BrowserHydrationService) {
+        this.browserHydration.run(() => this.loadStock());
     }
 
     loadStock():  void  {

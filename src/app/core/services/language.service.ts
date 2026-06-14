@@ -7,6 +7,8 @@ import { PrimeNgI18nService } from './prime-ng-i18n.service';
 export interface AppLanguage {
   code: string;
   labelKey: string;
+  flagSrc: string;
+  shortLabel: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -17,10 +19,10 @@ export class LanguageService {
   private readonly storageKey = 'app_language';
 
   readonly languages: AppLanguage[] = [
-    { code: 'en', labelKey: 'languages.en' },
-    { code: 'fr', labelKey: 'languages.fr' },
-    { code: 'es', labelKey: 'languages.es' },
-    { code: 'ar', labelKey: 'languages.ar' }
+    { code: 'fr', labelKey: 'languages.fr', flagSrc: 'assets/images/flags/fr.svg', shortLabel: 'Français' },
+    { code: 'es', labelKey: 'languages.es', flagSrc: 'assets/images/flags/es.svg', shortLabel: 'Espagnol' },
+    { code: 'en', labelKey: 'languages.en', flagSrc: 'assets/images/flags/gb.svg', shortLabel: 'English' },
+    { code: 'ar', labelKey: 'languages.ar', flagSrc: 'assets/images/flags/ma.svg', shortLabel: 'Arabic' }
   ];
 
   init(): Observable<unknown> {

@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { CardComponent } from '../../theme/shared/components/card/card.component';
 import { AppCurrencyPipe } from '../../core/pipes/app-currency.pipe';
 import { APP_CURRENCY_SYMBOL } from '../../core/constants/currency.config';
-import { runAfterBrowserHydration } from '../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../core/utils/browser-init';
 import { RoleService } from '../../core/services/role.service';
 
 import { PatientService } from '../patients/patient.service';
@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private paymentService = inject(PaymentService);
   private translate = inject(TranslateService);
   private roleService = inject(RoleService);
+  private browserHydration = inject(BrowserHydrationService);
   private langSub?: Subscription;
 
   canViewFinancialSections = false;
@@ -64,7 +65,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   seancesTomorrow: Array<{ patientName: string; time: string; type: string }> = [];
 
   constructor() {
-    runAfterBrowserHydration(() => {
+    this.browserHydration.run(() => {
       this.roleService.ensureRoleLoaded().subscribe(() => {
         this.canViewFinancialSections = this.roleService.isAdmin();
         this.loadStats();

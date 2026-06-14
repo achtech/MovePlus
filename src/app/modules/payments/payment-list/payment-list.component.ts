@@ -13,7 +13,7 @@ import { CardComponent } from '../../../theme/shared/components/card/card.compon
 import { TranslateModule } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
-import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../../core/utils/browser-init';
 import { PatientService, Patient } from '../../patients/patient.service';
 
 @Component({
@@ -32,9 +32,10 @@ export class  PaymentListComponent {
     constructor(
       private paymentService: PaymentService,
       private patientService: PatientService,
-      private dialog: MatDialog
+      private dialog: MatDialog,
+      private browserHydration: BrowserHydrationService
     ) {
-      runAfterBrowserHydration(() => {
+      this.browserHydration.run(() => {
         this.patientService.getPatients().subscribe((patients) => {
           this.patients = patients;
           this.loadPayments();

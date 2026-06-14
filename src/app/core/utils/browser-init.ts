@@ -1,6 +1,11 @@
-import { afterNextRender } from '@angular/core';
+import { EnvironmentInjector, Injectable, afterNextRender, inject, runInInjectionContext } from '@angular/core';
 
-/** Run after client hydration so localStorage/JWT and HTTP calls are available (SSR-safe). */
-export function runAfterBrowserHydration(callback: () => void): void {
-  afterNextRender(callback);
+@Injectable({ providedIn: 'root' })
+export class BrowserHydrationService {
+  private readonly injector = inject(EnvironmentInjector);
+
+  /** Run after client hydration (SSR-safe). Safe to call from ngOnInit or constructor. */
+  run(callback: () => void): void {
+    runInInjectionContext(this.injector, () => afterNextRender(callback));
+  }
 }

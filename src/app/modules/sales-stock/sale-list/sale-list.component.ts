@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { Table } from 'primeng/table';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
-import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../../core/utils/browser-init';
 
 @Component({
    selector:  'app-sale-list',
@@ -34,8 +34,8 @@ export  class  SaleListComponent {
    @ViewChild('dt1') dt1: Table | undefined;
    @ViewChild('dt2') dt2: Table | undefined;
 
-    constructor(private saleService:  SaleService, private stockService: StockService, private  dialog: MatDialog)  {
-      runAfterBrowserHydration(() => {
+    constructor(private saleService: SaleService, private stockService: StockService, private dialog: MatDialog, private browserHydration: BrowserHydrationService) {
+      this.browserHydration.run(() => {
         this.loadSales();
         this.loadStock();
       });

@@ -15,7 +15,7 @@ import { CardComponent } from '../../theme/shared/components/card/card.component
 import { TranslateModule } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../core/constants/dialog.config';
-import { runAfterBrowserHydration } from '../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../core/utils/browser-init';
 
 @Component({
   selector: 'app-pack-management',
@@ -33,9 +33,10 @@ export class PackManagement {
     private packService: PackService,
     private patientPackService: PatientPackService,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private browserHydration: BrowserHydrationService
   ) {
-    runAfterBrowserHydration(() => this.loadPacks());
+    this.browserHydration.run(() => this.loadPacks());
   }
 
   loadPacks() {

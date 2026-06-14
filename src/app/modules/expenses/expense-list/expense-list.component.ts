@@ -13,7 +13,7 @@ import { CardComponent } from '../../../theme/shared/components/card/card.compon
 import { TranslateModule } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
-import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../../core/utils/browser-init';
 
 @Component({
     selector: 'app-expense-list',
@@ -29,9 +29,10 @@ export  class ExpenseListComponent  {
     constructor(
         private expenseService: ExpenseService,
         private dialog: MatDialog,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private browserHydration: BrowserHydrationService
     ) {
-      runAfterBrowserHydration(() => this.loadExpenses());
+      this.browserHydration.run(() => this.loadExpenses());
     }
 
     loadExpenses(): void  {

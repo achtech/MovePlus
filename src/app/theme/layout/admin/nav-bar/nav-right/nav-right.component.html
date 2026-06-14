@@ -1,110 +1,135 @@
 <ul class="navbar-nav">
   <li>
-    <div class="dropdown" ngbDropdown placement="auto">
-      <a ngbDropdownToggle href="javascript:void(0)" data-toggle="dropdown"><i class="icon feather icon-bell"></i></a>
-      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end notification">
-        <div class="notification-head">
-          <h6 class="d-inline-block m-b-0">{{ 'header.notifications' | translate }}</h6>
-          <div class="float-end">
-            <a href="javascript:void(0)" class="m-r-10 text-decoration-none">{{ 'header.markAsRead' | translate }}</a>
-            <a href="javascript:void(0)" class="text-decoration-none">{{ 'header.clearAll' | translate }}</a>
+    <div class="dropdown" ngbDropdown display="dynamic" placement="bottom-end">
+      <a ngbDropdownToggle href="javascript:void(0)" class="nav-action-toggle bell-toggle">
+        <i class="icon feather icon-bell"></i>
+        @if (unreadCount > 0) {
+          <span class="bell-badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+        }
+      </a>
+      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end nav-panel notification-panel">
+        <div class="nav-panel-head nav-panel-head--compact">
+          <span class="nav-panel-title">{{ 'header.notifications' | translate }}</span>
+          <div class="nav-panel-actions">
+            <a href="javascript:void(0)" (click)="markAllAsRead($event)">{{ 'header.markAsRead' | translate }}</a>
+            <a href="javascript:void(0)" (click)="clearAll($event)">{{ 'header.clearAll' | translate }}</a>
           </div>
         </div>
-        <ul class="notification-body">
-          <li class="n-title">
-            <p class="m-b-0">{{ 'header.new' | translate }}</p>
-          </li>
-          <li class="notification">
-            <div class="d-flex">
-              <img class="img-radius" src="assets/images/user/avatar-1.jpg" alt="Generic placeholder image" />
-              <div class="flex-grow-1">
-                <p>
-                  <strong>John Doe</strong>
-                  <span class="n-time text-muted">
-                    <i class="icon feather icon-clock m-r-10"></i>
-                    now
-                  </span>
-                </p>
-                <p>New ticket Added</p>
-              </div>
-            </div>
-          </li>
-          <li class="n-title">
-            <p class="m-b-0">{{ 'header.earlier' | translate }}</p>
-          </li>
-          <li class="notification">
-            <div class="d-flex">
-              <img class="img-radius" src="assets/images/user/avatar-2.jpg" alt="Generic placeholder image" />
-              <div class="flex-grow-1">
-                <p>
-                  <strong>Joseph William</strong>
-                  <span class="n-time text-muted">
-                    <i class="icon feather icon-clock m-r-10"></i>
-                    10 min
-                  </span>
-                </p>
-                <p>Prchace New Theme and make payment</p>
-              </div>
-            </div>
-          </li>
-          <li class="notification">
-            <div class="d-flex">
-              <img class="img-radius" src="assets/images/user/avatar-3.jpg" alt="Generic placeholder image" />
-              <div class="flex-grow-1">
-                <p>
-                  <strong>Sara Soudein</strong>
-                  <span class="n-time text-muted">
-                    <i class="icon feather icon-clock m-r-10"></i>
-                    30 min
-                  </span>
-                </p>
-                <p>currently login</p>
-              </div>
-            </div>
-          </li>
+        <ul class="nav-panel-body notification-body">
+          @if (loadingNotifications && notifications.length === 0) {
+            <li class="notification-empty">
+              <p class="text-muted m-b-0">{{ 'header.notificationsLoading' | translate }}</p>
+            </li>
+          } @else if (notifications.length === 0) {
+            <li class="notification-empty">
+              <p class="text-muted m-b-0">{{ 'header.notificationsEmpty' | translate }}</p>
+            </li>
+          } @else {
+            @if (newNotifications.length > 0) {
+              <li class="n-title">
+                <p class="m-b-0">{{ 'header.new' | translate }}</p>
+              </li>
+              @for (notification of newNotifications; track notification.id) {
+                <li class="notification notification-clickable">
+                  <a href="javascript:void(0)" class="notification-link" (click)="onNotificationClick(notification, $event)">
+                    <div class="d-flex align-items-start">
+                      <div class="notification-icon" [ngClass]="'notification-icon--' + notification.category.toLowerCase()">
+                        <i class="icon feather" [ngClass]="notificationIcon(notification)"></i>
+                      </div>
+                      <div class="flex-grow-1">
+                        <p class="notification-title-row">
+                          <strong>{{ notification.title }}</strong>
+                          <span class="n-time text-muted">
+                            <i class="icon feather icon-clock m-r-10"></i>
+                            {{ formatRelativeTime(notification.createdAt) }}
+                          </span>
+                        </p>
+                        <p class="notification-message m-b-0">{{ notification.message }}</p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              }
+            }
+
+            @if (earlierNotifications.length > 0) {
+              <li class="n-title">
+                <p class="m-b-0">{{ 'header.earlier' | translate }}</p>
+              </li>
+              @for (notification of earlierNotifications; track notification.id) {
+                <li class="notification notification-clickable notification-read">
+                  <a href="javascript:void(0)" class="notification-link" (click)="onNotificationClick(notification, $event)">
+                    <div class="d-flex align-items-start">
+                      <div class="notification-icon" [ngClass]="'notification-icon--' + notification.category.toLowerCase()">
+                        <i class="icon feather" [ngClass]="notificationIcon(notification)"></i>
+                      </div>
+                      <div class="flex-grow-1">
+                        <p class="notification-title-row">
+                          <strong>{{ notification.title }}</strong>
+                          <span class="n-time text-muted">
+                            <i class="icon feather icon-clock m-r-10"></i>
+                            {{ formatRelativeTime(notification.createdAt) }}
+                          </span>
+                        </p>
+                        <p class="notification-message m-b-0">{{ notification.message }}</p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              }
+            }
+          }
         </ul>
-        <div class="notification-footer">
-          <a href="javascript:void(0)">{{ 'header.showAll' | translate }}</a>
-        </div>
       </div>
     </div>
   </li>
   <li>
-    <div class="dropdown" ngbDropdown placement="auto">
-      <a ngbDropdownToggle href="javascript:void(0)" data-toggle="dropdown" [title]="'languages.select' | translate">
+    <div class="dropdown" ngbDropdown display="dynamic" placement="bottom-end">
+      <a ngbDropdownToggle href="javascript:void(0)" class="nav-action-toggle" [title]="'languages.select' | translate">
         <i class="icon feather icon-globe"></i>
       </a>
-      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end language-menu">
-        @for (lang of languages; track lang.code) {
-          <button
-            type="button"
-            class="dropdown-item d-flex align-items-center justify-content-between"
-            [class.active]="isCurrentLanguage(lang.code)"
-            (click)="selectLanguage(lang.code)"
-          >
-            <span>{{ lang.labelKey | translate }}</span>
-            @if (isCurrentLanguage(lang.code)) {
-              <i class="feather icon-check"></i>
-            }
-          </button>
-        }
+      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end nav-panel language-panel">
+        <div class="nav-panel-head nav-panel-head--compact">
+          <span class="nav-panel-title">{{ 'languages.select' | translate }}</span>
+        </div>
+        <ul class="nav-panel-body language-body">
+          @for (lang of languages; track lang.code) {
+            <li>
+              <button
+                type="button"
+                class="dropdown-item language-item"
+                [class.active]="isCurrentLanguage(lang.code)"
+                ngbDropdownItem
+                (click)="selectLanguage(lang.code)"
+              >
+                <img [src]="lang.flagSrc" [alt]="lang.shortLabel" class="language-flag-img" width="22" height="16" />
+                <span class="language-label">{{ lang.shortLabel }}</span>
+                @if (isCurrentLanguage(lang.code)) {
+                  <i class="feather icon-check language-check"></i>
+                }
+              </button>
+            </li>
+          }
+        </ul>
       </div>
     </div>
   </li>
   <li>
-    <div class="dropdown drp-user" ngbDropdown #userDropdown="ngbDropdown" placement="auto" autoClose="true">
-      <a href="javascript:void(0)" ngbDropdownToggle data-toggle="dropdown" (click)="$event.preventDefault()">
+    <div class="dropdown drp-user" ngbDropdown #userDropdown="ngbDropdown" display="dynamic" placement="bottom-end">
+      <a ngbDropdownToggle href="javascript:void(0)" class="nav-action-toggle">
         <i class="icon feather icon-settings"></i>
       </a>
-      <div class="dropdown-menu dropdown-menu-end profile-notification" ngbDropdownMenu>
-        <div class="pro-head">
-          <img [src]="avatarSrc" class="img-radius" alt="User-Profile-Image" />
-          <span>{{ displayName }}</span>
-          <a href="javascript:void(0)" class="dud-logout" [title]="'header.logout' | translate" (click)="logout()">
+      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end profile-notification nav-panel">
+        <div class="pro-head nav-panel-head settings-panel-head">
+          <div class="settings-head-user">
+            <img [src]="avatarSrc" class="img-radius settings-avatar" alt="User-Profile-Image" />
+            <span class="settings-user-name">{{ displayName }}</span>
+          </div>
+          <a href="javascript:void(0)" class="dud-logout settings-logout" [title]="'header.logout' | translate" (click)="logout()">
             <i class="feather icon-log-out"></i>
           </a>
         </div>
-        <ul class="pro-body">
+        <ul class="pro-body nav-panel-body">
           <li>
             <button type="button" class="dropdown-item" ngbDropdownItem (click)="goToProfile($event)">
               <i class="feather icon-user"></i>
@@ -112,10 +137,10 @@
             </button>
           </li>
           <li>
-            <a href="javascript:void(0)" class="dropdown-item" (click)="logout()">
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="logout()">
               <i class="feather icon-log-out"></i>
               {{ 'header.logout' | translate }}
-            </a>
+            </button>
           </li>
         </ul>
       </div>

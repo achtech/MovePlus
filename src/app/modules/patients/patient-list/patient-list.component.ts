@@ -14,7 +14,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FORM_DIALOG_OPTIONS, PATIENT_DETAIL_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
-import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../../core/utils/browser-init';
  
 @Component({
      selector: 'app-patient-list',
@@ -27,8 +27,8 @@ import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
     patients:  Patient[]  =  [];
     loading: boolean = true;
 
-     constructor(private patientService:  PatientService,  private  dialog: MatDialog)  {
-       runAfterBrowserHydration(() => this.loadPatients());
+     constructor(private patientService: PatientService, private dialog: MatDialog, private browserHydration: BrowserHydrationService) {
+       this.browserHydration.run(() => this.loadPatients());
      }
 
      loadPatients(): void  {

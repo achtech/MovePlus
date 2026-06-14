@@ -33,7 +33,9 @@
     "profile": "Profil",
     "messages": "Mes messages",
     "lockScreen": "Écran verrouillé",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "notificationsEmpty": "Aucune notification.",
+    "notificationsLoading": "Chargement..."
   },
   "profile": {
     "title": "Mon profil",

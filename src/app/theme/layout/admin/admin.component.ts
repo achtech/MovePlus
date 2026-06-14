@@ -9,7 +9,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { Footer } from './footer/footer';
 import { PlatformService } from 'src/app/core/services/platform.service';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { runAfterBrowserHydration } from 'src/app/core/utils/browser-init';
+import { BrowserHydrationService } from 'src/app/core/utils/browser-init';
 
 @Component({
   selector: 'app-admin',
@@ -21,6 +21,7 @@ export class AdminComponent {
   private platform = inject(PlatformService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private browserHydration = inject(BrowserHydrationService);
 
   navCollapsed = false;
   navCollapsedMob: boolean;
@@ -30,7 +31,7 @@ export class AdminComponent {
     this.windowWidth = this.platform.getWindowWidth();
     this.navCollapsedMob = false;
 
-    runAfterBrowserHydration(() => {
+    this.browserHydration.run(() => {
       if (!this.authService.isAuthenticated()) {
         this.router.navigate(['/login']);
       }

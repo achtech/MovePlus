@@ -21,7 +21,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Table } from 'primeng/table';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
-import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../../core/utils/browser-init';
 
 @Component({
    selector:  'app-seance-list',
@@ -54,8 +54,8 @@ export class  SeanceListComponent {
         eventDisplay: 'block'
     };
 
-   constructor(private  seanceService: SeanceService, private  dialog: MatDialog, private patientService: PatientService, private userService: UserService)  {
-      runAfterBrowserHydration(() => {
+   constructor(private seanceService: SeanceService, private dialog: MatDialog, private patientService: PatientService, private userService: UserService, private browserHydration: BrowserHydrationService) {
+      this.browserHydration.run(() => {
         this.loadPatients();
         this.loadTherapists();
         this.loadSeances();

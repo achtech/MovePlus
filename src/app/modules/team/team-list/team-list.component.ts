@@ -10,7 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
-import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../../core/utils/browser-init';
 import { TeamMember, TeamMemberService } from '../team-member.service';
 import { TeamFormComponent } from '../team-form/team-form.component';
 
@@ -38,9 +38,10 @@ export class TeamListComponent {
 
   constructor(
     private teamService: TeamMemberService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private browserHydration: BrowserHydrationService
   ) {
-    runAfterBrowserHydration(() => this.loadTeamMembers());
+    this.browserHydration.run(() => this.loadTeamMembers());
   }
 
   loadTeamMembers(): void {

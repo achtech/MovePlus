@@ -3,7 +3,7 @@ import {  CalendarOptions  }  from '@fullcalendar/core';
 import  {  SeanceService }  from  '../seance.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CommonModule } from '@angular/common';
-import { runAfterBrowserHydration } from '../../../core/utils/browser-init';
+import { BrowserHydrationService } from '../../../core/utils/browser-init';
 
 @Component({
     selector: 'app-seance-agenda',
@@ -20,8 +20,8 @@ export  class SeanceAgendaComponent  {
       events:  []
    };
 
-   constructor(private  seanceService:  SeanceService)  {
-      runAfterBrowserHydration(() => {
+   constructor(private seanceService: SeanceService, private browserHydration: BrowserHydrationService) {
+      this.browserHydration.run(() => {
         this.seanceService.getSeances().subscribe(seances  => {
           this.calendarOptions.events =  seances.map(s  =>  ({
             id:  s.id?.toString(),

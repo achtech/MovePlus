@@ -33,7 +33,9 @@
     "profile": "Profile",
     "messages": "My Messages",
     "lockScreen": "Lock Screen",
-    "logout": "Logout"
+    "logout": "Logout",
+    "notificationsEmpty": "No notifications.",
+    "notificationsLoading": "Loading..."
   },
   "profile": {
     "title": "My Profile",
