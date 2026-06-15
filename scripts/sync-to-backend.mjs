@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, rmSync, existsSync } from 'node:fs';
+import { cpSync, copyFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,5 +16,14 @@ if (!existsSync(distDir)) {
 mkdirSync(dirname(backendStaticDir), { recursive: true });
 rmSync(backendStaticDir, { recursive: true, force: true });
 cpSync(distDir, backendStaticDir, { recursive: true });
+
+const browserDir = join(backendStaticDir, 'browser');
+const csrIndex = join(browserDir, 'index.csr.html');
+const spaIndex = join(browserDir, 'index.html');
+
+if (existsSync(csrIndex)) {
+  copyFileSync(csrIndex, spaIndex);
+  console.log('Created browser/index.html from index.csr.html');
+}
 
 console.log(`Synced frontend build to ${backendStaticDir}`);
