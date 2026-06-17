@@ -1,11 +1,12 @@
-import { EnvironmentInjector, Injectable, afterNextRender, inject, runInInjectionContext } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class BrowserHydrationService {
-  private readonly injector = inject(EnvironmentInjector);
-
-  /** Run after client hydration (SSR-safe). Safe to call from ngOnInit or constructor. */
+  /** Run immediately on the client (no render delay). Skipped during SSR. */
   run(callback: () => void): void {
-    runInInjectionContext(this.injector, () => afterNextRender(callback));
+    if (typeof window === 'undefined') {
+      return;
+    }
+    queueMicrotask(callback);
   }
 }

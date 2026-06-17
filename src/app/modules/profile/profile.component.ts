@@ -9,6 +9,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { PlatformService } from '../../core/services/platform.service';
 import { User, UserService } from '../users/user.service';
 import { USER_AVATARS, avatarImagePath, userDisplayName } from '../../core/constants/avatars';
+import { getFormValidationMessage, getApiErrorMessage, FORM_SAVE_ERROR } from '../../core/utils/form-submit.utils';
 
 @Component({
   selector: 'app-profile',
@@ -131,17 +132,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   saveProfile(): void {
-    if (!this.user?.id || this.form.invalid) {
+    if (!this.user?.id) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.successMessage = '';
+    const validationError = getFormValidationMessage(this.form, {
+      username: 'nom d\'utilisateur',
+      email: 'email',
+      firstName: 'prénom',
+      lastName: 'nom'
+    });
+    if (validationError) {
+      this.errorMessage = validationError;
       return;
     }
 
     this.saving = true;
-    this.errorMessage = '';
-    this.successMessage = '';
 
-    const { firstName, lastName, phone, address, avatar, password } = this.form.value;
+    const { username, email, firstName, lastName, phone, address, avatar, password } = this.form.value;
     const updated: User = {
       ...this.user,
+      username: username?.trim(),
+      email: email?.trim(),
       firstName: firstName?.trim(),
       lastName: lastName?.trim(),
       phone: phone?.trim(),
@@ -166,9 +180,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.showPassword = false;
         this.successMessage = this.translate.instant('profile.updateSuccess');
       },
-      error: () => {
+      error: (err) => {
         this.saving = false;
-        this.errorMessage = this.translate.instant('profile.updateError');
+        this.errorMessage = getApiErrorMessage(
+          err,
+          this.translate.instant('profile.updateError') || FORM_SAVE_ERROR
+        );
       }
     });
   }
@@ -184,6 +201,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private buildForm(user: User): void {
     this.form = this.fb.group({
+      username: [user.username ?? '', Validators.required],
+      email: [user.email ?? '', [Validators.required, Validators.email]],
       firstName: [user.firstName ?? '', Validators.required],
       lastName: [user.lastName ?? '', Validators.required],
       phone: [user.phone ?? ''],

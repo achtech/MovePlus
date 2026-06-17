@@ -3,6 +3,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { TeamMember, TeamMemberService } from '../team-member.service';
+import {
+  getFormValidationMessage,
+  getApiErrorMessage,
+  isFieldInvalid,
+  getFieldErrorMessage,
+  FORM_SAVE_ERROR
+} from '../../../core/utils/form-submit.utils';
 
 @Component({
   selector: 'app-team-form',
@@ -13,6 +20,10 @@ import { TeamMember, TeamMemberService } from '../team-member.service';
 })
 export class TeamFormComponent {
   form: FormGroup;
+  submitError = '';
+
+  fieldInvalid = (name: string) => isFieldInvalid(this.form, name);
+  fieldError = (name: string, label: string) => getFieldErrorMessage(this.form, name, label);
   roles = ['Kinésithérapeute', 'Assistant', 'Trainer', 'Admin'];
 
   constructor(
@@ -33,7 +44,16 @@ export class TeamFormComponent {
   }
 
   save(): void {
-    if (!this.form.valid) {
+    this.submitError = '';
+    const validationError = getFormValidationMessage(this.form, {
+      fullName: 'nom complet',
+      phoneNumber: 'téléphone',
+      startDate: 'date de début',
+      role: 'rôle',
+      status: 'statut'
+    });
+    if (validationError) {
+      this.submitError = validationError;
       return;
     }
 
@@ -43,11 +63,16 @@ export class TeamFormComponent {
       endDate: this.form.value.endDate || null
     };
 
-    if (this.data?.id) {
-      this.teamService.updateTeamMember(this.data.id, member).subscribe(() => this.dialogRef.close(true));
-    } else {
-      this.teamService.createTeamMember(member).subscribe(() => this.dialogRef.close(true));
-    }
+    const request$ = this.data?.id
+      ? this.teamService.updateTeamMember(this.data.id, member)
+      : this.teamService.createTeamMember(member);
+
+    request$.subscribe({
+      next: () => this.dialogRef.close(true),
+      error: (err) => {
+        this.submitError = getApiErrorMessage(err, FORM_SAVE_ERROR);
+      }
+    });
   }
 
   cancel(): void {

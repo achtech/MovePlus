@@ -11,6 +11,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { BrowserHydrationService } from '../../../core/utils/browser-init';
+import { DeleteConfirmService } from '../../../core/services/delete-confirm.service';
+import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
 import { TeamMember, TeamMemberService } from '../team-member.service';
 import { TeamFormComponent } from '../team-form/team-form.component';
 
@@ -39,7 +41,9 @@ export class TeamListComponent {
   constructor(
     private teamService: TeamMemberService,
     private dialog: MatDialog,
-    private browserHydration: BrowserHydrationService
+    private browserHydration: BrowserHydrationService,
+    private deleteConfirm: DeleteConfirmService,
+    private dialogRefresh: DialogRefreshService
   ) {
     this.browserHydration.run(() => this.loadTeamMembers());
   }
@@ -52,7 +56,7 @@ export class TeamListComponent {
 
     request.subscribe({
       next: (data) => {
-        this.teamMembers = Array.isArray(data) ? data : [];
+        this.teamMembers = Array.isArray(data) ? [...data] : [];
         this.loading = false;
       },
       error: () => {
@@ -68,29 +72,27 @@ export class TeamListComponent {
   }
 
   addTeamMember(): void {
-    this.dialog.open(TeamFormComponent, FORM_DIALOG_OPTIONS).afterClosed().subscribe((result) => {
-      if (result) {
-        this.loadTeamMembers();
-      }
-    });
+    this.dialogRefresh.onSave(
+      this.dialog.open(TeamFormComponent, FORM_DIALOG_OPTIONS),
+      () => this.loadTeamMembers()
+    );
   }
 
   editTeamMember(member: TeamMember): void {
-    this.dialog
-      .open(TeamFormComponent, { ...FORM_DIALOG_OPTIONS, data: member })
-      .afterClosed()
-      .subscribe((result) => {
-        if (result) {
-          this.loadTeamMembers();
-        }
-      });
+    this.dialogRefresh.onSave(
+      this.dialog.open(TeamFormComponent, { ...FORM_DIALOG_OPTIONS, data: member }),
+      () => this.loadTeamMembers()
+    );
   }
 
   deleteTeamMember(id: number | undefined): void {
-    if (!id || !confirm('Supprimer ce membre de l\'équipe ?')) {
+    if (!id) {
       return;
     }
-    this.teamService.deleteTeamMember(id).subscribe(() => this.loadTeamMembers());
+    this.deleteConfirm.confirmAndDelete(
+      () => this.teamService.deleteTeamMember(id),
+      () => this.loadTeamMembers()
+    );
   }
 
   toggleStatus(member: TeamMember): void {

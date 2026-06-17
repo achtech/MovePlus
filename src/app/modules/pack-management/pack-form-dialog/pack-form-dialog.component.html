@@ -31,6 +31,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" class="datta-dialog-actions">
+  @if (submitError) {
+    <p class="text-danger me-auto mb-0 form-submit-error">{{ submitError }}</p>
+  }
   <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
   <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
 </mat-dialog-actions>

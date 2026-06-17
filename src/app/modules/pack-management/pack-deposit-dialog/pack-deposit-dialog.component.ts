@@ -4,6 +4,13 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { PatientPack, PatientPackService } from '../patient-pack.service';
+import {
+  getFormValidationMessage,
+  getApiErrorMessage,
+  isFieldInvalid,
+  getFieldErrorMessage,
+  FORM_SAVE_ERROR
+} from '../../../core/utils/form-submit.utils';
 
 @Component({
   selector: 'app-pack-deposit-dialog',
@@ -29,8 +36,11 @@ import { PatientPack, PatientPackService } from '../patient-pack.service';
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end" class="datta-dialog-actions">
+      @if (submitError) {
+        <p class="text-danger me-auto mb-0 form-submit-error">{{ submitError }}</p>
+      }
       <button type="button" class="btn btn-secondary" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
-      <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="save()">{{ 'common.save' | translate }}</button>
+      <button type="button" class="btn btn-primary" (click)="save()">{{ 'common.save' | translate }}</button>
     </mat-dialog-actions>
   `,
   styles: [
@@ -44,6 +54,10 @@ import { PatientPack, PatientPackService } from '../patient-pack.service';
 })
 export class PackDepositDialogComponent {
   form: FormGroup;
+  submitError = '';
+
+  fieldInvalid = (name: string) => isFieldInvalid(this.form, name);
+  fieldError = (name: string, label: string) => getFieldErrorMessage(this.form, name, label);
 
   constructor(
     private fb: FormBuilder,
@@ -59,16 +73,33 @@ export class PackDepositDialogComponent {
   }
 
   save(): void {
-    if (this.form.invalid || !this.data.id) {
+    this.submitError = '';
+    const validationError = getFormValidationMessage(this.form, {
+      amount: 'montant',
+      method: 'méthode'
+    });
+    if (validationError) {
+      this.submitError = validationError;
       return;
     }
+
+    if (!this.data.id) {
+      this.submitError = 'Abonnement introuvable.';
+      return;
+    }
+
     this.patientPackService
       .recordDeposit(this.data.id, {
         amount: this.form.value.amount,
         method: this.form.value.method,
         status: 'PAID'
       })
-      .subscribe(() => this.dialogRef.close(true));
+      .subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          this.submitError = getApiErrorMessage(err, FORM_SAVE_ERROR);
+        }
+      });
   }
 
   cancel(): void {

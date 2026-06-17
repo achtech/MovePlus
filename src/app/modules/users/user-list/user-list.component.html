@@ -66,7 +66,6 @@
           <td>{{ u.enabled ? ('common.yes' | translate) : ('common.no' | translate) }}</td>
           <td>
             <p-button icon="pi pi-pencil" [outlined]="true" (click)="editUser(u)" />
-            <p-button icon="pi pi-key" [outlined]="true" (click)="resetPassword(u)" [pTooltip]="'pages.users.resetPassword' | translate" />
             <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deleteUser(u.id!)" />
           </td>
         </tr>
@@ -85,5 +84,3 @@
     </p-table>
   </app-card>
 </div>
-
-<p-confirmDialog></p-confirmDialog>

@@ -121,12 +121,15 @@ export class UserService {
 
         const putBody: User = {
           id,
-          username: apiUser.username ?? existing.username,
-          email: apiUser.email ?? existing.email,
-          role: apiUser.role ?? existing.role,
-          enabled: apiUser.enabled ?? existing.enabled,
-          password: password?.trim() ? password.trim() : existing.password
+          username: apiUser.username?.trim() || existing.username,
+          email: apiUser.email?.trim() || existing.email,
+          role: existing.role,
+          enabled: existing.enabled
         };
+
+        if (password?.trim()) {
+          putBody.password = password.trim();
+        }
 
         return this.http.put<User>(`${this.apiUrl}/${id}`, putBody);
       }),
@@ -139,12 +142,55 @@ export class UserService {
     );
   }
 
+  updateUserAdmin(
+    id: number,
+    update: { role: string; enabled: boolean; password?: string }
+  ): Observable<User> {
+    return this.getUserById(id).pipe(
+      switchMap((existing) => {
+        if (!existing) {
+          return throwError(() => new Error('User not found'));
+        }
+
+        const putBody: User = {
+          id,
+          username: existing.username,
+          email: existing.email,
+          role: update.role,
+          enabled: update.enabled
+        };
+
+        if (update.password?.trim()) {
+          putBody.password = update.password.trim();
+        }
+
+        return this.http.put<User>(`${this.apiUrl}/${id}`, putBody);
+      }),
+      map((saved) => this.mergeUser({ ...saved, id })),
+      catchError((error) => {
+        console.error('UserService error:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  resetPassword(_id: number, _newPassword?: string): Observable<void> {
-    return of(void 0);
+  resetPassword(id: number, newPassword: string): Observable<User> {
+    return this.getUserById(id).pipe(
+      switchMap((existing) => {
+        if (!existing) {
+          return throwError(() => new Error('User not found'));
+        }
+        return this.updateUserAdmin(id, {
+          role: existing.role,
+          enabled: existing.enabled,
+          password: newPassword
+        });
+      })
+    );
   }
 
   private mergeUser(user: User): User {

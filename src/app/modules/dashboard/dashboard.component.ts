@@ -13,6 +13,7 @@ import { RoleService } from '../../core/services/role.service';
 import { PatientService } from '../patients/patient.service';
 import { SeanceService } from '../seances/seance.service';
 import { PaymentService } from '../payments/payment.service';
+import { ExpenseService } from '../expenses/expense.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +26,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private patientService = inject(PatientService);
   private seanceService = inject(SeanceService);
   private paymentService = inject(PaymentService);
+  private expenseService = inject(ExpenseService);
   private translate = inject(TranslateService);
   private roleService = inject(RoleService);
   private browserHydration = inject(BrowserHydrationService);
@@ -46,7 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   allSeances: any[] = [];
   allPatients: any[] = [];
 
-  expensesByMonth: number[] = [500, 450, 600, 700, 650, 800, 750, 900, 850, 950, 1000, 1100];
+  expensesByMonth: number[] = new Array(12).fill(0);
 
   lineStylesData: any = { labels: [], datasets: [] };
   lineStylesOptions: any;
@@ -149,6 +151,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
         .reduce((sum, p) => sum + (p.amount || 0), 0);
 
       this.computeMonthlyPaymentSeries();
+      this.updateLineData();
+    });
+
+    this.expenseService.getExpenses().subscribe((expenses) => {
+      this.expensesByMonth = new Array(12).fill(0);
+      (expenses || []).forEach((e) => {
+        const d = new Date(e.expenseDate);
+        if (isNaN(d.getTime())) {
+          return;
+        }
+        this.expensesByMonth[d.getMonth()] += Number(e.amount || 0);
+      });
       this.updateLineData();
     });
   }

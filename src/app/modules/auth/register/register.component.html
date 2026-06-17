@@ -71,7 +71,7 @@
             <div class="alert alert-danger mb-3" role="alert">{{ errorMessage }}</div>
           }
 
-          <button type="submit" class="btn btn-primary shadow-2 mb-4" [disabled]="form.invalid || loading">
+          <button type="submit" class="btn btn-primary shadow-2 mb-4" [disabled]="loading">
             @if (loading) {
               {{ 'auth.signingUp' | translate }}
             } @else {

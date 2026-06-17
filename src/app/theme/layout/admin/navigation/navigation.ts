@@ -23,14 +23,15 @@ export const NavigationItems: NavigationItem[] = [
     type: 'group',
     children: [
       { id: 'dashboard', title: 'Dashboard', translate: 'nav.dashboard', type: 'item', url: '/dashboard', icon: 'icon-home' },
-      { id: 'packs', title: 'Packs', translate: 'nav.packs', type: 'item', url: '/packs', icon: 'icon-package' },
       { id: 'patients', title: 'Patients', translate: 'nav.patients', type: 'item', url: '/patients', icon: 'icon-users' },
       { id: 'seances', title: 'Sessions', translate: 'nav.seances', type: 'item', url: '/seances', icon: 'icon-calendar' },
       { id: 'payments', title: 'Payments', translate: 'nav.payments', type: 'item', url: '/payments', icon: 'icon-credit-card' },
+      { id: 'packs', title: 'Packs', translate: 'nav.packs', type: 'item', url: '/packs', icon: 'icon-package' },
       { id: 'sales-stock', title: 'Sales & Stock', translate: 'nav.salesStock', type: 'item', url: '/sales-stock', icon: 'icon-shopping-cart' },
       { id: 'expenses', title: 'Expenses', translate: 'nav.expenses', type: 'item', url: '/expenses', icon: 'icon-file-text' },
       { id: 'team', title: 'Team', translate: 'nav.team', type: 'item', url: '/team', icon: 'icon-user-check' },
-      { id: 'users', title: 'Users', translate: 'nav.users', type: 'item', url: '/users', icon: 'icon-user', roles: ['ADMIN'] }
+      { id: 'users', title: 'Users', translate: 'nav.users', type: 'item', url: '/users', icon: 'icon-user', roles: ['ADMIN'] },
+      { id: 'activity-logs', title: 'Activity Logs', translate: 'nav.activityLogs', type: 'item', url: '/activity-logs', icon: 'icon-activity', roles: ['ADMIN'] }
     ]
   }
 ];

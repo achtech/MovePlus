@@ -108,6 +108,17 @@ export class AuthService {
   }
 
   logout(): void {
+    const token = this.getToken();
+    if (this.isBrowser && token && token.includes('.')) {
+      this.http.post(`${this.apiUrl}/logout`, {}, { observe: 'response' }).subscribe({
+        complete: () => this.clearSession()
+      });
+      return;
+    }
+    this.clearSession();
+  }
+
+  private clearSession(): void {
     if (this.isBrowser) {
       localStorage.removeItem(this.tokenKey);
       localStorage.removeItem(this.roleKey);

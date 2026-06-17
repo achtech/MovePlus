@@ -69,6 +69,8 @@
     "loading": "Cargando...",
     "close": "Cerrar",
     "noneFound": "No se encontraron registros.",
+    "deleteTitle": "Confirmar eliminación",
+    "deleteConfirm": "¿Está seguro de que desea eliminar este elemento? Esta acción no se puede deshacer.",
     "months": {
       "jan": "Ene",
       "feb": "Feb",

@@ -16,6 +16,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../core/constants/dialog.config';
 import { BrowserHydrationService } from '../../core/utils/browser-init';
+import { DeleteConfirmService } from '../../core/services/delete-confirm.service';
+import { DialogRefreshService } from '../../core/services/dialog-refresh.service';
 
 @Component({
   selector: 'app-pack-management',
@@ -34,7 +36,9 @@ export class PackManagement {
     private patientPackService: PatientPackService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private browserHydration: BrowserHydrationService
+    private browserHydration: BrowserHydrationService,
+    private deleteConfirm: DeleteConfirmService,
+    private dialogRefresh: DialogRefreshService
   ) {
     this.browserHydration.run(() => this.loadPacks());
   }
@@ -43,7 +47,7 @@ export class PackManagement {
     this.loading = true;
     this.packService.getPacks().subscribe({
       next: (data) => {
-        this.packs = data;
+        this.packs = [...data];
         this.loading = false;
         this.cdr.markForCheck();
         this.loadActiveCounts();
@@ -81,31 +85,23 @@ export class PackManagement {
   }
 
   addPack(): void {
-    const dialogRef = this.dialog.open(PackFormDialogComponent, FORM_DIALOG_OPTIONS);
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadPacks();
-      }
-    });
+    this.dialogRefresh.onSave(
+      this.dialog.open(PackFormDialogComponent, FORM_DIALOG_OPTIONS),
+      () => this.loadPacks()
+    );
   }
 
   editPack(pack: Pack): void {
-    const dialogRef = this.dialog.open(PackFormDialogComponent, { ...FORM_DIALOG_OPTIONS, data: pack });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadPacks();
-      }
-    });
+    this.dialogRefresh.onSave(
+      this.dialog.open(PackFormDialogComponent, { ...FORM_DIALOG_OPTIONS, data: pack }),
+      () => this.loadPacks()
+    );
   }
 
   deletePack(id: number): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce pack?')) {
-      this.packService.deletePack(id).subscribe({
-        next: () => {
-          this.loadPacks();
-        },
-        error: (error) => console.error('Error deleting pack:', error)
-      });
-    }
+    this.deleteConfirm.confirmAndDelete(
+      () => this.packService.deletePack(id),
+      () => this.loadPacks()
+    );
   }
 }

@@ -14,11 +14,12 @@ export interface Payment {
   amount: number;
   date: string;
   paymentDate?: string;
+  createdAt?: string;
   method: string;
   status: string;
 }
 
-type ApiPayment = Omit<Payment, 'date'> & { paymentDate?: string; date?: string };
+type ApiPayment = Omit<Payment, 'date'> & { paymentDate?: string; date?: string; createdAt?: string };
 
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
@@ -61,10 +62,11 @@ export class PaymentService {
   }
 
   private toApi(payment: Payment): ApiPayment {
-    const { date, ...rest } = payment;
+    const { date, createdAt, ...rest } = payment;
     return {
       ...rest,
       paymentDate: date || payment.paymentDate || '',
+      createdAt: createdAt || undefined,
       paymentType: payment.paymentType || (payment.patientPackId ? 'PACK' : 'SEANCE'),
       label: payment.label || (payment.paymentType === 'PACK' ? 'Pack' : 'Séance Unique')
     };

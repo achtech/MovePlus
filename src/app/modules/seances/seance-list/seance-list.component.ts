@@ -3,7 +3,7 @@ import  {  MatDialog  }  from '@angular/material/dialog';
 import  {  SeanceService, Seance  }  from  '../seance.service';
 import  {  SeanceFormComponent  } from  '../seance-form/seance-form.component';
 import { PatientService, Patient } from '../../patients/patient.service';
-import { UserService, User } from '../../users/user.service';
+import { TeamMember, TeamMemberService } from '../../team/team-member.service';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -22,6 +22,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { Table } from 'primeng/table';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { BrowserHydrationService } from '../../../core/utils/browser-init';
+import { DeleteConfirmService } from '../../../core/services/delete-confirm.service';
+import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
 
 @Component({
    selector:  'app-seance-list',
@@ -35,7 +37,7 @@ export class  SeanceListComponent {
     loading: boolean = true;
     showAgenda: boolean = false;
     patients: Patient[] = [];
-    therapists: User[] = [];
+    therapists: TeamMember[] = [];
 
     @ViewChild('dt1') dt1: Table | undefined;
 
@@ -54,7 +56,7 @@ export class  SeanceListComponent {
         eventDisplay: 'block'
     };
 
-   constructor(private seanceService: SeanceService, private dialog: MatDialog, private patientService: PatientService, private userService: UserService, private browserHydration: BrowserHydrationService) {
+   constructor(private seanceService: SeanceService, private dialog: MatDialog, private patientService: PatientService, private teamMemberService: TeamMemberService, private browserHydration: BrowserHydrationService, private deleteConfirm: DeleteConfirmService, private dialogRefresh: DialogRefreshService) {
       this.browserHydration.run(() => {
         this.loadPatients();
         this.loadTherapists();
@@ -69,14 +71,15 @@ export class  SeanceListComponent {
     }
 
     loadTherapists(): void {
-        this.userService.getUsers().subscribe(users => {
-            this.therapists = users.filter(user => user.enabled);
+        this.teamMemberService.getActiveTeamMembers().subscribe((members) => {
+            this.therapists = members;
         });
     }
 
     loadSeances(): void  {
+       this.loading = true;
        this.seanceService.getSeances().subscribe(data => {
-           this.seances  =  data;
+           this.seances  =  [...data];
            this.loading = false;
            this.updateCalendarEvents();
        });
@@ -89,7 +92,7 @@ export class  SeanceListComponent {
 
    getTherapistName(therapistId: number): string {
        const therapist = this.therapists.find(t => t.id === therapistId);
-       return therapist ? `${therapist.username} (${therapist.role})` : `Therapist ${therapistId}`;
+       return therapist ? `${therapist.fullName} (${therapist.role})` : `Therapist ${therapistId}`;
    }
 
    updateCalendarEvents(): void {
@@ -132,24 +135,24 @@ export class  SeanceListComponent {
    }
 
    addSeance():  void  {
-      const  dialogRef  =  this.dialog.open(SeanceFormComponent, FORM_DIALOG_OPTIONS);
-      dialogRef.afterClosed().subscribe(result  =>  {
-          if  (result)  this.loadSeances();
-      });
+      this.dialogRefresh.onSave(
+        this.dialog.open(SeanceFormComponent, FORM_DIALOG_OPTIONS),
+        () => this.loadSeances()
+      );
     }
 
    editSeance(seance: Seance):  void  {
-      const  dialogRef  =  this.dialog.open(SeanceFormComponent, {
-         ...FORM_DIALOG_OPTIONS,
-         data: seance
-      });
-      dialogRef.afterClosed().subscribe(result  =>  {
-          if  (result)  this.loadSeances();
-      });
+      this.dialogRefresh.onSave(
+        this.dialog.open(SeanceFormComponent, { ...FORM_DIALOG_OPTIONS, data: seance }),
+        () => this.loadSeances()
+      );
     }
 
    deleteSeance(id:  number):  void {
-       this.seanceService.deleteSeance(id).subscribe(()  =>  this.loadSeances());
+       this.deleteConfirm.confirmAndDelete(
+         () => this.seanceService.deleteSeance(id),
+         () => this.loadSeances()
+       );
    }
 
    clear(table: any): void {

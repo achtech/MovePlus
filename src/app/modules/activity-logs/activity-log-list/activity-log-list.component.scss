@@ -1,0 +1,29 @@
+.activity-log-filters {
+  margin-bottom: 1rem;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  flex: 1;
+
+  label {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 0.35rem;
+  }
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}

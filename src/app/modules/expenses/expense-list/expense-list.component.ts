@@ -14,6 +14,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { BrowserHydrationService } from '../../../core/utils/browser-init';
+import { DeleteConfirmService } from '../../../core/services/delete-confirm.service';
+import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
 
 @Component({
     selector: 'app-expense-list',
@@ -30,7 +32,9 @@ export  class ExpenseListComponent  {
         private expenseService: ExpenseService,
         private dialog: MatDialog,
         private cdr: ChangeDetectorRef,
-        private browserHydration: BrowserHydrationService
+        private browserHydration: BrowserHydrationService,
+        private deleteConfirm: DeleteConfirmService,
+        private dialogRefresh: DialogRefreshService
     ) {
       this.browserHydration.run(() => this.loadExpenses());
     }
@@ -39,7 +43,7 @@ export  class ExpenseListComponent  {
        this.loading = true;
        this.expenseService.getExpenses().subscribe({
            next: (data) => {
-               this.expenses = data;
+               this.expenses = [...data];
                this.loading = false;
                this.cdr.markForCheck();
            },
@@ -52,31 +56,23 @@ export  class ExpenseListComponent  {
    }
 
    addExpense():  void  {
-       const dialogRef  =  this.dialog.open(ExpenseFormComponent, FORM_DIALOG_OPTIONS);
-       dialogRef.afterClosed().subscribe(result =>  {
-          if  (result)  {
-              this.loadExpenses();
-          }
-       });
+       this.dialogRefresh.onSave(
+         this.dialog.open(ExpenseFormComponent, FORM_DIALOG_OPTIONS),
+         () => this.loadExpenses()
+       );
    }
 
    editExpense(expense:  Expense): void  {
-       const  dialogRef =  this.dialog.open(ExpenseFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  expense  });
-      dialogRef.afterClosed().subscribe(result  =>  {
-          if  (result)  {
-              this.loadExpenses();
-          }
-      });
+       this.dialogRefresh.onSave(
+         this.dialog.open(ExpenseFormComponent, { ...FORM_DIALOG_OPTIONS, data: expense }),
+         () => this.loadExpenses()
+       );
     }
 
     deleteExpense(id: number):  void  {
-       if (confirm('Êtes-vous sûr de vouloir supprimer cette charge?')) {
-           this.expenseService.deleteExpense(id).subscribe({
-               next: () => {
-                   this.loadExpenses();
-               },
-               error: (error) => console.error('Error deleting expense:', error)
-           });
-       }
+       this.deleteConfirm.confirmAndDelete(
+         () => this.expenseService.deleteExpense(id),
+         () => this.loadExpenses()
+       );
    }
 }

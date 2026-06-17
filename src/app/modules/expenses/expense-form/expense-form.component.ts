@@ -5,6 +5,13 @@ import  {  MatDialogRef,  MAT_DIALOG_DATA, MatDialogModule }  from  '@angular/ma
 import { AuthService } from '../../../core/services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {
+  getFormValidationMessage,
+  getApiErrorMessage,
+  isFieldInvalid,
+  getFieldErrorMessage,
+  FORM_SAVE_ERROR
+} from '../../../core/utils/form-submit.utils';
 
  @Component({
     selector:  'app-expense-form',
@@ -15,6 +22,10 @@ import { CommonModule } from '@angular/common';
 })
  export  class  ExpenseFormComponent {
      form: FormGroup;
+     submitError = '';
+
+     fieldInvalid = (name: string) => isFieldInvalid(this.form, name);
+     fieldError = (name: string, label: string) => getFieldErrorMessage(this.form, name, label);
      categories =  ['RENT',  'SUPPLIES',  'SALARY', 'OTHER'];
  
     constructor(
@@ -32,30 +43,33 @@ import { CommonModule } from '@angular/common';
      }
 
      save(): void  {
-        if  (this.form.valid) {
-            const expense  =  {
-               ...this.form.value,
-               expenseDate: new Date().toISOString().split('T')[0],
-               paidBy: this.authService.getCurrentUserId() || 1
-            };
-           if  (this.data?.id)  {
-              this.expenseService.updateExpense(this.data.id, expense).subscribe({
-                  next: () => this.dialogRef.close(true),
-                  error: (err) => {
-                      console.error('Error updating expense:', err);
-                      alert('Erreur lors de la mise à jour de la charge');
-                  }
-              });
-           }  else {
-               this.expenseService.addExpense(expense).subscribe({
-                   next: () => this.dialogRef.close(true),
-                   error: (err) => {
-                       console.error('Error adding expense:', err);
-                       alert('Erreur lors de l\'ajout de la charge');
-                   }
-               });
-           }
+        this.submitError = '';
+        const validationError = getFormValidationMessage(this.form, {
+          description: 'description',
+          amount: 'montant',
+          category: 'catégorie'
+        });
+        if (validationError) {
+          this.submitError = validationError;
+          return;
         }
+
+        const expense  =  {
+           ...this.form.value,
+           expenseDate: new Date().toISOString().split('T')[0],
+           paidBy: this.authService.getCurrentUserId() || 1
+        };
+
+        const request$ = this.data?.id
+          ? this.expenseService.updateExpense(this.data.id, expense)
+          : this.expenseService.addExpense(expense);
+
+        request$.subscribe({
+          next: () => this.dialogRef.close(true),
+          error: (err) => {
+            this.submitError = getApiErrorMessage(err, FORM_SAVE_ERROR);
+          }
+        });
     }
  
     cancel():  void {

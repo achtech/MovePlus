@@ -1,44 +1,124 @@
 <h2 mat-dialog-title>{{ data ? 'Modifier Patient' : 'Ajouter Patient' }}</h2>
+
 <mat-dialog-content>
+
   <form [formGroup]="form" class="datta-form-grid">
+
     <div class="row">
+
       <div class="form-group col-md-6">
+
         <label for="firstName">Prénom</label>
-        <input id="firstName" type="text" class="form-control" formControlName="firstName">
+
+        <input id="firstName" type="text" class="form-control" formControlName="firstName" [class.is-invalid]="fieldInvalid('firstName')">
+
+        @if (fieldError('firstName', 'prénom')) {
+
+          <div class="invalid-feedback">{{ fieldError('firstName', 'prénom') }}</div>
+
+        }
+
       </div>
+
       <div class="form-group col-md-6">
+
         <label for="lastName">Nom</label>
-        <input id="lastName" type="text" class="form-control" formControlName="lastName">
+
+        <input id="lastName" type="text" class="form-control" formControlName="lastName" [class.is-invalid]="fieldInvalid('lastName')">
+
+        @if (fieldError('lastName', 'nom')) {
+
+          <div class="invalid-feedback">{{ fieldError('lastName', 'nom') }}</div>
+
+        }
+
       </div>
+
     </div>
+
     <div class="row">
+
       <div class="form-group col-md-6">
+
         <label for="birthDate">Date de naissance</label>
-        <input id="birthDate" type="date" class="form-control" formControlName="birthDate">
+
+        <input id="birthDate" type="date" class="form-control" formControlName="birthDate" [class.is-invalid]="fieldInvalid('birthDate')">
+
+        @if (fieldError('birthDate', 'date de naissance')) {
+
+          <div class="invalid-feedback">{{ fieldError('birthDate', 'date de naissance') }}</div>
+
+        }
+
       </div>
+
       <div class="form-group col-md-6">
+
         <label for="phone">Téléphone</label>
-        <input id="phone" type="text" class="form-control" formControlName="phone">
+
+        <input id="phone" type="text" class="form-control" formControlName="phone" [class.is-invalid]="fieldInvalid('phone')">
+
+        @if (fieldError('phone', 'téléphone')) {
+
+          <div class="invalid-feedback">{{ fieldError('phone', 'téléphone') }}</div>
+
+        }
+
       </div>
+
     </div>
+
     <div class="row">
+
       <div class="form-group col-md-6">
+
         <label for="email">Email</label>
-        <input id="email" type="email" class="form-control" formControlName="email">
+
+        <input id="email" type="email" class="form-control" formControlName="email" [class.is-invalid]="fieldInvalid('email')">
+
+        @if (fieldError('email', 'email')) {
+
+          <div class="invalid-feedback">{{ fieldError('email', 'email') }}</div>
+
+        }
+
       </div>
+
       <div class="form-group col-md-6">
+
         <label for="address">Adresse</label>
+
         <input id="address" type="text" class="form-control" formControlName="address">
+
       </div>
+
     </div>
+
     <div class="form-group">
+
       <label for="medicalNotes">Notes médicales</label>
+
       <textarea id="medicalNotes" class="form-control" rows="3" formControlName="medicalNotes"></textarea>
+
     </div>
+
   </form>
+
 </mat-dialog-content>
 
+
+
 <mat-dialog-actions align="end" class="datta-dialog-actions">
+
+  @if (submitError) {
+
+    <p class="text-danger me-auto mb-0 form-submit-error">{{ submitError }}</p>
+
+  }
+
   <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+
   <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
+
 </mat-dialog-actions>
+

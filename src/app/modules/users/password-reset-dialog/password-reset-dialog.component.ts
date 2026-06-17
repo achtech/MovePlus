@@ -3,6 +3,11 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
+import {
+  getFormValidationMessage,
+  isFieldInvalid,
+  getFieldErrorMessage
+} from '../../../core/utils/form-submit.utils';
 
 @Component({
   selector: 'app-password-reset-dialog',
@@ -13,6 +18,10 @@ import { CommonModule } from '@angular/common';
 })
 export class PasswordResetDialogComponent {
   passwordForm: FormGroup;
+  submitError = '';
+
+  fieldInvalid = (name: string) => isFieldInvalid(this.passwordForm, name);
+  fieldError = (name: string, label: string) => getFieldErrorMessage(this.passwordForm, name, label);
 
   constructor(
     public dialogRef: MatDialogRef<PasswordResetDialogComponent>,
@@ -25,17 +34,23 @@ export class PasswordResetDialogComponent {
   }
 
   onSubmit(): void {
-    if (this.passwordForm.valid) {
-      // Check if passwords match
-      const { password, confirmPassword } = this.passwordForm.value;
-      if (password === confirmPassword) {
-        // Close the dialog and pass the new password
-        this.dialogRef.close(password);
-      } else {
-        // Handle password mismatch
-        alert('Passwords do not match');
-      }
+    this.submitError = '';
+    const validationError = getFormValidationMessage(this.passwordForm, {
+      password: 'mot de passe',
+      confirmPassword: 'confirmation du mot de passe'
+    });
+    if (validationError) {
+      this.submitError = validationError;
+      return;
     }
+
+    const { password, confirmPassword } = this.passwordForm.value;
+    if (password !== confirmPassword) {
+      this.submitError = 'Les mots de passe ne correspondent pas.';
+      return;
+    }
+
+    this.dialogRef.close(password);
   }
 
   onCancel(): void {

@@ -7,13 +7,14 @@ import { CommonModule } from '@angular/common';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { Footer } from './footer/footer';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PlatformService } from 'src/app/core/services/platform.service';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { BrowserHydrationService } from 'src/app/core/utils/browser-init';
 
 @Component({
   selector: 'app-admin',
-  imports: [NavBarComponent, NavigationComponent, RouterModule, CommonModule, Footer],
+  imports: [NavBarComponent, NavigationComponent, RouterModule, CommonModule, Footer, ConfirmDialogModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
@@ -43,19 +44,7 @@ export class AdminComponent {
       return;
     }
 
-    const navbar = this.platform.querySelector('app-navigation.pcoded-navbar');
-    if (!navbar) {
-      return;
-    }
-
-    if (this.navCollapsedMob && !navbar.classList.contains('mob-open')) {
-      this.navCollapsedMob = !this.navCollapsedMob;
-      setTimeout(() => {
-        this.navCollapsedMob = !this.navCollapsedMob;
-      }, 100);
-    } else {
-      this.navCollapsedMob = !this.navCollapsedMob;
-    }
+    this.navCollapsedMob = !this.navCollapsedMob;
   }
 
   handleKeyDown(event: KeyboardEvent): void {

@@ -1,0 +1,90 @@
+<div class="table-page">
+  <app-card cardTitle="pages.activityLogs.title" [options]="false">
+    <div class="table-toolbar activity-log-filters">
+      <div class="filter-row">
+        <div class="filter-field">
+          <label>{{ 'pages.activityLogs.user' | translate }}</label>
+          <input pInputText type="text" [(ngModel)]="filterUsername" [placeholder]="'pages.activityLogs.filterUser' | translate" />
+        </div>
+        <div class="filter-field">
+          <label>{{ 'pages.activityLogs.topic' | translate }}</label>
+          <select class="form-control" [(ngModel)]="filterTopic">
+            <option value="">{{ 'common.all' | translate }}</option>
+            <option *ngFor="let topic of topics" [value]="topic">{{ topicLabel(topic) }}</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label>{{ 'pages.activityLogs.description' | translate }}</label>
+          <input pInputText type="text" [(ngModel)]="filterDescription" [placeholder]="'pages.activityLogs.filterDescription' | translate" />
+        </div>
+        <div class="filter-actions">
+          <p-button [label]="'common.search' | translate" icon="pi pi-search" (click)="applyFilters(dt1)" />
+          <p-button [label]="'common.clear' | translate" icon="pi pi-filter-slash" [outlined]="true" (click)="clearFilters(dt1)" />
+        </div>
+      </div>
+    </div>
+
+    <p-table
+      #dt1
+      [value]="logs"
+      [lazy]="true"
+      (onLazyLoad)="loadLogs($event)"
+      [paginator]="true"
+      [rows]="rows"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [totalRecords]="totalRecords"
+      [loading]="loading"
+      paginatorStyleClass="datta-paginator"
+      [showFirstLastIcon]="false"
+      dataKey="id"
+      showGridlines
+    >
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="username" style="min-width:12rem">
+            {{ 'pages.activityLogs.user' | translate }}
+            <p-sortIcon field="username" />
+          </th>
+          <th pSortableColumn="topic" style="min-width:10rem">
+            {{ 'pages.activityLogs.topic' | translate }}
+            <p-sortIcon field="topic" />
+          </th>
+          <th pSortableColumn="createdAt" style="min-width:12rem">
+            {{ 'pages.activityLogs.dateTime' | translate }}
+            <p-sortIcon field="createdAt" />
+          </th>
+          <th pSortableColumn="actionType" style="min-width:10rem">
+            {{ 'pages.activityLogs.action' | translate }}
+            <p-sortIcon field="actionType" />
+          </th>
+          <th pSortableColumn="description" style="min-width:20rem">
+            {{ 'pages.activityLogs.description' | translate }}
+            <p-sortIcon field="description" />
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-log>
+        <tr>
+          <td>{{ log.username }}</td>
+          <td>{{ topicLabel(log.topic) }}</td>
+          <td>{{ log.createdAt | date:'short' }}</td>
+          <td>
+            <p-tag [value]="log.actionType" [severity]="actionSeverity(log.actionType)" />
+          </td>
+          <td>{{ log.description }}</td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="5">{{ 'pages.activityLogs.empty' | translate }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorpreviouspagelinkicon">
+        {{ 'pagination.previous' | translate }}
+      </ng-template>
+      <ng-template pTemplate="paginatornextpagelinkicon">
+        {{ 'pagination.next' | translate }}
+      </ng-template>
+    </p-table>
+  </app-card>
+</div>

@@ -1,73 +1,94 @@
-<h2 mat-dialog-title>{{ data ? 'Modifier Séance' : 'Planifier Séance' }}</h2>
-<mat-dialog-content>
-  <form [formGroup]="form" class="datta-form-grid">
-    <div class="row">
-      <div class="form-group col-md-6">
-        <label for="patientId">Patient</label>
-        <select id="patientId" class="form-control" formControlName="patientId">
-          <option value="">Sélectionner...</option>
-          <option *ngFor="let patient of patients" [ngValue]="patient.id">
-            {{ patient.firstName }} {{ patient.lastName }}
-          </option>
-        </select>
-        @if (activePack) {
-          <p class="pack-hint">
-            Patient abonné au <strong>{{ activePack.packName }}</strong>
-            (Il reste {{ activePack.remainingSessions }} séance(s))
-          </p>
-        } @else if (form.get('patientId')?.value) {
-          <p class="pack-hint pack-hint-muted">Aucun pack actif (Tarif à la séance)</p>
-        }
-      </div>
-      <div class="form-group col-md-6">
-        <label for="therapistId">Thérapeute</label>
-        <select id="therapistId" class="form-control" formControlName="therapistId">
-          <option value="">Sélectionner...</option>
-          <option *ngFor="let therapist of therapists" [ngValue]="therapist.id">
-            {{ therapist.username }} ({{ therapist.role }})
-          </option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="form-group col-md-6">
-        <label for="dateTime">Date et Heure</label>
-        <input id="dateTime" type="datetime-local" class="form-control" formControlName="dateTime">
-      </div>
-      <div class="form-group col-md-6">
-        <label for="duration">Durée (minutes)</label>
-        <input id="duration" type="number" class="form-control" formControlName="duration">
-      </div>
-    </div>
-    <div class="row">
-      <div class="form-group col-md-6">
-        <label for="type">Type de Séance</label>
-        <select id="type" class="form-control" formControlName="type">
-          <option value="">Sélectionner...</option>
-          <option value="Massage">Massage</option>
-          <option value="Physio">Physiothérapie</option>
-          <option value="Consultation">Consultation</option>
-          <option value="Ostéopathie">Ostéopathie</option>
-          <option value="Acupuncture">Acupuncture</option>
-        </select>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="status">Statut</label>
-        <select id="status" class="form-control" formControlName="status">
-          <option value="SCHEDULED">Planifiée</option>
-          <option value="COMPLETED">Terminée</option>
-          <option value="CANCELLED">Annulée</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="notes">Notes</label>
-      <textarea id="notes" class="form-control" rows="3" formControlName="notes"></textarea>
-    </div>
-  </form>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end" class="datta-dialog-actions">
-  <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
-  <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
-</mat-dialog-actions>
+<h2 mat-dialog-title>{{ data ? 'Modifier Séance' : 'Planifier Séance' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="datta-form-grid">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="patientId">Patient</label>
+        <select id="patientId" class="form-control" formControlName="patientId" [class.is-invalid]="fieldInvalid('patientId')">
+          <option value="">Sélectionner...</option>
+          <option *ngFor="let patient of patients" [ngValue]="patient.id">
+            {{ patient.firstName }} {{ patient.lastName }}
+          </option>
+        </select>
+        @if (fieldError('patientId', 'patient')) {
+          <div class="invalid-feedback">{{ fieldError('patientId', 'patient') }}</div>
+        }
+        @if (activePack) {
+          <p class="pack-hint">
+            Patient abonné au <strong>{{ activePack.packName }}</strong>
+            (Il reste {{ activePack.remainingSessions }} séance(s))
+          </p>
+        } @else if (form.get('patientId')?.value) {
+          <p class="pack-hint pack-hint-muted">Aucun pack actif (Tarif à la séance)</p>
+        }
+      </div>
+      <div class="form-group col-md-6">
+        <label for="therapistId">Thérapeute</label>
+        <select id="therapistId" class="form-control" formControlName="therapistId" [class.is-invalid]="fieldInvalid('therapistId')">
+          <option value="">Sélectionner...</option>
+          <option *ngFor="let therapist of therapists" [ngValue]="therapist.id">
+            {{ therapist.fullName }} ({{ therapist.role }})
+          </option>
+        </select>
+        @if (fieldError('therapistId', 'thérapeute')) {
+          <div class="invalid-feedback">{{ fieldError('therapistId', 'thérapeute') }}</div>
+        }
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="dateTime">Date et Heure</label>
+        <input id="dateTime" type="datetime-local" class="form-control" formControlName="dateTime" [class.is-invalid]="fieldInvalid('dateTime')">
+        @if (fieldError('dateTime', 'date et heure')) {
+          <div class="invalid-feedback">{{ fieldError('dateTime', 'date et heure') }}</div>
+        }
+      </div>
+      <div class="form-group col-md-6">
+        <label for="duration">Durée (minutes)</label>
+        <input id="duration" type="number" class="form-control" formControlName="duration" [class.is-invalid]="fieldInvalid('duration')">
+        @if (fieldError('duration', 'durée')) {
+          <div class="invalid-feedback">{{ fieldError('duration', 'durée') }}</div>
+        }
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="type">Type de Séance</label>
+        <select id="type" class="form-control" formControlName="type" [class.is-invalid]="fieldInvalid('type')">
+          <option value="">Sélectionner...</option>
+          <option value="Massage">Massage</option>
+          <option value="Physio">Physiothérapie</option>
+          <option value="Consultation">Consultation</option>
+          <option value="Ostéopathie">Ostéopathie</option>
+          <option value="Acupuncture">Acupuncture</option>
+        </select>
+        @if (fieldError('type', 'type de séance')) {
+          <div class="invalid-feedback">{{ fieldError('type', 'type de séance') }}</div>
+        }
+      </div>
+      <div class="form-group col-md-6">
+        <label for="status">Statut</label>
+        <select id="status" class="form-control" formControlName="status" [class.is-invalid]="fieldInvalid('status')">
+          <option value="SCHEDULED">Planifiée</option>
+          <option value="COMPLETED">Terminée</option>
+          <option value="CANCELLED">Annulée</option>
+        </select>
+        @if (fieldError('status', 'statut')) {
+          <div class="invalid-feedback">{{ fieldError('status', 'statut') }}</div>
+        }
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="notes">Notes</label>
+      <textarea id="notes" class="form-control" rows="3" formControlName="notes"></textarea>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="datta-dialog-actions">
+  @if (submitError) {
+    <p class="text-danger me-auto mb-0 form-submit-error">{{ submitError }}</p>
+  }
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+  <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
+</mat-dialog-actions>

@@ -2,7 +2,17 @@
     padding: 20px;
 }
 
-.low-stock  {
-    color:  red;
-    font-weight:  bold;
+.list-section-title {
+    margin: 0 0 1rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+:host ::ng-deep .low-stock-row {
+    background-color: #fee2e2 !important;
+}
+
+:host ::ng-deep .low-stock-row > td {
+    color: #b91c1c;
+    font-weight: 600;
 }

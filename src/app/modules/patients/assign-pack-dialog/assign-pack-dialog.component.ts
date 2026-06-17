@@ -7,6 +7,13 @@ import { Patient } from '../patient.service';
 import { Pack, PackService } from '../../pack-management/pack.service';
 import { PatientPackService } from '../../pack-management/patient-pack.service';
 import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
+import {
+  getFormValidationMessage,
+  getApiErrorMessage,
+  isFieldInvalid,
+  getFieldErrorMessage,
+  FORM_SAVE_ERROR
+} from '../../../core/utils/form-submit.utils';
 
 @Component({
   selector: 'app-assign-pack-dialog',
@@ -21,7 +28,10 @@ export class AssignPackDialogComponent implements OnInit {
   selectedPack: Pack | null = null;
   agreedPrice = 0;
   saving = false;
-  errorMessage = '';
+  submitError = '';
+
+  fieldInvalid = (name: string) => isFieldInvalid(this.form, name);
+  fieldError = (name: string, label: string) => getFieldErrorMessage(this.form, name, label);
 
   constructor(
     private fb: FormBuilder,
@@ -59,11 +69,27 @@ export class AssignPackDialogComponent implements OnInit {
   }
 
   save(): void {
-    if (this.form.invalid || !this.data.patient.id || this.saving) {
+    if (this.saving) {
       return;
     }
+
+    this.submitError = '';
+    const validationError = getFormValidationMessage(this.form, {
+      packId: 'pack',
+      priceType: 'type de prix',
+      purchaseDate: 'date d\'achat'
+    });
+    if (validationError) {
+      this.submitError = validationError;
+      return;
+    }
+
+    if (!this.data.patient.id) {
+      this.submitError = 'Patient introuvable.';
+      return;
+    }
+
     this.saving = true;
-    this.errorMessage = '';
     const { packId, priceType, purchaseDate } = this.form.value;
     this.patientPackService
       .assignPack({
@@ -76,8 +102,7 @@ export class AssignPackDialogComponent implements OnInit {
         next: () => this.dialogRef.close(true),
         error: (err) => {
           this.saving = false;
-          const msg = err.error?.message;
-          this.errorMessage = msg && !msg.startsWith('pages.') ? msg : 'pages.patientPack.assignError';
+          this.submitError = getApiErrorMessage(err, FORM_SAVE_ERROR);
         }
       });
   }

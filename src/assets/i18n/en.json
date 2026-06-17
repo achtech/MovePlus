@@ -20,7 +20,8 @@
     "salesStock": "Sales & Stock",
     "expenses": "Expenses",
     "users": "Users",
-    "team": "Team"
+    "team": "Team",
+    "activityLogs": "Activity Logs"
   },
   "header": {
     "notifications": "Notifications",
@@ -48,6 +49,7 @@
     "address": "Address",
     "role": "Role",
     "username": "Username",
+    "email": "Email",
     "password": "Password",
     "passwordPlaceholder": "Leave blank to keep current password",
     "avatar": "Avatar",
@@ -64,6 +66,8 @@
   "common": {
     "search": "Search...",
     "clear": "Clear",
+    "all": "All",
+    "searchButton": "Search",
     "actions": "Actions",
     "total": "Total",
     "yes": "Yes",
@@ -73,6 +77,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "noneFound": "No records found.",
+    "deleteTitle": "Confirm deletion",
+    "deleteConfirm": "Are you sure you want to delete this item? This action cannot be undone.",
     "months": {
       "jan": "Jan",
       "feb": "Feb",
@@ -265,6 +271,7 @@
       "product": "Product",
       "quantity": "Quantity",
       "salePrice": "Sale price",
+      "totalCost": "Total cost",
       "purchasePrice": "Purchase price",
       "operationDate": "Operation date",
       "note": "Note",
@@ -272,7 +279,20 @@
       "minAlert": "Min stock alert",
       "lastPurchase": "Last purchase date",
       "emptySales": "No sales found.",
-      "emptyStock": "No stock found."
+      "emptyStock": "No stock found.",
+      "yourStock": "Your stock",
+      "yourSales": "Your sales"
+    },
+    "activityLogs": {
+      "title": "Activity Logs",
+      "user": "User",
+      "topic": "Topic",
+      "dateTime": "Date & Time",
+      "action": "Action",
+      "description": "Description",
+      "filterUser": "Filter by user",
+      "filterDescription": "Filter by description",
+      "empty": "No activity logs found."
     }
   }
 }

@@ -20,7 +20,8 @@
     "salesStock": "Ventes & Stock",
     "expenses": "Charges",
     "users": "Utilisateurs",
-    "team": "Équipe"
+    "team": "Équipe",
+    "activityLogs": "Journal d'activité"
   },
   "header": {
     "notifications": "Notifications",
@@ -48,6 +49,7 @@
     "address": "Adresse",
     "role": "Rôle",
     "username": "Nom d'utilisateur",
+    "email": "Email",
     "password": "Mot de passe",
     "passwordPlaceholder": "Laisser vide pour conserver le mot de passe actuel",
     "avatar": "Avatar",
@@ -64,6 +66,8 @@
   "common": {
     "search": "Rechercher...",
     "clear": "Effacer",
+    "all": "Tous",
+    "searchButton": "Rechercher",
     "actions": "Actions",
     "total": "Total",
     "yes": "Oui",
@@ -73,6 +77,8 @@
     "cancel": "Annuler",
     "save": "Enregistrer",
     "noneFound": "Aucun enregistrement trouvé.",
+    "deleteTitle": "Confirmer la suppression",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.",
     "months": {
       "jan": "Jan",
       "feb": "Fév",
@@ -265,6 +271,7 @@
       "product": "Produit",
       "quantity": "Quantité",
       "salePrice": "Prix de Vente",
+      "totalCost": "Coût total",
       "purchasePrice": "Prix d'Achat",
       "operationDate": "Date Opération",
       "note": "Note",
@@ -272,7 +279,20 @@
       "minAlert": "Alerte Stock Min",
       "lastPurchase": "Date Dernier Achat",
       "emptySales": "Aucune vente trouvée.",
-      "emptyStock": "Aucun stock trouvé."
+      "emptyStock": "Aucun stock trouvé.",
+      "yourStock": "Votre stock",
+      "yourSales": "Vos ventes"
+    },
+    "activityLogs": {
+      "title": "Journal d'activité",
+      "user": "Utilisateur",
+      "topic": "Module",
+      "dateTime": "Date & heure",
+      "action": "Action",
+      "description": "Description",
+      "filterUser": "Filtrer par utilisateur",
+      "filterDescription": "Filtrer par description",
+      "empty": "Aucune activité enregistrée."
     }
   }
 }

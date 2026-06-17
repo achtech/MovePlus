@@ -17,11 +17,13 @@ import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { Table } from 'primeng/table';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { BrowserHydrationService } from '../../../core/utils/browser-init';
+import { DeleteConfirmService } from '../../../core/services/delete-confirm.service';
+import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
 
 @Component({
    selector:  'app-sale-list',
    templateUrl:  './sale-list.component.html',
-   styleUrls:  ['./sale-list.component.scss'],
+   styleUrls: ['./sale-list.component.scss'],
    standalone: true,
    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule, AppCurrencyPipe]
 })
@@ -34,7 +36,7 @@ export  class  SaleListComponent {
    @ViewChild('dt1') dt1: Table | undefined;
    @ViewChild('dt2') dt2: Table | undefined;
 
-    constructor(private saleService: SaleService, private stockService: StockService, private dialog: MatDialog, private browserHydration: BrowserHydrationService) {
+    constructor(private saleService: SaleService, private stockService: StockService, private dialog: MatDialog, private browserHydration: BrowserHydrationService, private deleteConfirm: DeleteConfirmService, private dialogRefresh: DialogRefreshService) {
       this.browserHydration.run(() => {
         this.loadSales();
         this.loadStock();
@@ -42,6 +44,7 @@ export  class  SaleListComponent {
     }
 
     loadSales(): void  {
+       this.loading = true;
        this.saleService.getSales().subscribe(data  => {
            this.sales =  data.map(s  =>  ({ ...s,  total:  s.quantity  * s.unitPrice  }));
            this.loading = false;
@@ -49,45 +52,60 @@ export  class  SaleListComponent {
    }
 
    addSale():  void  {
-      const  dialogRef  =  this.dialog.open(SaleFormComponent, FORM_DIALOG_OPTIONS);
-      dialogRef.afterClosed().subscribe(result  =>  {
-          if  (result)  this.loadSales();
-      });
+      this.dialogRefresh.onSave(
+        this.dialog.open(SaleFormComponent, FORM_DIALOG_OPTIONS),
+        () => {
+          this.loadSales();
+          this.loadStock();
+        }
+      );
     }
 
     editSale(sale: Sale):  void  {
-       const dialogRef  =  this.dialog.open(SaleFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  sale });
-       dialogRef.afterClosed().subscribe(result  =>  {
-          if  (result) this.loadSales();
-       });
+       this.dialogRefresh.onSave(
+         this.dialog.open(SaleFormComponent, { ...FORM_DIALOG_OPTIONS, data: sale }),
+         () => {
+           this.loadSales();
+           this.loadStock();
+         }
+       );
    }
 
    deleteSale(id:  number):  void  {
-      this.saleService.deleteSale(id).subscribe(()  =>  this.loadSales());
+      this.deleteConfirm.confirmAndDelete(
+        () => this.saleService.deleteSale(id),
+        () => {
+          this.loadSales();
+          this.loadStock();
+        }
+      );
    }
 
    loadStock(): void  {
       this.stockService.getStock().subscribe(data  =>  {
-          this.stock  =  data;
+          this.stock  =  [...data];
       });
    }
 
    addStock():  void  {
-      const  dialogRef  =  this.dialog.open(StockFormComponent, FORM_DIALOG_OPTIONS);
-      dialogRef.afterClosed().subscribe(result  =>  {
-          if  (result)  this.loadStock();
-      });
+      this.dialogRefresh.onSave(
+        this.dialog.open(StockFormComponent, FORM_DIALOG_OPTIONS),
+        () => this.loadStock()
+      );
    }
 
    editStock(stockItem: Stock):  void  {
-      const dialogRef  =  this.dialog.open(StockFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  stockItem });
-      dialogRef.afterClosed().subscribe(result  =>  {
-         if  (result) this.loadStock();
-      });
+      this.dialogRefresh.onSave(
+        this.dialog.open(StockFormComponent, { ...FORM_DIALOG_OPTIONS, data: stockItem }),
+        () => this.loadStock()
+      );
    }
 
    deleteStock(id:  number):  void  {
-      this.stockService.deleteStock(id).subscribe(()  =>  this.loadStock());
+      this.deleteConfirm.confirmAndDelete(
+        () => this.stockService.deleteStock(id),
+        () => this.loadStock()
+      );
    }
 
    toggleView(): void {
@@ -96,6 +114,10 @@ export  class  SaleListComponent {
 
    isLowStock(item:  Stock):  boolean  {
        return  item.quantity <=  item.minStockAlert;
+   }
+
+   saleTotal(sale: Sale): number {
+       return sale.total ?? Number(sale.quantity) * Number(sale.unitPrice);
    }
 
    clear(table: any): void {

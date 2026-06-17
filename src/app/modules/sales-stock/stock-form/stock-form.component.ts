@@ -4,6 +4,13 @@ import  {  MatDialogRef,  MAT_DIALOG_DATA, MatDialogModule }  from  '@angular/ma
  import {  StockService,  Stock  } from  '../stock.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {
+  getFormValidationMessage,
+  getApiErrorMessage,
+  isFieldInvalid,
+  getFieldErrorMessage,
+  FORM_SAVE_ERROR
+} from '../../../core/utils/form-submit.utils';
 
  @Component({
     selector:  'app-stock-form',
@@ -14,6 +21,10 @@ import { CommonModule } from '@angular/common';
 })
  export  class  StockFormComponent {
      form: FormGroup;
+     submitError = '';
+
+     fieldInvalid = (name: string) => isFieldInvalid(this.form, name);
+     fieldError = (name: string, label: string) => getFieldErrorMessage(this.form, name, label);
 
     constructor(
         private  fb:  FormBuilder,
@@ -30,14 +41,29 @@ import { CommonModule } from '@angular/common';
     }
 
         save():  void  {
-        if (this.form.valid)  {
-            const  stock  =  this.form.value;
-            if  (this.data?.id)  {
-               this.stockService.updateStock(this.data.id,  stock).subscribe(()  =>  this.dialogRef.close(true));
-            }  else  {
-               this.stockService.addStock(stock).subscribe(()  =>  this.dialogRef.close(true));
-            }
+        this.submitError = '';
+        const validationError = getFormValidationMessage(this.form, {
+          productName: 'produit',
+          quantity: 'quantité',
+          unitPrice: 'prix unitaire',
+          minStockAlert: 'seuil d\'alerte'
+        });
+        if (validationError) {
+          this.submitError = validationError;
+          return;
         }
+
+        const stock = this.form.value;
+        const request$ = this.data?.id
+          ? this.stockService.updateStock(this.data.id, stock)
+          : this.stockService.addStock(stock);
+
+        request$.subscribe({
+          next: () => this.dialogRef.close(true),
+          error: (err) => {
+            this.submitError = getApiErrorMessage(err, FORM_SAVE_ERROR);
+          }
+        });
     }
 
    cancel():  void  {

@@ -21,9 +21,14 @@ const browserDir = join(backendStaticDir, 'browser');
 const csrIndex = join(browserDir, 'index.csr.html');
 const spaIndex = join(browserDir, 'index.html');
 
-if (existsSync(csrIndex)) {
+if (!existsSync(spaIndex) && existsSync(csrIndex)) {
   copyFileSync(csrIndex, spaIndex);
   console.log('Created browser/index.html from index.csr.html');
+}
+
+if (!existsSync(spaIndex)) {
+  console.error('Missing browser/index.html after sync. Frontend build may have failed.');
+  process.exit(1);
 }
 
 console.log(`Synced frontend build to ${backendStaticDir}`);

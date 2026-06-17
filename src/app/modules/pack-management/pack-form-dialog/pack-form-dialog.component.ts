@@ -4,6 +4,13 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { PackService, Pack } from '../pack.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import {
+  getFormValidationMessage,
+  getApiErrorMessage,
+  isFieldInvalid,
+  getFieldErrorMessage,
+  FORM_SAVE_ERROR
+} from '../../../core/utils/form-submit.utils';
 
 @Component({
   selector: 'app-pack-form-dialog',
@@ -14,6 +21,10 @@ import { CommonModule } from '@angular/common';
 })
 export class PackFormDialogComponent {
   form: FormGroup;
+  submitError = '';
+
+  fieldInvalid = (name: string) => isFieldInvalid(this.form, name);
+  fieldError = (name: string, label: string) => getFieldErrorMessage(this.form, name, label);
 
   constructor(
     private fb: FormBuilder,
@@ -30,26 +41,29 @@ export class PackFormDialogComponent {
   }
 
   save(): void {
-    if (this.form.valid) {
-      const pack = this.form.value;
-      if (this.data?.id) {
-        this.packService.updatePack(this.data.id, pack).subscribe({
-          next: () => this.dialogRef.close(true),
-          error: (err) => {
-            console.error('Error updating pack:', err);
-            alert('Erreur lors de la mise à jour du pack');
-          }
-        });
-      } else {
-        this.packService.addPack(pack).subscribe({
-          next: () => this.dialogRef.close(true),
-          error: (err) => {
-            console.error('Error adding pack:', err);
-            alert('Erreur lors de l\'ajout du pack');
-          }
-        });
-      }
+    this.submitError = '';
+    const validationError = getFormValidationMessage(this.form, {
+      nom: 'nom',
+      nombreDeSeance: 'nombre de séances',
+      prixMaison: 'prix maison',
+      prixCabinet: 'prix cabinet'
+    });
+    if (validationError) {
+      this.submitError = validationError;
+      return;
     }
+
+    const pack = this.form.value;
+    const request$ = this.data?.id
+      ? this.packService.updatePack(this.data.id, pack)
+      : this.packService.addPack(pack);
+
+    request$.subscribe({
+      next: () => this.dialogRef.close(true),
+      error: (err) => {
+        this.submitError = getApiErrorMessage(err, FORM_SAVE_ERROR);
+      }
+    });
   }
 
   cancel(): void {

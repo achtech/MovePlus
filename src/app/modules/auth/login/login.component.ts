@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService, LoginRequest } from '../../../core/services/auth.service';
+import { getFormValidationMessage, getApiErrorMessage } from '../../../core/utils/form-submit.utils';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -35,20 +36,30 @@ export class LoginComponent {
   }
 
   login(): void {
-    if (this.form.valid) {
-      this.loading = true;
-      this.errorMessage = '';
-      const credentials: LoginRequest = this.form.value;
-      this.authService.login(credentials).subscribe({
-        next: () => {
-          this.loading = false;
-          this.router.navigate(['/dashboard']);
-        },
-        error: (err) => {
-          this.loading = false;
-          this.errorMessage = err.error?.message || this.translate.instant('auth.invalidCredentials');
-        }
-      });
+    this.errorMessage = '';
+    const validationError = getFormValidationMessage(this.form, {
+      username: 'nom d\'utilisateur',
+      password: 'mot de passe'
+    });
+    if (validationError) {
+      this.errorMessage = validationError;
+      return;
     }
+
+    this.loading = true;
+    const credentials: LoginRequest = this.form.value;
+    this.authService.login(credentials).subscribe({
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = getApiErrorMessage(
+          err,
+          this.translate.instant('auth.invalidCredentials')
+        );
+      }
+    });
   }
 }

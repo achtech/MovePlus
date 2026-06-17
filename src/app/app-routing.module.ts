@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+import { RouterModule, Routes, PreloadAllModules } from '@angular/router';import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
@@ -56,6 +55,12 @@ export const routes: Routes = [
         loadChildren: () => import('./modules/users/users.module').then((m) => m.UsersModule)
       },
       {
+        path: 'activity-logs',
+        canActivate: [adminGuard],
+        loadChildren: () =>
+          import('./modules/activity-logs/activity-logs.module').then((m) => m.ActivityLogsModule)
+      },
+      {
         path: 'profile',
         loadComponent: () => import('./modules/profile/profile.component').then((m) => m.ProfileComponent)
       }
@@ -78,7 +83,6 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],  exports: [RouterModule]
 })
 export class AppRoutingModule {}

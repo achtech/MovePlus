@@ -15,6 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { BrowserHydrationService } from '../../../core/utils/browser-init';
+import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
 
 @Component({
     selector:  'app-stock-list',
@@ -27,22 +28,23 @@ export  class  StockListComponent {
     stock:  Stock[]  =  [];
     loading: boolean = true;
 
-    constructor(private stockService: StockService, private dialog: MatDialog, private browserHydration: BrowserHydrationService) {
+    constructor(private stockService: StockService, private dialog: MatDialog, private browserHydration: BrowserHydrationService, private dialogRefresh: DialogRefreshService) {
         this.browserHydration.run(() => this.loadStock());
     }
 
     loadStock():  void  {
+       this.loading = true;
        this.stockService.getStock().subscribe(data  =>  {
-           this.stock  =  data;
+           this.stock  =  [...data];
            this.loading = false;
        });
     }
 
     addStock():  void  {
-       const  dialogRef  =  this.dialog.open(StockFormComponent, FORM_DIALOG_OPTIONS);
-       dialogRef.afterClosed().subscribe(result  =>  {
-           if  (result)  this.loadStock();
-       });
+       this.dialogRefresh.onSave(
+         this.dialog.open(StockFormComponent, FORM_DIALOG_OPTIONS),
+         () => this.loadStock()
+       );
     }
 
     isLowStock(item:  Stock):  boolean  {

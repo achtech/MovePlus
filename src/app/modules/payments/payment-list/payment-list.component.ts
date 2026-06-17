@@ -1,4 +1,4 @@
-import  { Component  }  from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import  {  MatDialog }  from  '@angular/material/dialog';
 import {  PaymentService,  Payment  } from  '../payment.service';
 import  { PaymentFormComponent  }  from  '../payment-form/payment-form.component';
@@ -13,8 +13,11 @@ import { CardComponent } from '../../../theme/shared/components/card/card.compon
 import { TranslateModule } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
-import { BrowserHydrationService } from '../../../core/utils/browser-init';
+import { DeleteConfirmService } from '../../../core/services/delete-confirm.service';
+import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
 import { PatientService, Patient } from '../../patients/patient.service';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
    selector:  'app-payment-list',
@@ -23,7 +26,7 @@ import { PatientService, Patient } from '../../patients/patient.service';
    standalone: true,
    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, CardComponent, TranslateModule, AppCurrencyPipe]
 })
-export class  PaymentListComponent {
+export class  PaymentListComponent implements OnInit {
    payments:  Payment[] =  [];
    patients: Patient[] = [];
    totalAmount:  number  =  0;
@@ -33,13 +36,27 @@ export class  PaymentListComponent {
       private paymentService: PaymentService,
       private patientService: PatientService,
       private dialog: MatDialog,
-      private browserHydration: BrowserHydrationService
-    ) {
-      this.browserHydration.run(() => {
-        this.patientService.getPatients().subscribe((patients) => {
-          this.patients = patients;
-          this.loadPayments();
-        });
+      private deleteConfirm: DeleteConfirmService,
+      private dialogRefresh: DialogRefreshService
+    ) {}
+
+    ngOnInit(): void {
+      this.loadPageData();
+    }
+
+    private loadPageData(): void {
+      this.loading = true;
+      forkJoin({
+        patients: this.patientService.getPatients().pipe(catchError(() => of([] as Patient[]))),
+        payments: this.paymentService.getPayments().pipe(catchError(() => of([] as Payment[])))
+      }).subscribe(({ patients, payments }) => {
+        this.patients = patients;
+        this.payments = payments.map((p) => ({
+          ...p,
+          patientName: this.getPatientName(p.patientId)
+        }));
+        this.totalAmount = payments.reduce((sum, p) => sum + p.amount, 0);
+        this.loading = false;
       });
     }
 
@@ -49,6 +66,7 @@ export class  PaymentListComponent {
     }
 
     loadPayments(): void  {
+       this.loading = true;
        this.paymentService.getPayments().subscribe(data  => {
            this.payments = data.map((p) => ({
              ...p,
@@ -60,21 +78,24 @@ export class  PaymentListComponent {
    }
 
    addPayment():  void  {
-       const dialogRef  =  this.dialog.open(PaymentFormComponent, FORM_DIALOG_OPTIONS);
-       dialogRef.afterClosed().subscribe(result =>  {
-          if  (result)  this.loadPayments();
-       });
+       this.dialogRefresh.onSave(
+         this.dialog.open(PaymentFormComponent, FORM_DIALOG_OPTIONS),
+         () => this.loadPageData()
+       );
    }
 
    editPayment(payment:  Payment): void  {
-       const  dialogRef =  this.dialog.open(PaymentFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  payment  });
-      dialogRef.afterClosed().subscribe(result  =>  {
-          if  (result)  this.loadPayments();
-      });
+       this.dialogRefresh.onSave(
+         this.dialog.open(PaymentFormComponent, { ...FORM_DIALOG_OPTIONS, data: payment }),
+         () => this.loadPayments()
+       );
     }
 
     deletePayment(id: number):  void  {
-       this.paymentService.deletePayment(id).subscribe(() =>  this.loadPayments());
+       this.deleteConfirm.confirmAndDelete(
+         () => this.paymentService.deletePayment(id),
+         () => this.loadPayments()
+       );
    }
 
    clear(table: any): void {

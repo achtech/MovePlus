@@ -30,16 +30,6 @@
     </div>
   </form>
 
-  @if (errorMessage) {
-    <p class="error-msg">
-      @if (errorMessage.startsWith('pages.')) {
-        {{ errorMessage | translate }}
-      } @else {
-        {{ errorMessage }}
-      }
-    </p>
-  }
-
   @if (selectedPack) {
     <div class="preview-box">
       <div><strong>{{ selectedPack.nom }}</strong></div>
@@ -50,8 +40,11 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" class="datta-dialog-actions">
+  @if (submitError) {
+    <p class="text-danger me-auto mb-0 form-submit-error">{{ submitError }}</p>
+  }
   <button type="button" class="btn btn-secondary" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
-  <button type="button" class="btn btn-primary" [disabled]="form.invalid || saving" (click)="save()">
+  <button type="button" class="btn btn-primary" [disabled]="saving" (click)="save()">
     {{ 'pages.patientPack.assignConfirm' | translate }}
   </button>
 </mat-dialog-actions>

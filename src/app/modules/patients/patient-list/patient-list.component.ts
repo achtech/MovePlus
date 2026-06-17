@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog  } from  '@angular/material/dialog';
 import { PatientService,  Patient  }  from '../patient.service';
 import { PatientFormComponent }  from  '../patient-form/patient-form.component';
@@ -14,7 +14,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FORM_DIALOG_OPTIONS, PATIENT_DETAIL_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
-import { BrowserHydrationService } from '../../../core/utils/browser-init';
+import { DeleteConfirmService } from '../../../core/services/delete-confirm.service';
+import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
  
 @Component({
      selector: 'app-patient-list',
@@ -23,33 +24,41 @@ import { BrowserHydrationService } from '../../../core/utils/browser-init';
      standalone: true,
      imports: [CommonModule, TableModule, ButtonModule, InputTextModule, IconFieldModule, InputIconModule, TagModule, TooltipModule, CardComponent, TranslateModule]
  }) 
- export  class PatientListComponent  {
+ export  class PatientListComponent implements OnInit {
     patients:  Patient[]  =  [];
     loading: boolean = true;
 
-     constructor(private patientService: PatientService, private dialog: MatDialog, private browserHydration: BrowserHydrationService) {
-       this.browserHydration.run(() => this.loadPatients());
+     constructor(
+       private patientService: PatientService,
+       private dialog: MatDialog,
+       private deleteConfirm: DeleteConfirmService,
+       private dialogRefresh: DialogRefreshService
+     ) {}
+
+     ngOnInit(): void {
+       this.loadPatients();
      }
 
      loadPatients(): void  {
+        this.loading = true;
         this.patientService.getPatients().subscribe(data  => {
-            this.patients  =  data;
+            this.patients  =  [...data];
             this.loading = false;
         });
     }
  
     addPatient():  void  {
-       const  dialogRef  =  this.dialog.open(PatientFormComponent, FORM_DIALOG_OPTIONS);
-       dialogRef.afterClosed().subscribe(result  =>  {
-           if  (result)  this.loadPatients();
-       });
+       this.dialogRefresh.onSave(
+         this.dialog.open(PatientFormComponent, FORM_DIALOG_OPTIONS),
+         () => this.loadPatients()
+       );
      }
 
      editPatient(patient: Patient):  void  {
-        const dialogRef  =  this.dialog.open(PatientFormComponent,  { ...FORM_DIALOG_OPTIONS, data:  patient });
-        dialogRef.afterClosed().subscribe(result  =>  {
-           if  (result) this.loadPatients();
-        });
+        this.dialogRefresh.onSave(
+          this.dialog.open(PatientFormComponent, { ...FORM_DIALOG_OPTIONS, data: patient }),
+          () => this.loadPatients()
+        );
     }
     
    showPatientDetails(patient: Patient): void {
@@ -61,7 +70,10 @@ import { BrowserHydrationService } from '../../../core/utils/browser-init';
 
  
     deletePatient(id:  number):  void  {
-       this.patientService.deletePatient(id).subscribe(()  =>  this.loadPatients());
+       this.deleteConfirm.confirmAndDelete(
+         () => this.patientService.deletePatient(id),
+         () => this.loadPatients()
+       );
     }
 
     clear(table: any): void {

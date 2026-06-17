@@ -1,59 +1,107 @@
-<h2 mat-dialog-title>{{ data ? 'Modifier Paiement' : 'Ajouter Paiement' }}</h2>
-<mat-dialog-content>
-  <form [formGroup]="form" class="datta-form-grid">
-    <div class="row">
-      <div class="form-group col-md-6">
-        <label for="patientId">Patient</label>
-        <select id="patientId" class="form-control" formControlName="patientId">
-          <option value="">Sélectionner...</option>
-          <option *ngFor="let patient of patients" [ngValue]="patient.id">
-            {{ patient.firstName }} {{ patient.lastName }}
-          </option>
-        </select>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="seanceId">Séance</label>
-        <select id="seanceId" class="form-control" formControlName="seanceId">
-          <option value="">{{ form.get('patientId')?.value ? 'Aucune (paiement pack ou autre)' : 'Sélectionner un patient d\'abord...' }}</option>
-          <option *ngFor="let seance of seances" [ngValue]="seance.id">
-            {{ formatSeanceLabel(seance) }}
-          </option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="form-group col-md-6">
-        <label for="amount">Montant</label>
-        <div class="input-group">
-          <input id="amount" type="number" class="form-control" formControlName="amount" step="0.01" min="0">
-          <span class="input-group-text">Dh</span>
-        </div>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="date">Date</label>
-        <input id="date" type="date" class="form-control" formControlName="date">
-      </div>
-    </div>
-    <div class="row">
-      <div class="form-group col-md-6">
-        <label for="method">Méthode</label>
-        <select id="method" class="form-control" formControlName="method">
-          <option value="">Sélectionner...</option>
-          <option *ngFor="let m of methods" [value]="m">{{ m }}</option>
-        </select>
-      </div>
-      <div class="form-group col-md-6">
-        <label for="status">Statut</label>
-        <select id="status" class="form-control" formControlName="status">
-          <option value="">Sélectionner...</option>
-          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
-        </select>
-      </div>
-    </div>
-  </form>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end" class="datta-dialog-actions">
-  <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
-  <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
-</mat-dialog-actions>
+<h2 mat-dialog-title>{{ data?.id ? 'Modifier Paiement' : 'Ajouter Paiement' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="datta-form-grid">
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="patientId">Patient</label>
+        <select id="patientId" class="form-control" formControlName="patientId" [class.is-invalid]="fieldInvalid('patientId')">
+          <option value="">Sélectionner...</option>
+          <option *ngFor="let patient of patients" [ngValue]="patient.id">
+            {{ patient.firstName }} {{ patient.lastName }}
+          </option>
+        </select>
+        @if (fieldError('patientId', 'patient')) {
+          <div class="invalid-feedback">{{ fieldError('patientId', 'patient') }}</div>
+        }
+      </div>
+      <div class="form-group col-md-6">
+        <label for="patientPackId">Pack</label>
+        <select id="patientPackId" class="form-control" formControlName="patientPackId">
+          <option value="">{{ form.get('patientId')?.value ? 'Aucun (paiement séance)' : 'Sélectionner un patient d\'abord...' }}</option>
+          <option *ngFor="let pack of patientPacks" [ngValue]="pack.id">
+            {{ formatPackLabel(pack) }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    @if (selectedPack) {
+      <div class="pack-summary alert alert-light">
+        <strong>{{ selectedPack.packName }}</strong>
+        <div class="row mt-2">
+          <div class="col-md-4">
+            <span class="text-muted">Prix convenu</span>
+            <div>{{ selectedPack.agreedPrice | number: '1.2-2' }} Dh</div>
+          </div>
+          <div class="col-md-4">
+            <span class="text-muted">Avance payée</span>
+            <div>{{ (selectedPack.amountPaid ?? 0) | number: '1.2-2' }} Dh</div>
+          </div>
+          <div class="col-md-4">
+            <span class="text-muted">Reste à payer</span>
+            <div class="text-primary fw-bold">{{ (selectedPack.amountRemaining ?? 0) | number: '1.2-2' }} Dh</div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="row">
+      <div class="form-group col-md-12">
+        <label for="seanceId">Séance</label>
+        <select id="seanceId" class="form-control" formControlName="seanceId">
+          <option value="">{{ form.get('patientId')?.value ? 'Aucune (paiement pack ou autre)' : 'Sélectionner un patient d\'abord...' }}</option>
+          <option *ngFor="let seance of seances" [ngValue]="seance.id">
+            {{ formatSeanceLabel(seance) }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="amount">Montant</label>
+        <div class="input-group">
+          <input id="amount" type="number" class="form-control" formControlName="amount" step="0.01" min="0" [class.is-invalid]="fieldInvalid('amount')">
+          <span class="input-group-text">Dh</span>
+        </div>
+        @if (fieldError('amount', 'montant')) {
+          <div class="invalid-feedback">{{ fieldError('amount', 'montant') }}</div>
+        }
+      </div>
+      <div class="form-group col-md-6">
+        <label for="dateTime">Date et heure</label>
+        <input id="dateTime" type="datetime-local" class="form-control" formControlName="dateTime" [class.is-invalid]="fieldInvalid('dateTime')">
+        @if (fieldError('dateTime', 'date et heure')) {
+          <div class="invalid-feedback">{{ fieldError('dateTime', 'date et heure') }}</div>
+        }
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="method">Méthode</label>
+        <select id="method" class="form-control" formControlName="method" [class.is-invalid]="fieldInvalid('method')">
+          <option *ngFor="let m of methods" [value]="m">{{ m }}</option>
+        </select>
+        @if (fieldError('method', 'méthode')) {
+          <div class="invalid-feedback">{{ fieldError('method', 'méthode') }}</div>
+        }
+      </div>
+      <div class="form-group col-md-6">
+        <label for="status">Statut</label>
+        <select id="status" class="form-control" formControlName="status" [class.is-invalid]="fieldInvalid('status')">
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+        @if (fieldError('status', 'statut')) {
+          <div class="invalid-feedback">{{ fieldError('status', 'statut') }}</div>
+        }
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="datta-dialog-actions">
+  @if (submitError) {
+    <p class="text-danger me-auto mb-0 form-submit-error">{{ submitError }}</p>
+  }
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
+  <button type="button" class="btn btn-primary" (click)="save()">Enregistrer</button>
+</mat-dialog-actions>
