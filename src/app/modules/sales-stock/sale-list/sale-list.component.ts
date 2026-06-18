@@ -19,6 +19,9 @@ import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { BrowserHydrationService } from '../../../core/utils/browser-init';
 import { DeleteConfirmService } from '../../../core/services/delete-confirm.service';
 import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
+import { ExcelFileService } from '../../../core/services/excel-file.service';
+import { formatImportResultMessage } from '../../../core/utils/excel-import.utils';
+import { environment } from '../../../../environments/environment';
 
 @Component({
    selector:  'app-sale-list',
@@ -36,7 +39,7 @@ export  class  SaleListComponent {
    @ViewChild('dt1') dt1: Table | undefined;
    @ViewChild('dt2') dt2: Table | undefined;
 
-    constructor(private saleService: SaleService, private stockService: StockService, private dialog: MatDialog, private browserHydration: BrowserHydrationService, private deleteConfirm: DeleteConfirmService, private dialogRefresh: DialogRefreshService) {
+    constructor(private saleService: SaleService, private stockService: StockService, private dialog: MatDialog, private browserHydration: BrowserHydrationService, private deleteConfirm: DeleteConfirmService, private dialogRefresh: DialogRefreshService, private excelFile: ExcelFileService) {
       this.browserHydration.run(() => {
         this.loadSales();
         this.loadStock();
@@ -122,5 +125,29 @@ export  class  SaleListComponent {
 
    clear(table: any): void {
        table.clear();
+   }
+
+   downloadStockTemplate(): void {
+     this.excelFile.download(`${environment.apiUrl}/excel/stock/template`, 'stock_template.xlsx').subscribe();
+   }
+
+   exportStockData(): void {
+     this.excelFile.download(`${environment.apiUrl}/excel/stock/export`, 'stock_export.xlsx').subscribe();
+   }
+
+   importStockData(event: Event): void {
+     const input = event.target as HTMLInputElement;
+     const file = input.files?.[0];
+     input.value = '';
+     if (!file) {
+       return;
+     }
+     this.excelFile.import(`${environment.apiUrl}/excel/stock/import`, file).subscribe({
+       next: (result) => {
+         alert(formatImportResultMessage(result));
+         this.loadStock();
+       },
+       error: () => alert('Import impossible. Vérifiez le fichier Excel.')
+     });
    }
 }

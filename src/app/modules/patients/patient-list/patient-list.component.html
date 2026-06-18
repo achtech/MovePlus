@@ -1,7 +1,13 @@
 <div class="table-page">
   <app-card cardTitle="pages.patients.title" [options]="false">
     <div class="table-toolbar">
-      <p-button [label]="'pages.patients.add' | translate" icon="pi pi-plus" (click)="addPatient()" />
+      <div class="button-group">
+        <p-button [label]="'pages.patients.add' | translate" icon="pi pi-plus" (click)="addPatient()" />
+        <p-button [label]="'common.importTemplate' | translate" icon="pi pi-download" [outlined]="true" (click)="downloadTemplate()" />
+        <p-button [label]="'common.importData' | translate" icon="pi pi-upload" [outlined]="true" (click)="importInput.click()" />
+        <p-button [label]="'common.exportData' | translate" icon="pi pi-file-excel" [outlined]="true" (click)="exportData()" />
+        <input #importInput type="file" accept=".xlsx" hidden (change)="importData($event)" />
+      </div>
       <p-iconfield iconPosition="left" class="search-input">
         <p-inputicon>
           <i class="pi pi-search"></i>

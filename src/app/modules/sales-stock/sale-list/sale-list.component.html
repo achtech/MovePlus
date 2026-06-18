@@ -10,6 +10,12 @@
           (click)="toggleView()"
           [outlined]="true"
         />
+        <ng-container *ngIf="!showSales">
+          <p-button [label]="'common.importTemplate' | translate" icon="pi pi-download" [outlined]="true" (click)="downloadStockTemplate()" />
+          <p-button [label]="'common.importData' | translate" icon="pi pi-upload" [outlined]="true" (click)="importInput.click()" />
+          <p-button [label]="'common.exportData' | translate" icon="pi pi-file-excel" [outlined]="true" (click)="exportStockData()" />
+          <input #importInput type="file" accept=".xlsx" hidden (change)="importStockData($event)" />
+        </ng-container>
       </div>
       <p-iconfield iconPosition="left" class="search-input" *ngIf="showSales">
         <p-inputicon>

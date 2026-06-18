@@ -16,6 +16,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FORM_DIALOG_OPTIONS, PATIENT_DETAIL_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { DeleteConfirmService } from '../../../core/services/delete-confirm.service';
 import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
+import { ExcelFileService } from '../../../core/services/excel-file.service';
+import { formatImportResultMessage } from '../../../core/utils/excel-import.utils';
+import { environment } from '../../../../environments/environment';
  
 @Component({
      selector: 'app-patient-list',
@@ -32,7 +35,8 @@ import { DialogRefreshService } from '../../../core/services/dialog-refresh.serv
        private patientService: PatientService,
        private dialog: MatDialog,
        private deleteConfirm: DeleteConfirmService,
-       private dialogRefresh: DialogRefreshService
+       private dialogRefresh: DialogRefreshService,
+       private excelFile: ExcelFileService
      ) {}
 
      ngOnInit(): void {
@@ -78,5 +82,29 @@ import { DialogRefreshService } from '../../../core/services/dialog-refresh.serv
 
     clear(table: any): void {
         table.clear();
+    }
+
+    downloadTemplate(): void {
+      this.excelFile.download(`${environment.apiUrl}/excel/patients/template`, 'patients_template.xlsx').subscribe();
+    }
+
+    exportData(): void {
+      this.excelFile.download(`${environment.apiUrl}/excel/patients/export`, 'patients_export.xlsx').subscribe();
+    }
+
+    importData(event: Event): void {
+      const input = event.target as HTMLInputElement;
+      const file = input.files?.[0];
+      input.value = '';
+      if (!file) {
+        return;
+      }
+      this.excelFile.import(`${environment.apiUrl}/excel/patients/import`, file).subscribe({
+        next: (result) => {
+          alert(formatImportResultMessage(result));
+          this.loadPatients();
+        },
+        error: () => alert('Import impossible. Vérifiez le fichier Excel.')
+      });
     }
  }

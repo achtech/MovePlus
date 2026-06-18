@@ -18,6 +18,9 @@ import { FORM_DIALOG_OPTIONS } from '../../core/constants/dialog.config';
 import { BrowserHydrationService } from '../../core/utils/browser-init';
 import { DeleteConfirmService } from '../../core/services/delete-confirm.service';
 import { DialogRefreshService } from '../../core/services/dialog-refresh.service';
+import { ExcelFileService } from '../../core/services/excel-file.service';
+import { formatImportResultMessage } from '../../core/utils/excel-import.utils';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-pack-management',
@@ -38,7 +41,8 @@ export class PackManagement {
     private cdr: ChangeDetectorRef,
     private browserHydration: BrowserHydrationService,
     private deleteConfirm: DeleteConfirmService,
-    private dialogRefresh: DialogRefreshService
+    private dialogRefresh: DialogRefreshService,
+    private excelFile: ExcelFileService
   ) {
     this.browserHydration.run(() => this.loadPacks());
   }
@@ -103,5 +107,29 @@ export class PackManagement {
       () => this.packService.deletePack(id),
       () => this.loadPacks()
     );
+  }
+
+  downloadTemplate(): void {
+    this.excelFile.download(`${environment.apiUrl}/excel/packs/template`, 'packs_template.xlsx').subscribe();
+  }
+
+  exportData(): void {
+    this.excelFile.download(`${environment.apiUrl}/excel/packs/export`, 'packs_export.xlsx').subscribe();
+  }
+
+  importData(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) {
+      return;
+    }
+    this.excelFile.import(`${environment.apiUrl}/excel/packs/import`, file).subscribe({
+      next: (result) => {
+        alert(formatImportResultMessage(result));
+        this.loadPacks();
+      },
+      error: () => alert('Import impossible. Vérifiez le fichier Excel.')
+    });
   }
 }

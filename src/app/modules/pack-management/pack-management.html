@@ -1,7 +1,13 @@
 <div class="table-page">
   <app-card cardTitle="pages.packs.title" [options]="false">
     <div class="table-toolbar">
-      <p-button [label]="'pages.packs.add' | translate" icon="pi pi-plus" (click)="addPack()" />
+      <div class="button-group">
+        <p-button [label]="'pages.packs.add' | translate" icon="pi pi-plus" (click)="addPack()" />
+        <p-button [label]="'common.importTemplate' | translate" icon="pi pi-download" [outlined]="true" (click)="downloadTemplate()" />
+        <p-button [label]="'common.importData' | translate" icon="pi pi-upload" [outlined]="true" (click)="importInput.click()" />
+        <p-button [label]="'common.exportData' | translate" icon="pi pi-file-excel" [outlined]="true" (click)="exportData()" />
+        <input #importInput type="file" accept=".xlsx" hidden (change)="importData($event)" />
+      </div>
     </div>
 
     <p-table #dt1 [value]="packs" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="true" paginatorStyleClass="datta-paginator" [showFirstLastIcon]="false" [globalFilterFields]="['nom', 'nombreDeSeance', 'prixMaison', 'prixCabinet']" showGridlines>
