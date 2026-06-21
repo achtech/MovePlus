@@ -59,6 +59,8 @@
           <td>{{ patient.email }}</td>
           <td>
             <p-button icon="pi pi-eye" [outlined]="true" (click)="showPatientDetails(patient)" [pTooltip]="'pages.patients.details' | translate" />
+            <p-button icon="pi pi-calendar" [outlined]="true" (click)="openCalendar(patient)" [pTooltip]="'pages.patients.calendar' | translate" />
+            <p-button icon="pi pi-file-edit" [outlined]="true" (click)="openCompteRendu(patient)" [pTooltip]="'pages.patients.compteRendu' | translate" />
             <p-button icon="pi pi-pencil" [outlined]="true" (click)="editPatient(patient)" />
             <p-button icon="pi pi-trash" [outlined]="true" severity="danger" (click)="deletePatient(patient.id!)" />
           </td>

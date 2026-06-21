@@ -11,15 +11,16 @@ import { TableModule } from 'primeng/table';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppCurrencyPipe } from '../../../core/pipes/app-currency.pipe';
 import { FORM_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { PatientDocumentsComponent } from '../patient-documents/patient-documents.component';
 
-type DetailTab = 'info' | 'seances' | 'payments';
+type DetailTab = 'info' | 'seances' | 'payments' | 'documents';
 
 @Component({
   selector: 'app-patient-detail-dialog',
   templateUrl: './patient-detail-dialog.component.html',
   styleUrls: ['./patient-detail-dialog.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatDialogModule, TableModule, TranslateModule, AppCurrencyPipe]
+  imports: [CommonModule, MatDialogModule, TableModule, TranslateModule, AppCurrencyPipe, PatientDocumentsComponent]
 })
 export class PatientDetailDialogComponent implements OnInit {
   activeTab: DetailTab = 'info';

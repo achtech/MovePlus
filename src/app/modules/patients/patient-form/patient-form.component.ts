@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { PatientService, Patient } from '../patient.service';
@@ -10,6 +10,7 @@ import {
   getFieldErrorMessage,
   FORM_SAVE_ERROR
 } from '../../../core/utils/form-submit.utils';
+import { PatientDocumentsComponent } from '../patient-documents/patient-documents.component';
 
 function optionalEmail(control: AbstractControl) {
   const value = (control.value ?? '').trim();
@@ -35,9 +36,11 @@ function notFutureBirthDate(control: AbstractControl) {
   templateUrl: './patient-form.component.html',
   styleUrls: ['./patient-form.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule]
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, PatientDocumentsComponent]
 })
 export class PatientFormComponent {
+  @ViewChild(PatientDocumentsComponent) documentsPanel?: PatientDocumentsComponent;
+
   form: FormGroup;
   submitError = '';
 
@@ -76,12 +79,23 @@ export class PatientFormComponent {
     }
 
     const patient = this.buildPayload();
-    const request$ = this.data?.id
-      ? this.patientService.updatePatient(this.data.id, patient)
+    const isEdit = !!this.data?.id;
+    const request$ = isEdit
+      ? this.patientService.updatePatient(this.data.id!, patient)
       : this.patientService.addPatient(patient);
 
     request$.subscribe({
-      next: () => this.dialogRef.close(true),
+      next: (saved) => {
+        const patientId = saved.id ?? this.data?.id;
+        if (!isEdit && patientId && this.documentsPanel) {
+          this.documentsPanel.uploadPendingAfterCreate(patientId).then(
+            () => this.dialogRef.close(true),
+            () => this.dialogRef.close(true)
+          );
+          return;
+        }
+        this.dialogRef.close(true);
+      },
       error: (err) => {
         this.submitError = getApiErrorMessage(err, FORM_SAVE_ERROR);
       }

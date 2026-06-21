@@ -13,6 +13,9 @@
     <button type="button" class="detail-tab" [class.active]="activeTab === 'payments'" (click)="setTab('payments')">
       {{ 'pages.payments.title' | translate }}
     </button>
+    <button type="button" class="detail-tab" [class.active]="activeTab === 'documents'" (click)="setTab('documents')">
+      {{ 'pages.patients.tabDocuments' | translate }}
+    </button>
   </div>
 
   @if (activeTab === 'info') {
@@ -238,6 +241,12 @@
         </ng-template>
       </p-table>
     </div>
+  }
+
+  @if (activeTab === 'documents') {
+    <section class="patient-documents-tab">
+      <app-patient-documents [patientId]="data.patient.id" [readonly]="true" />
+    </section>
   }
 </mat-dialog-content>
 

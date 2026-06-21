@@ -3,6 +3,8 @@ import { MatDialog  } from  '@angular/material/dialog';
 import { PatientService,  Patient  }  from '../patient.service';
 import { PatientFormComponent }  from  '../patient-form/patient-form.component';
 import { PatientDetailDialogComponent } from '../patient-detail-dialog/patient-detail-dialog.component';
+import { PatientCalendarDialogComponent } from '../patient-calendar/patient-calendar-dialog.component';
+import { CompteRenduDialogComponent } from '../compte-rendu/compte-rendu-dialog.component';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -13,7 +15,7 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { CardComponent } from '../../../theme/shared/components/card/card.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { FORM_DIALOG_OPTIONS, PATIENT_DETAIL_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
+import { FORM_DIALOG_OPTIONS, PATIENT_DETAIL_DIALOG_OPTIONS, PATIENT_CALENDAR_DIALOG_OPTIONS, COMPTE_RENDU_DIALOG_OPTIONS } from '../../../core/constants/dialog.config';
 import { DeleteConfirmService } from '../../../core/services/delete-confirm.service';
 import { DialogRefreshService } from '../../../core/services/dialog-refresh.service';
 import { ExcelFileService } from '../../../core/services/excel-file.service';
@@ -68,6 +70,20 @@ import { environment } from '../../../../environments/environment';
    showPatientDetails(patient: Patient): void {
      this.dialog.open(PatientDetailDialogComponent, {
        ...PATIENT_DETAIL_DIALOG_OPTIONS,
+       data: { patient }
+     });
+   }
+
+   openCalendar(patient: Patient): void {
+     this.dialog.open(PatientCalendarDialogComponent, {
+       ...PATIENT_CALENDAR_DIALOG_OPTIONS,
+       data: { patient }
+     });
+   }
+
+   openCompteRendu(patient: Patient): void {
+     this.dialog.open(CompteRenduDialogComponent, {
+       ...COMPTE_RENDU_DIALOG_OPTIONS,
        data: { patient }
      });
    }

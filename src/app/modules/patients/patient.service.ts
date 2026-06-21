@@ -15,6 +15,21 @@ export interface Patient {
   medicalNotes: string;
 }
 
+export interface PatientCalendarSlot {
+  slotIndex: number;
+  date: string | null;
+  seanceId?: number | null;
+  status?: string | null;
+}
+
+export interface PatientCalendar {
+  slots: PatientCalendarSlot[];
+}
+
+export interface CompteRendu {
+  content: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PatientService {
   private apiUrl = `${environment.apiUrl}/patients`;
@@ -39,6 +54,22 @@ export class PatientService {
 
   deletePatient(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getPatientCalendar(id: number): Observable<PatientCalendar> {
+    return this.http.get<PatientCalendar>(`${this.apiUrl}/${id}/calendar`);
+  }
+
+  savePatientCalendar(id: number, calendar: PatientCalendar): Observable<PatientCalendar> {
+    return this.http.put<PatientCalendar>(`${this.apiUrl}/${id}/calendar`, calendar);
+  }
+
+  getCompteRendu(id: number): Observable<CompteRendu> {
+    return this.http.get<CompteRendu>(`${this.apiUrl}/${id}/compte-rendu`);
+  }
+
+  saveCompteRendu(id: number, compteRendu: CompteRendu): Observable<CompteRendu> {
+    return this.http.put<CompteRendu>(`${this.apiUrl}/${id}/compte-rendu`, compteRendu);
   }
 
   private handleError<T>(fallback: T) {
